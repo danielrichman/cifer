@@ -33,8 +33,8 @@
 
 #include "vigenere.h"
 
-#define VIGNERE_MIN_KEYLEN 1
-#define VIGNERE_MAX_KEYLEN 100
+#define VIGENERE_MIN_KEYLEN 1
+#define VIGENERE_MAX_KEYLEN 100
 
 #define OPTIMAL_DELTA_IC 1.73
 
@@ -62,11 +62,11 @@
 typedef struct {
   int column_size;
   double column_ic_diff;
-} vignere_column_ic;
+} vigenere_column_ic;
 
 /* Function Declarations */
-void crack_vignere(char *text, int text_size);
-void insertion_columnic_sort(vignere_column_ic a[], int asize);
+void crack_vigenere(char *text, int text_size);
+void insertion_columnic_sort(vigenere_column_ic a[], int asize);
 int frequency_analysis(char *text, int text_size, int jump);
 void create_identity_frequency_graph(int frequency_graph[], int text_size);
 void caesar_cipher_enc(char *text, int text_size, int *shift, int shift_size);

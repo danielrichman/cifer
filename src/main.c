@@ -21,7 +21,7 @@
 int main(int argc, char **argv)
 {
   cc_setup(argc, argv);
-  crack_vignere(intext, intext_size);
+  crack_vigenere(intext, intext_size);
 
   return 0;
 } 

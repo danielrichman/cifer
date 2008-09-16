@@ -25,10 +25,10 @@ double english_frequency[26] = { 0.08167, 0.01492, 0.02782, 0.04253, 0.12702,
                                  0.02758, 0.00978, 0.02360, 0.00150, 0.01974, 
                                  0.00074 };
 
-void insertion_columnic_sort(vignere_column_ic a[], int asize)
+void insertion_columnic_sort(vigenere_column_ic a[], int asize)
 {
   int i, j, k;
-  vignere_column_ic d;
+  vigenere_column_ic d;
 
   k = asize - 1;
 

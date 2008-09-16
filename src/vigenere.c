@@ -19,18 +19,18 @@
 #include "stdinc.h"
 
 /* Attempts to crack text, modifies text at pointer and returns keyword */
-void crack_vignere(char *text, int text_size)
+void crack_vigenere(char *text, int text_size)
 {
-  vignere_column_ic column_ic[VIGNERE_MAX_KEYLEN - VIGNERE_MIN_KEYLEN];
+  vigenere_column_ic column_ic[VIGENERE_MAX_KEYLEN - VIGENERE_MIN_KEYLEN];
   int i, j, k, h;
   int *shift;
   double d;
 
-  printf("Attempting Vignere Cipher Crack %i -> %i keylen\n", 
-                VIGNERE_MIN_KEYLEN, VIGNERE_MAX_KEYLEN);
+  printf("Attempting Vigenere Cipher Crack %i -> %i keylen\n", 
+                VIGENERE_MIN_KEYLEN, VIGENERE_MAX_KEYLEN);
 
   /* Prepare the loop */
-  h = min(VIGNERE_MAX_KEYLEN, text_size) - VIGNERE_MIN_KEYLEN;
+  h = min(VIGENERE_MAX_KEYLEN, text_size) - VIGENERE_MIN_KEYLEN;
   if (h <= 0)
   {
     printf("h <= 0; epic fail.\n");
@@ -41,7 +41,7 @@ void crack_vignere(char *text, int text_size)
   for (i = 0; i < h; i++)
   {
     column_ic[i].column_ic_diff = 0;
-    k = VIGNERE_MIN_KEYLEN + i;
+    k = VIGENERE_MIN_KEYLEN + i;
 
     for (j = 0; j < k; j++)
     {
@@ -55,7 +55,7 @@ void crack_vignere(char *text, int text_size)
   }
 
   /* Sort it */
-  insertion_columnic_sort(column_ic, VIGNERE_MAX_KEYLEN - VIGNERE_MIN_KEYLEN);
+  insertion_columnic_sort(column_ic, VIGENERE_MAX_KEYLEN - VIGENERE_MIN_KEYLEN);
 
   /* Prepare to decode... */
   h = column_ic[0].column_size;
