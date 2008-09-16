@@ -1,0 +1,30 @@
+Useful book on a handful of classical cipher techniques:
+http://books.google.co.uk/books?id=dx8zM-VeKI8C
+
+Ciphers we need to crack (cross them off):
+[X] Caesar
+[X] Vigenere
+[ ] Affine
+[ ] Keyword
+[ ] Bacon
+[ ] Polybus Square
+[ ] Playfair
+[ ] Double Playfair
+[ ] Autokey
+[ ] Alberti
+[ ] ADFGVX
+[ ] Solitaire
+[ ] Hill
+[ ] Book
+[ ] Enigma
+[ ] Fialka 
+
+
+//////////////////////////////////////////////////////////////////////////////
+AFFINE CIPHER
+//////////////////////////////////////////////////////////////////////////////
+
+Easy stuff. We do freq. analysis on the ciphertext. We only need to figure out
+2 of the mappings (ie. a = g, y = d) and then solve a simultaneous equation.
+
+//////////////////////////////////////////////////////////////////////////////
