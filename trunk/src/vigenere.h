@@ -16,7 +16,7 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define VIGNERE_MIN_KEYLEN 1
-#define VIGNERE_MAX_KEYLEN 100
+#define VIGENERE_MIN_KEYLEN 1
+#define VIGENERE_MAX_KEYLEN 100
 
-void crack_vignere(char *text, int text_size);
+void crack_vigenere(char *text, int text_size);
