@@ -31,6 +31,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define VIGNERE_MIN_KEYLEN 1
+#define VIGNERE_MAX_KEYLEN 100
+
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 #define diff(X, Y) ((X) > (Y) ? ((X) - (Y)) : ((Y) - (X)))
