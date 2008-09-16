@@ -31,8 +31,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "vigenere.h"
+
 #define VIGNERE_MIN_KEYLEN 1
 #define VIGNERE_MAX_KEYLEN 100
+
+#define OPTIMAL_DELTA_IC 1.73
 
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))

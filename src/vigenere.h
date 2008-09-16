@@ -18,3 +18,5 @@
 
 #define VIGNERE_MIN_KEYLEN 1
 #define VIGNERE_MAX_KEYLEN 100
+
+void crack_vignere(char *text, int text_size);

@@ -16,6 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "stdinc.h"
+
 /* Attempts to crack text, modifies text at pointer and returns keyword */
 void crack_vignere(char *text, int text_size)
 {
