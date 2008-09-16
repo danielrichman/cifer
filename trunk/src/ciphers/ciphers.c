@@ -18,8 +18,7 @@
 
 #include "stdinc.h"
 
-#define VIGNERE_MIN_KEYLEN 1
-#define VIGNERE_MAX_KEYLEN 100
+
 #define OPTIMAL_DELTA_IC 1.73
 
 double english_frequency[26] = { 0.08167, 0.01492, 0.02782, 0.04253, 0.12702, 
@@ -28,80 +27,6 @@ double english_frequency[26] = { 0.08167, 0.01492, 0.02782, 0.04253, 0.12702,
                                  0.01929, 0.00095, 0.05987, 0.06327, 0.09056, 
                                  0.02758, 0.00978, 0.02360, 0.00150, 0.01974, 
                                  0.00074 };
-
-/* Attempts to crack text, modifies text at pointer and returns keyword */
-void crack_vignere(char *text, int text_size)
-{
-  vignere_column_ic column_ic[VIGNERE_MAX_KEYLEN - VIGNERE_MIN_KEYLEN];
-  int i, j, k, h;
-  int *shift;
-  double d;
-
-  printf("Attempting Vignere Cipher Crack %i -> %i keylen\n", 
-                VIGNERE_MIN_KEYLEN, VIGNERE_MAX_KEYLEN);
-
-  /* Prepare the loop */
-  h = min(VIGNERE_MAX_KEYLEN, text_size) - VIGNERE_MIN_KEYLEN;
-  if (h <= 0)
-  {
-    printf("h <= 0; epic fail.\n");
-    exit(1);
-  }
-
-  /* Check all column lengths that we are supposed to */
-  for (i = 0; i < h; i++)
-  {
-    column_ic[i].column_ic_diff = 0;
-    k = VIGNERE_MIN_KEYLEN + i;
-
-    for (j = 0; j < k; j++)
-    {
-      column_ic[i].column_ic_diff += diff( delta_ic(text + j, text_size - j, k),
-                                           OPTIMAL_DELTA_IC);
-    }
-
-    column_ic[i].column_ic_diff = column_ic[i].column_ic_diff / k;
-
-    column_ic[i].column_size = k;
-  }
-
-  /* Sort it */
-  insertion_columnic_sort(column_ic, VIGNERE_MAX_KEYLEN - VIGNERE_MIN_KEYLEN);
-
-  /* Prepare to decode... */
-  h = column_ic[0].column_size;
-  shift = malloc( sizeof(int) * h );
-
-  if (shift == NULL)
-  {
-    printf("shift = malloc( sizeof(int) * %i ) [%i bytes] failed.\n", 
-                                          h, sizeof(int) * h);
-    exit(1);
-  }
-
-  /* The best match should now be in [0], so freq. analyse the columns */
-  for (i = 0; i < h; i++)
-  {
-    *(shift + i) = frequency_analysis(text + i, text_size - i, h);
-  }
-
-  /* Do the magic! */
-  caesar_cipher_dec(text, text_size, shift, column_ic[0].column_size);
-
-  /* Temporary Behaviour: Print out the keyword and deciphered plaintext */
-  printf("Keyword: ");
-  for (i = 0; i < h; i++) printf("%c", NUMCHAR(*(shift + i)));
-  printf(" - ");
-  for (i = 0; i < h; i++) printf("%i ", *(shift + i));
-  printf("\n");
-
-  d = delta_ic(text, text_size, 1);
-  printf("Overall Delta IC: %f\n\n", d);
-  printf("%*s\n\n", text_size, text);
-
-  /* Free up... */
-  free(shift);
-}
 
 void insertion_columnic_sort(vignere_column_ic a[], int asize)
 {
