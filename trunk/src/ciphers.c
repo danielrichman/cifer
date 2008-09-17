@@ -27,6 +27,7 @@ int frequency_analysis(char *text, int text_size, int jump)
   /* Prepare the variables */
   best_diff = -1;
   best_diff_shift = 0;
+  j = 0;
 
   /* Zero the freq. graph and then scan the text */
   for (i = 0; i < 26; i++)  frequency_graph[i] = 0;
@@ -41,7 +42,6 @@ int frequency_analysis(char *text, int text_size, int jump)
   /* Setup the identity freq graphs */
   create_identity_frequency_graph(identity_frequency_graph, j);
 
-  /* For each shift... */
   for (i = 0; i < 26; i++)
   {
     temp_diff = 0;
