@@ -42,6 +42,12 @@ Easy stuff. We do freq. analysis on the ciphertext. We only need to figure out
 Maybe - perhaps this could just be taken down by a system that solves 
 substitution ciphers that are just totally random, eg, via frequency Analysis
 and bigrams/trigrams/dictionary.?
+
+The huge advantage of getting this to work is that it can totally take out a
+Keyword Cipher, Affine (and possibly some others)
+
+The system used to destroy polybus could also be used for ADFGVX? Hopefully
+it should be easily adapted to either.
 (Daniel Richman)
 
 //////////////////////////////////////////////////////////////////////////////
