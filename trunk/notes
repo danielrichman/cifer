@@ -17,8 +17,17 @@ Ciphers we need to crack (cross them off):
 [ ] Hill
 [ ] Book
 [ ] Enigma
-[ ] Fialka 
+[ ] Fialka         (Is this really needed? I doubt that it will be used again)
 
+Features that are needed
+[ ] Reimplement fast dictionary searching (Assigned to DR)
+[ ] Bigrams and Trigrams frequency data
+[ ] Detection and guessing of cipher, eg- Delta IC tells us that the letters are
+    not totally malformed and just need a caesar/vigenere crack? etc.
+[ ] Epic win phrases when it cracks a cipher, eg. "Yum yum, that was an epic 
+    fail of a cipher" or "Totally freaking owned"
+[ ] Printing of the process used to arrive at the cipher, eg. Cipher methods 
+    used, keywords, the lot.
 
 //////////////////////////////////////////////////////////////////////////////
 AFFINE CIPHER
@@ -26,5 +35,13 @@ AFFINE CIPHER
 
 Easy stuff. We do freq. analysis on the ciphertext. We only need to figure out
 2 of the mappings (ie. a = g, y = d) and then solve a simultaneous equation.
+(Simrun Basuita)
+
+//////////////////////////////////////////////////////////////////////////////
+
+Maybe - perhaps this could just be taken down by a system that solves 
+substitution ciphers that are just totally random, eg, via frequency Analysis
+and bigrams/trigrams/dictionary.?
+(Daniel Richman)
 
 //////////////////////////////////////////////////////////////////////////////
