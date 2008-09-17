@@ -31,52 +31,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "settings.h"
+#include "macros.h"
+
+#include "interface.h"
+#include "frequency_data.h"
 #include "vigenere.h"
-
-#define VIGENERE_MIN_KEYLEN 1
-#define VIGENERE_MAX_KEYLEN 100
-
-#define OPTIMAL_DELTA_IC 1.73
-
-#define min(X, Y)  ((X) < (Y) ? (X) : (Y))
-#define max(X, Y)  ((X) > (Y) ? (X) : (Y))
-#define diff(X, Y) ((X) > (Y) ? ((X) - (Y)) : ((Y) - (X)))
-
-/* 48 - 57 (numbers) 65 - 90 (letters uppercase) 97 - 122 (letters lowercase) */
-/* Printable characters (eg. "£$%^&*, numbers, space) 32 - 128) */
-#define ASCII_CH(ch)           (ch >= 32 && ch <= 128)
-#define ALPHAL_CH(ch)          (ch >= 97 && ch <= 122)
-#define ALPHAH_CH(ch)          (ch >= 65 && ch <= 90)
-#define NUMBER_CH(ch)          (ch >= 48 && ch <= 57)
-#define ALPHANUMERIC_CH(ch)    (ALPHAL_CH(ch) || ALPHAH_CH(ch) || NUMBER_CH(ch))
-#define SPACE_CH(ch)           (ch == 32)
-
-#define ALPHA_TOUPPER(ch)      (ALPHAL_CH(ch) ? ch - 32 : ch)
-#define ALPHA_TOLOWER(ch)      (ALPHAH_CH(ch) ? ch + 32 : ch)
-
-#define IS_NEWLINE(ch)         (ch == 10)
-#define CHARNUM(ch)            (ALPHAL_CH(ch) || ALPHAH_CH(ch) ? \
-                                   ALPHA_TOLOWER(ch) - 97 : -1)
-#define NUMCHAR(i)             (i + 97)
-
-typedef struct {
-  int column_size;
-  double column_ic_diff;
-} vigenere_column_ic;
-
-/* Function Declarations */
-void crack_vigenere(char *text, int text_size);
-void insertion_columnic_sort(vigenere_column_ic a[], int asize);
-int frequency_analysis(char *text, int text_size, int jump);
-void create_identity_frequency_graph(int frequency_graph[], int text_size);
-void caesar_cipher_enc(char *text, int text_size, int *shift, int shift_size);
-void caesar_cipher_dec(char *text, int text_size, int *shift, int shift_size);
-double delta_ic (char *text, int text_size, int jump);
-void cc_setup(int argc, char **argv);
-
-/* Super-Global Variable declarations */
-extern char *intext;
-extern int intext_size;
+#include "ciphers.h"
+#include "utility.h"
 
 #endif
 

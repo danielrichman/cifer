@@ -1,1 +1,1 @@
-gcc -o cipher_cracker src/*.c -Wall
+gcc -o cifer src/*.c -Wall
