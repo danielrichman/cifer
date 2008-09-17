@@ -18,6 +18,9 @@
 
 void cc_setup(int argc, char **argv);
 
+/* Format and print letter frequencies. Takes an int array[26] of frequencies */
+void print_freq(int *freq, int size);
+
 extern char *intext;
 extern int intext_size;
 

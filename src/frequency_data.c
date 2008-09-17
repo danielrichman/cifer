@@ -35,3 +35,26 @@ void create_identity_frequency_graph(int frequency_graph[], int text_size)
   }
 }
 
+int *ch_freq(char *text, int input_size)
+{
+  printf("Doing letter frequency count...");
+  
+  int i;
+  int *ch_freq;
+
+  if ((ch_freq = malloc(26)) == NULL)
+  {
+    printf("\nMalloc failed! Exiting!\n");
+    exit(1);
+  }
+
+  for (i = 0; i < 26; i++) *(ch_freq + i) = 0;
+
+  for (i = 0; i < input_size; i++)
+  {
+    ch_freq[CHARNUM(*(text + i))] += 1;
+  }
+
+  printf("done\n");
+  return ch_freq;
+}

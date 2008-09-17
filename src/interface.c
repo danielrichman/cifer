@@ -89,3 +89,20 @@ void cc_setup(int argc, char **argv)
   load_dict();
 }
 
+void print_freq(int *freq, int size)
+{
+  int i;
+  int j = 0; 
+  
+  for (i = 0; i < size; i++)
+  {
+    printf("%c:%d ", NUMCHAR(i), *(freq + i));
+    j++;
+    if (j == 5)
+    {
+      printf("\n");
+      j = 0;
+    }
+  }
+  printf("\n");
+}

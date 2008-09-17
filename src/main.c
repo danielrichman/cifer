@@ -18,9 +18,14 @@
 
 #include "stdinc.h"
 
+int *ch_freq_ar;
+
 int main(int argc, char **argv)
 {
   cc_setup(argc, argv);
+  ch_freq_ar = ch_freq(intext, intext_size);
+  print_freq(ch_freq_ar, 26);
+  
   crack_vigenere(intext, intext_size);
 
   return 0;

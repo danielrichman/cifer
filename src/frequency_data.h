@@ -18,3 +18,5 @@
 
 void create_identity_frequency_graph(int frequency_graph[], int text_size);
 
+/* Returns an int array[26] with letter frequencies of input text */
+int *ch_freq(char *text, int input_size);
