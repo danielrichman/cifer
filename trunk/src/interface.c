@@ -56,6 +56,12 @@ void cc_setup(int argc, char **argv)
     }
   }
 
+  if (intext_size == 0)
+  {
+    printf("Input file is of 0 length.\n\n");
+    exit(1);
+  }
+
   rewind(infile);
   intext     = malloc( intext_size + 1 );
 
@@ -79,5 +85,7 @@ void cc_setup(int argc, char **argv)
 
   printf("Done\n\n");
   fflush(stdout);
+
+  load_dict();
 }
 
