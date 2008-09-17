@@ -16,10 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-typedef struct {
-  int column_size;
-  double column_ic_diff;
-} vigenere_column_ic;
-
-void crack_vigenere(char *text, int text_size);
+int frequency_analysis(char *text, int text_size, int jump);
+void caesar_cipher_enc(char *text, int text_size, int *shift, int shift_size);
+void caesar_cipher_dec(char *text, int text_size, int *shift, int shift_size);
+double delta_ic (char *text, int text_size, int jump);
 

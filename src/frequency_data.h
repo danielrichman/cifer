@@ -16,10 +16,5 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-typedef struct {
-  int column_size;
-  double column_ic_diff;
-} vigenere_column_ic;
-
-void crack_vigenere(char *text, int text_size);
+void create_identity_frequency_graph(int frequency_graph[], int text_size);
 

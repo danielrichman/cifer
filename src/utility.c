@@ -16,10 +16,27 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-typedef struct {
-  int column_size;
-  double column_ic_diff;
-} vigenere_column_ic;
+#include "stdinc.h"
 
-void crack_vigenere(char *text, int text_size);
+void insertion_columnic_sort(vigenere_column_ic a[], int asize)
+{
+  int i, j, k;
+  vigenere_column_ic d;
+
+  k = asize - 1;
+
+  for (i = 0; i < k; i++)
+  {
+    d = a[i];
+    j = i - 1;
+
+    while (j >= 0 && a[j].column_ic_diff > d.column_ic_diff)
+    {
+      a[j + 1] = a[j];
+      j = j - 1;
+    }
+
+    a[j + 1] = d;
+  }
+}
 

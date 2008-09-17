@@ -16,10 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-typedef struct {
-  int column_size;
-  double column_ic_diff;
-} vigenere_column_ic;
+#define VIGENERE_MIN_KEYLEN 1
+#define VIGENERE_MAX_KEYLEN 100
 
-void crack_vigenere(char *text, int text_size);
+#define OPTIMAL_DELTA_IC 1.73
 
