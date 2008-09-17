@@ -1,6 +1,9 @@
 Useful book on a handful of classical cipher techniques:
 http://books.google.co.uk/books?id=dx8zM-VeKI8C
 
+"Teacher pack" from the website, gives clear, concise techniques:
+http://www.cipher.maths.soton.ac.uk/TeachersPack.pdf
+
 Ciphers we need to crack (cross them off):
 [X] Caesar
 [X] Vigenere
@@ -28,6 +31,8 @@ Features that are needed
     fail of a cipher" or "Totally freaking owned"
 [ ] Printing of the process used to arrive at the cipher, eg. Cipher methods 
     used, keywords, the lot.
+[ ] Implement proper command line parsing using flags (-*) so we can tell the
+    program exactly what we need to do.
 
 //////////////////////////////////////////////////////////////////////////////
 AFFINE CIPHER
