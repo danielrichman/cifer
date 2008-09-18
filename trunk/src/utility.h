@@ -16,5 +16,7 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-void insertion_columnic_sort(vigenere_column_ic a[], int asize);
+#define INSERTION_DEFINE(nm, ty, sval) void nm(ty a[], int asize);
+#include "utility.i"
+#undef INSERTION_DEFINE
 

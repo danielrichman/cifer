@@ -20,6 +20,25 @@
 
 void crack_random_substitution(char *text, int text_size)
 {
+  digram digrams[26 * 26];
+  int hinting[26 * 26];
+  int i, h;
+
+  /* To keep track of letters guessed and letters not, we use upper/lower */
+  for (i = 0; i < text_size; i++) *(text + i) = ALPHA_TOUPPER(*(text + i));
+
+  /* Start by finding the most common digram, TH */
+  h = text_size - 1;
+  for (i = 0; i < h; i++)
+  {
+    digrams[ (CHARNUM(*(text + i)) * 26) + CHARNUM(*(text + i + 1)) ].digram_value++;
+  }
+
+  h = 26 * 26;
+  for (i = 0; i < h; i++) digrams[i].digram_num = i;
+
+  insertion_digram_sort(digrams, h);
+
   /* Start with trigrams & common words. the, that, will, etc. */
   /* do the same for some bigrams. keep this minimal to avoid error */
   /* Fill in the remainder with the dictionary and frequency. */
