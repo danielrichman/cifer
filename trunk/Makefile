@@ -24,7 +24,7 @@ objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/main.o src/random_substitution.o src/utility.o \
           src/vigenere.o
 
-cifer : $(objects) 
+cifer : $(objects)
 	gcc -o cifer $(objects)
 
 src/arg.o                 : src/arg.h
@@ -39,4 +39,7 @@ src/vigenere.o            : src/vigenere.h
 
 .PHONY : clean
 clean :
-	rm -f cifer $(objects)
+	rm -rf cifer dict $(objects)
+
+dict :
+	cat /usr/share/dict/british-english | sort > dict
