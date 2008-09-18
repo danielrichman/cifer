@@ -18,6 +18,8 @@
 
 #include "stdinc.h"
 
+/* This frequency counter & analyser is different in that it incorporates 
+ * jumps; ie, columns */
 int frequency_analysis(char *text, int text_size, int jump)
 {
   int frequency_graph[26];
