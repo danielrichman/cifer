@@ -22,6 +22,13 @@ int *ch_freq_ar;
 
 int main(int argc, char **argv)
 {
+  if ((arg_parse(argc, argv)) == -1) /* Bad argument(s) */
+  {
+    printf("Bad arguments, exiting!\n");
+    /* Show usage info */
+    return 0;
+  }
+    
   cc_setup(argc, argv);
   ch_freq_ar = ch_freq(intext, intext_size);
   print_freq(ch_freq_ar, 26);

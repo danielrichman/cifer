@@ -16,32 +16,5 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STDINC_CIPHERCRACK
-#define STDINC_CIPHERCRACK 1
-
-#include <stdio.h>
-
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <sys/file.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "settings.h"
-#include "macros.h"
-
-#include "dictionary.h"
-#include "interface.h"
-#include "frequency_data.h"
-#include "vigenere.h"
-#include "random_substitution.h"
-#include "ciphers.h"
-#include "utility.h"
-#include "arg.h"
-
-#endif
-
+/* Parse cmd-line args into variables. Returns 0 if OK, -1 if error */
+int arg_parse(int argc, char **argv);
