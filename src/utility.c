@@ -18,25 +18,33 @@
 
 #include "stdinc.h"
 
-void insertion_columnic_sort(vigenere_column_ic a[], int asize)
-{
-  int i, j, k;
-  vigenere_column_ic d;
+/* The following macro is a condensed version of this code 
+ * void insertion_columnic_sort(vigenere_column_ic a[], int asize)
+ * {
+ *   int i, j, k;
+ *   vigenere_column_ic d;
+ *     
+ *   k = asize - 1;
+ *   for (i = 0; i < k; i++)
+ *   {
+ *     d = a[i];
+ *     j = i - 1;
+ *
+ *     while (j >= 0 && a[j].column_ic_diff > d.column_ic_diff)
+ *     {
+ *       a[j + 1] = a[j];
+ *       j = j - 1;
+ *     }
+ *
+ *     a[j + 1] = d;
+ *   }
+ * }                                                                */
 
-  k = asize - 1;
+#define INSERTION_DEFINE(nm, ty, sval) void nm(ty a[], int asize) { \
+    int i, j, k; ty d; k = asize - 1; for (i = 0; i < k; i++) { \
+    d = a[i]; j = i - 1; while (j >= 0 && a[j].sval > d.sval) { \
+    a[j + 1] = a[j]; j = j - 1; } a[j + 1] = d; } }
 
-  for (i = 0; i < k; i++)
-  {
-    d = a[i];
-    j = i - 1;
-
-    while (j >= 0 && a[j].column_ic_diff > d.column_ic_diff)
-    {
-      a[j + 1] = a[j];
-      j = j - 1;
-    }
-
-    a[j + 1] = d;
-  }
-}
+#include "utility.i"
+#undef INSERTION_DEFINE
 
