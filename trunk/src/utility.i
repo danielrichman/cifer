@@ -18,5 +18,3 @@
 
 INSERTION_DEFINE(insertion_columnic_sort, vigenere_column_ic, column_ic_diff)
 INSERTION_DEFINE(insertion_digram_sort, digram, digram_value)
-INSERTION_DEFINE(insertion_subst_hint_ptext_item_sort, subst_hint_ptext_item, \
-                                                       ptext_char_score)
