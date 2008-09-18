@@ -24,7 +24,7 @@ objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/main.o src/random_substitution.o src/utility.o \
           src/vigenere.o
 
-cifer : $(objects)
+cifer : $(objects) dict
 	gcc -o cifer $(objects)
 
 src/arg.o                 : src/arg.h
