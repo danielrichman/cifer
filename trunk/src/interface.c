@@ -92,17 +92,23 @@ void cc_setup(int argc, char **argv)
 void print_freq(int *freq, int size)
 {
   int i;
-  int j = 0; 
   
   for (i = 0; i < size; i++)
   {
     printf("%c:%d ", NUMCHAR(i), *(freq + i));
-    j++;
-    if (j == 5)
-    {
-      printf("\n");
-      j = 0;
-    }
+    if ((i != 0) && ((i % 5) == 0)) printf("\n");
+  }
+  printf("\n");
+}
+
+void print_char_table(void)
+{
+  int i;
+  
+  for (i = 0; i < 26; i++)
+  {
+    printf("%c:%d ", NUMCHAR(i), i + 1);
+    if ((i != 0) && (( i % 5) == 0)) printf("\n");
   }
   printf("\n");
 }
