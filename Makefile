@@ -24,22 +24,34 @@ objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/main.o src/random_substitution.o src/utility.o \
           src/vigenere.o
 
-cifer : $(objects) dict
-	gcc -o cifer $(objects)
+cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
+         src/interface.c src/main.c src/random_substitution.c src/utility.c \
+	 src/vigenere.c
 
-src/arg.o                 : src/arg.h
-src/ciphers.o             : src/ciphers.h
-src/dictionary.o          : src/dictionary.h
-src/frequency_data.o      : src/frequency_data.h
-src/interface.o           : src/interface.h
-src/main.o                :
-src/random_substitution.o : src/random_substitution.h
-src/utility.o             : src/utility.h
-src/vigenere.o            : src/vigenere.h
+stdinc = src/stdinc.h
+
+cifer : $(objects) dict
+	gcc -Wall -o cifer $(objects)
+
+cifer-debug : $(objects) dict
+	gcc -Wall -g -o cifer-debug $(objects)
+
+cifer-opt : dict
+	gcc -Wall -O3 -o cifer-opt $(cfiles)
+
+src/arg.o                 : src/arg.h                 $(stdinc)
+src/ciphers.o             : src/ciphers.h             $(stdinc)
+src/dictionary.o          : src/dictionary.h          $(stdinc)
+src/frequency_data.o      : src/frequency_data.h      $(stdinc)
+src/interface.o           : src/interface.h           $(stdinc)
+src/main.o                :                           $(stdinc)
+src/random_substitution.o : src/random_substitution.h $(stdinc)
+src/utility.o             : src/utility.h             $(stdinc) 
+src/vigenere.o            : src/vigenere.h            $(stdinc)
 
 .PHONY : clean
 clean :
-	rm -rf cifer dict $(objects)
+	rm -rf cifer cifer-debug cifer-opt dict $(objects)
 
 dict :
 	cat /usr/share/dict/british-english | sort > dict
