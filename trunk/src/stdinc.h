@@ -42,6 +42,7 @@
 #include "ciphers.h"
 #include "utility.h"
 #include "arg.h"
+#include "input.h"
 
 #endif
 
