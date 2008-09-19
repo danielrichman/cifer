@@ -22,11 +22,11 @@ CFLAGS=-Wall
 
 objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/input.o src/main.o src/random_substitution.o \
-          src/utility.o src/vigenere.o
+          src/utility.o src/vigenere.o src/action.o
 
 cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
          src/interface.c src/input.c src/main.c src/random_substitution.c \
-         src/utility.c src/vigenere.c
+         src/utility.c src/vigenere.c src/action.c
 
 stdinc = src/stdinc.h
 
@@ -40,6 +40,7 @@ cifer-opt : dict
 	gcc -Wall -O3 -o cifer-opt $(cfiles)
 
 src/arg.o                 : src/arg.h                 $(stdinc)
+src/action.o              : src/action.h              $(stdinc)
 src/ciphers.o             : src/ciphers.h             $(stdinc)
 src/dictionary.o          : src/dictionary.h          $(stdinc)
 src/frequency_data.o      : src/frequency_data.h      $(stdinc)
