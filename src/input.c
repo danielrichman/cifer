@@ -72,6 +72,8 @@ int input_file_size(FILE *infile)
   int size = 0;
   char ch;
   
+  /* We assume that its already rewound. */
+
   while (feof(infile) == 0)
   {
     ch = fgetc(infile);
@@ -81,6 +83,8 @@ int input_file_size(FILE *infile)
       size++;
     }
   }
-  
+
+  rewind(infile);  
+
   return size;
 }
