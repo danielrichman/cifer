@@ -24,16 +24,21 @@ typedef struct {
   int digram_hint;
 } digram_hinting_values;
 
-digram_hinting_values dhv[5] = { {19, 7, 2}, {7, 4, 10}, {8, 13, 10}, 
-                                 {4, 17, 10}, {0, 13, 10} };
+digram_hinting_values dhv[5] = { {19, 7, RANDSUB_HINT_DIGRAM_TH}, 
+                                 {7, 4, RANDSUB_HINT_DIGRAM}, 
+                                 {8, 13, RANDSUB_HINT_DIGRAM}, 
+                                 {4, 17, RANDSUB_HINT_DIGRAM}, 
+                                 {0, 13, RANDSUB_HINT_DIGRAM} };
 
 /* This function is _slow_! (because it does A LOT of jobs that a human should
  * such as guessing words etc.) THUS it should not be used in a bruteforce */
 void crack_random_substitution(char *text, int text_size)
 {
   digram digrams[26 * 26];
-  int hinting[26][26];
-  int i, h, j, k, l, best_freq, best_freq_num, best_freq_num2;
+  int hinting[26][26], temp_hinting[26][26], best_cutoff_temp_hinting[26][26];
+  int i, h, j, k, l, m, n, o, improving;
+  int best_freq, best_freq_num, best_freq_num2;
+  int best_cutoff, best_cutoff_score;
   int frequency_graph[26];
   int identity_frequency_graph[26];
 
@@ -76,8 +81,8 @@ void crack_random_substitution(char *text, int text_size)
   for (i = 0; i < 26; i++) frequency_graph[i] = 0;
   for (i = 0; i < text_size; i++) frequency_graph[CHARNUM(*(text + i))]++;
 
-  k = text_size / 7;
-  l = text_size / 14;
+  k = text_size / RANDSUB_HINT_FREQ1;
+  l = text_size / RANDSUB_HINT_FREQ2;
 
   /* Find the best frequency match and then the second best */
   for (i = 0; i < 26; i++)
@@ -121,19 +126,49 @@ void crack_random_substitution(char *text, int text_size)
   }
 
   /* start at a very low cutoff (k is now the hinting cutoff) */
-  k = 0;
+  best_cutoff = 0; best_cutoff_score = 0;
+  n = RANDSUB_CUTOFF_MAX;   /* This could be a macro */
+  o = RANDSUB_CUTOFF_INC;
 
-  /* Loop through. try to match values to the dictionary. matched words have
-   * += 1 hinting to each of their letters. Overall match is tracked in j 
-   * if its a general epic failure of a match, the cutoff value is raised. 
-   * This roots out bad decisions. += 1 hinting to word matches letters is 
-   * cached into a temporary hinting variable. If the whole shebang is 
-   * successfull, then they are committed. Words that match for all but
-   * one letter have that letter deducted and the correct one added
-   * TODO: Implement some system that means that if the chance is higher 
-   * (more letters in that word match than not) then the hinting bonus
-   * is greater */
+  for (k = 0; k < n; k += o)
+  {
+    /* Zero temporary hinting var */
+    /* Setup a match array */
 
-  /* Utilise hinting & the cutoff to do the translation. */
+    while (improving)
+    {
+      l = text_size - MIN_WORD_SIZE;
+      for (i = 0; i < l; i++)
+      {
+        h = min(text_size - i, WORD_BUF_SIZE);
+        for (j = 0; j < h; i++)
+        {
+          /* List of words of this length (j) are in dict_length_pointer[j] */
+          /* dict_length_pointer[j] is of length dict_length_pointer_size[j] */
+          /* See the possible TODO in dictionary.c with regard to cleaning up my
+           * longhand array usage */
+
+          if (*(dict_length_pointer_size + j) != 0)
+          {
+            for (m = 0; m < *(dict_length_pointer_size + j); m++)
+            {
+              /* see how well it macthes */
+              /* does it reach RANDSUB_LETTER_CUTOFF */
+              /* yes: add to temp_hinting taking into account
+               * match/unkown letter ratio, RANDSUB_MATCH_RATIO_INCREASE 
+               * and this letter's freqency. */
+            }
+          }
+        }
+      }
+    }
+
+    /* record the best */
+    /* copy temp_hinting to best_cutoff_temp_hinting */
+  }
+
+  /* merge best_cutoff_temp_hinting & hinting via addition */
+  /* setup the match/letter sub array */
+  /* Do the translation */
 }
 

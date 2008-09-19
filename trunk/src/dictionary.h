@@ -21,4 +21,6 @@ int score_text_dict_fast(char *text, int size);
 
 extern char *dict;
 extern char **dict_pointer;
+extern char ***dict_length_pointer;
+extern int  *dict_length_pointer_size;
 

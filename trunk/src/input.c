@@ -42,8 +42,9 @@ int input_open(int argc, char **argv)
     printf("failed, intext_size is 0!\n");
     return INPUT_ERR_ZERO_SIZE;
   }
-  printf("intext_size %d bytes, ", intext_size);
-  
+  printf("intext_size %d bytes, \n", intext_size);
+  printf("                            ");
+
   /* malloc() enough space for the file */
   if ((intext = malloc(intext_size + 1)) == NULL)
   {
