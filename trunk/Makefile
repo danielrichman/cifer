@@ -55,5 +55,8 @@ src/vigenere.o            : src/vigenere.h            $(stdinc)
 clean :
 	rm -rf cifer cifer-debug cifer-opt dict $(objects)
 
+clean-objects :
+	rm -rf $(objects)
+
 dict :
 	cat /usr/share/dict/british-english | sort > dict
