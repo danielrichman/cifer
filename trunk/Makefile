@@ -33,8 +33,8 @@ stdinc = src/stdinc.h
 cifer : $(objects) dict
 	gcc -Wall -o cifer $(objects)
 
-cifer-debug : $(objects) dict
-	gcc -Wall -g -o cifer-debug $(objects)
+cifer-debug : dict
+	gcc -Wall -g -o cifer-debug $(cfiles)
 
 cifer-opt : dict
 	gcc -Wall -O3 -o cifer-opt $(cfiles)
