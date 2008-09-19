@@ -16,5 +16,10 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+extern int arg_input;
+extern int arg_input_argc;
+extern int arg_freq;
+extern int arg_pct;
+
 /* Parse cmd-line args into variables. Returns 0 if OK, -1 if error */
 int arg_parse(int argc, char **argv);

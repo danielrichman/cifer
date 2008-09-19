@@ -18,9 +18,11 @@
 
 #include "stdinc.h"
 
-int arg_input = 0; /* Do we have any input files? */
-int arg_freq  = 0; /* Do frequency analysis */
-int arg_pct   = 0; /* Print char->number table */
+int arg_input = 0;  /* Do we have any input files? */
+int arg_input_argc; /* The value of argv for which there is an input
+                       filename, ie. argv[arg_input_argc] */
+int arg_freq  = 0;  /* Do frequency analysis */
+int arg_pct   = 0;  /* Print char->number table */
 
 int arg_parse(int argc, char **argv)
 {
@@ -43,7 +45,8 @@ int arg_parse(int argc, char **argv)
     if (((strcmp(argv[i], "-i")) == 0) || ((strcmp(argv[i], "--input") == 0)))
     {
       printf("arg_input %s, ", argv[i+1]);
-      /* The next argument should be a filename, pass it to arg_file_open() */
+      arg_input = 1;
+      arg_input_argc = i + 1; /* ie. the next arg */
       i++; /* We skip the next argument; it is a filename */
       got_arg = 1;
     }

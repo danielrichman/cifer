@@ -16,26 +16,16 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdinc.h"
+#define INPUT_ERR_FOPEN     -1
+#define INPUT_ERR_ZERO_SIZE -2
+#define INPUT_ERR_MALLOC    -3
 
-int *ch_freq_ar;
+/* Open our input source(s). Returns 0 if all OK,
+ *                                   INPUT_ERR_FOPEN if fopen failed,
+ *                                   INPUT_ERR_ZERO_SIZE if the input file is
+ *                                                       0 bytes long
+ *                                   INPUT_ERR_MALLOC if malloc failed */
+int input_open(int argc, char **argv);
 
-int main(int argc, char **argv)
-{
-  if ((arg_parse(argc, argv)) == -1) /* Bad argument(s) */
-  {
-    printf("Bad argument(s), exiting!\n");
-    return 0;
-  }
-  
-  input_open(arg_input_argc, argv);
-  exit(0);
-    
-  ch_freq_ar = ch_freq(intext, intext_size);
-  print_freq(ch_freq_ar, 26);
-  
-  crack_vigenere(intext, intext_size);
-
-  return 0;
-} 
-
+/* Counts the size of infile. Returns the size (in bytes) */
+int input_file_size(FILE *infile);
