@@ -28,7 +28,10 @@ int main(int argc, char **argv)
     return 0;
   }
   
-  input_open(arg_input_argc, argv);
+  if (arg_input) /* Have we got any input files? */
+  {
+    input_open(arg_input_argc, argv);
+  }
   exit(0);
     
   ch_freq_ar = ch_freq(intext, intext_size);
