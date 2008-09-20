@@ -21,18 +21,37 @@
 void crack_affine(char *text, int text_size)
 {
   int a, b, i, j;
-  digram  digrams[1];
+  digram  digrams[10];
   trigram trigrams[1];
 
   /* Count digrams & trigrams */
-  count_digrams(text, text_size, digrams, 1);
+  count_digrams(text, text_size, digrams, 10);
   count_trigrams(text, text_size, trigrams, 1);
 
+  /* See if we can find the right digram, just to double check */
+  j = 0;
+
+  for (i = 0; i < 10; i++)
+  {
+    if (digrams[i].digram_ch1 == trigrams[0].trigram_ch1 &&
+        digrams[i].digram_ch2 == trigrams[0].trigram_ch2)
+    {
+      j = i;
+    }
+  }
+
   /* Make sure that the first match for each is TH and THE */
-  if (digrams[0].digram_ch1 != trigrams[0].trigram_ch1 || 
-      digrams[0].digram_ch2 != trigrams[0].trigram_ch2)
+  if (digrams[j].digram_ch1 != trigrams[0].trigram_ch1 || 
+      digrams[j].digram_ch2 != trigrams[0].trigram_ch2)
   {
     printf("\ncrack_affine: Ambiguous failure: Unable to find THE\n");
+    printf("Affine best digram %c%c: %i, trigram %c%c%c: %i.\n",
+          NUMCHAR(digrams[j].digram_ch1), NUMCHAR(digrams[j].digram_ch2),
+          digrams[j].digram_value,
+          NUMCHAR(trigrams[0].trigram_ch1), NUMCHAR(trigrams[0].trigram_ch2),
+          NUMCHAR(trigrams[0].trigram_ch3),
+          trigrams[0].trigram_value);
+
     return;
   }
 
@@ -40,20 +59,20 @@ void crack_affine(char *text, int text_size)
    * plaintext H is 7. Unknowns are a and b */
   /* 19a + b = x      7a + b = y */
 
-  /* CTEXT for T is in digrams[0].digram_ch1 as a CHARNUM */
-  /* CTEXT for H is in digrams[0].digram_ch2 as a CHARNUM */
+  /* CTEXT for T is in digrams[j].digram_ch1 as a CHARNUM */
+  /* CTEXT for H is in digrams[j].digram_ch2 as a CHARNUM */
 
   printf("Affine best digram %c%c: %i, trigram %c%c%c: %i, let TH == %c%c\n",
-        NUMCHAR(digrams[0].digram_ch1), NUMCHAR(digrams[0].digram_ch2),
-        digrams[0].digram_value,
+        NUMCHAR(digrams[j].digram_ch1), NUMCHAR(digrams[j].digram_ch2),
+        digrams[j].digram_value,
         NUMCHAR(trigrams[0].trigram_ch1), NUMCHAR(trigrams[0].trigram_ch2),
         NUMCHAR(trigrams[0].trigram_ch3), 
         trigrams[0].trigram_value,
-        ALPHA_TOUPPER(NUMCHAR(digrams[0].digram_ch1)), 
-        ALPHA_TOUPPER(NUMCHAR(digrams[0].digram_ch2)) );
+        ALPHA_TOUPPER(NUMCHAR(digrams[j].digram_ch1)), 
+        ALPHA_TOUPPER(NUMCHAR(digrams[j].digram_ch2)) );
 
-  affine_solve(digrams[0].digram_ch1, CHARNUM('T'), 
-               digrams[0].digram_ch2, CHARNUM('H'), 
+  affine_solve(digrams[j].digram_ch1, CHARNUM('T'), 
+               digrams[j].digram_ch2, CHARNUM('H'), 
                &a, &b);
 
   /* Fancy way of decoding: find the mod mul. inverse */
