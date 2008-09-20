@@ -28,7 +28,7 @@ cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
          src/interface.c src/input.c src/main.c src/utility.c src/vigenere.c \
          src/action.c src/affine.c
 
-stdinc = src/stdinc.h
+stdinc = src/stdinc.h  src/macros.h  src/settings.h
 
 cifer : $(objects) dict
 	gcc -Wall -o cifer $(objects)
