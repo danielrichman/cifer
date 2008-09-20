@@ -48,10 +48,12 @@
 #include "utility.i"
 #undef INSERTION_DEFINE
 
-int modular_multiplicative_inverse(int a, int b)
+/* a = number; b = modular */
+int modular_multiplicative_inverse(int a, int mbase)
 {
-  int x, y, temp, quotient, lastx, lasty;
+  int b, x, y, temp, quotient, lastx, lasty;
 
+  b = mbase;
   x = 0;     y = 1;
   lastx = 1; lasty = 0;
 
@@ -71,10 +73,7 @@ int modular_multiplicative_inverse(int a, int b)
     lasty = temp;
   }
 
-  if (lasty < 0) return lasty;
-  if (lastx < 0) return lastx;
-
-  return 0; /* Fail */
+  return modn(lastx, mbase);
 }
 
 int gcd(int a, int b)
@@ -86,7 +85,7 @@ int gcd(int a, int b)
 /* http://en.wikipedia.org/wiki/Method_of_successive_substitution */
 /* For any equation ax + b = c (mod d) */
 
-void modular_sucessive_substitution(int &result_x, &result_mod,
+void modular_sucessive_substitution(int *result_x, int *result_mod,
            int eq1_xcoeff, int eq1_coeff, int eq1_mod, int eq1_result,
            int eq2_xcoeff, int eq2_coeff, int eq2_mod, int eq2_result)
 {
@@ -96,14 +95,6 @@ void modular_sucessive_substitution(int &result_x, &result_mod,
   *result_x = 0;
   *result_mod = 0;
 
-  /* modular arithmetic permits subtraction from both sides */
-  eq1_result -= eq1_coeff;
-  eq2_result -= eq2_coeff;
-
-  /* fix the now possibly damaged results with modn */
-  eq1_result = modn(eq1_result, eq1_mod);
-  eq2_result = modn(eq2_result, eq2_mod);
-
   /* This is an expanded version of the below comments. enjoy! */
 
   p = modn(eq1_result - eq1_coeff, eq1_mod);
@@ -112,8 +103,8 @@ void modular_sucessive_substitution(int &result_x, &result_mod,
   o = gcd(eq2_xcoeff, gcd(r, eq2_mod));
   w = eq2_mod / o;
   v = (modular_multiplicative_inverse(eq2_xcoeff / o, w) * r) - 
-      (modular_multiplicative_inverse(eq1_xcoeff / n, eq1_mod / n) * p)
-  u = gcd(eq1_mod, v, w);
+      (modular_multiplicative_inverse(eq1_xcoeff / n, eq1_mod / n) * p);
+  u = gcd(eq1_mod, gcd(v, w));
 
   *result_x   = (modular_multiplicative_inverse(eq1_xcoeff/n,eq1_mod/n)*p) + 
                 ((eq1_mod * (v/u)) * 
