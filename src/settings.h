@@ -28,10 +28,11 @@
 #define OPTIMAL_DELTA_IC 1.73
 
 /* TODO: these figures need testing & revising */
-#define RANDSUB_CUTOFF_MAX  ((text_size / 7) + 1)    /* About 142? */
-#define RANDSUB_CUTOFF_INC  1//(text_size / 30)
+#define RANDSUB_CUTOFF          0
 
 #define RANDSUB_HINT_DIGRAM_TH  2    /* as a text_size / x */
+#define RANDSUB_HINT_DIGRAM_IT  5    /* as a text_size / x */
+#define RANDSUB_HINT_DIGRAM_IN  9    /* as a text_size / x */
 #define RANDSUB_HINT_DIGRAM     10
 
 #define RANDSUB_HINT_FREQ1      7
