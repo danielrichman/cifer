@@ -35,26 +35,103 @@ void create_identity_frequency_graph(int frequency_graph[], int text_size)
   }
 }
 
-int *ch_freq(char *text, int input_size)
+/* Counts letters 0 -> 26 into the tgt array as [key == letter] => count */
+/* Does not support jump/column implementation like frequency_analysis does */
+void count_freq(char *text, int input_size, int tgt[])
 {
-  printf("Doing letter frequency count...");
-  
   int i;
-  int *ch_freq;
 
-  if ((ch_freq = malloc(26)) == NULL)
-  {
-    printf("\nMalloc failed! Exiting!\n");
-    exit(1);
-  }
-
-  for (i = 0; i < 26; i++) *(ch_freq + i) = 0;
-
-  for (i = 0; i < input_size; i++)
-  {
-    ch_freq[CHARNUM(*(text + i))] += 1;
-  }
-
-  printf("done\n");
-  return ch_freq;
+  for (i = 0; i < 26; i++)          tgt = 0;
+  for (i = 0; i < input_size; i++)  tgt[ CHARNUM(*(text + i)) ]++;
 }
+
+/* Counts digrams, sorts them, and loads the top `tgt_size` into tgt[] */
+void count_digrams(char *text, int input_size, digram tgt[], int tgt_size)
+{
+  int i, h, j, k, l;
+  char ch1, ch2;
+  digram digrams[26 * 26];
+
+  /* Setup */
+  h = 0;
+  for (i = 0; i < 26; i++) for (j = 0; j < 26; j++) 
+  {
+    digrams[h].digram_ch1 = i;
+    digrams[h].digram_ch2 = j;
+    h++;
+  }
+
+  /* Count */
+  h = input_size - 1;
+  for (i = 0; i < h; i++)
+  {
+    ch1 = *(text + i);
+    ch2 = *(text + i + 1);
+
+    j = CHARNUM(ch1);
+    k = CHARNUM(ch2);
+    l = (j * 26) + k;
+
+    digrams[l].digram_value ++;
+  }
+
+  /* Sort */
+  insertion_digram_sort(digrams, 26 * 26);
+
+  /* Grab the top few */
+  for (i = 0; i < tgt_size; i++)
+  {
+    h = (26 * 26) - 1 - i;
+    tgt[i] = digrams[h];
+  }
+
+  /* Done. */
+}
+
+void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size)
+{
+  int i, h, j, k, l, m;
+  char ch1, ch2, ch3;
+  trigram trigrams[26 * 26 * 26];   /* You know something's wrong when one stack
+                                   * frame is 70KB. =P */
+
+  /* Setup */
+  h = 0;
+  for (i = 0; i < 26; i++) for (j = 0; j < 26; j++) for (k = 0; k < 26; k++)
+  {
+    trigrams[h].trigram_ch1 = i;
+    trigrams[h].trigram_ch2 = j;
+    trigrams[h].trigram_ch3 = k;
+
+    h++;
+  }
+
+  /* Count */
+  h = input_size - 2;
+  for (i = 0; i < h; i++)
+  {
+    ch1 = *(text + i);
+    ch2 = *(text + i + 1);
+    ch3 = *(text + i + 2);
+
+    j = CHARNUM(ch1);
+    k = CHARNUM(ch2);
+    l = CHARNUM(ch3);
+    m = (i * (26 * 26)) + (j * 26) + l;
+
+    trigrams[m].trigram_value ++;
+  }
+
+  /* Sort */
+  insertion_trigram_sort(trigrams, 26 * 26);
+
+  /* Grab the top few */
+  for (i = 0; i < tgt_size; i++)
+  {
+    h = (26 * 26) - 1 - i;
+    tgt[i] = trigrams[h];
+  }
+
+  /* Done. */
+}
+
