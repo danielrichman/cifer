@@ -83,7 +83,7 @@ void crack_affine(char *text, int text_size)
   for (i = 0; i < text_size; i++)
   {
     /* Subtract b, multiply by the inverse and mod */
-    *(text + i) = NUMCHAR( MMIM_POS(CHARNUM(*(text + i)) - b, j, 26) );
+    *(text + i) = NUMCHAR( modn((CHARNUM(*(text + i)) - b) * j, 26) );
   }
 
   /* Print the results */

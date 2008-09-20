@@ -72,8 +72,8 @@ void caesar_cipher_enc(char *text, int text_size, int *shift, int shift_size)
 
   for (i = 0; i < text_size; i++)
   {
-    *(text + i) = NUMCHAR( ( CHARNUM( *(text + i) ) +
-                             *(shift + (i % shift_size)) ) % 26);
+    *(text + i) = NUMCHAR( modn( CHARNUM( *(text + i) ) +
+                                 *(shift + modp(i, shift_size)), 26) );
   }
 }
 
@@ -83,8 +83,8 @@ void caesar_cipher_dec(char *text, int text_size, int *shift, int shift_size)
 
   for (i = 0; i < text_size; i++)
   {
-    *(text + i) = NUMCHAR( ( CHARNUM( *(text + i) ) -
-                             *(shift + (i % shift_size)) + 26 ) % 26);
+    *(text + i) = NUMCHAR( modn( CHARNUM( *(text + i) ) -
+                             *(shift + modp(i, shift_size)), 26) );
   }
 }
 
