@@ -24,6 +24,7 @@ extern int arg_aff;         /* Do an affine crack */
 extern int arg_gcd;         /* Do a GCD Calculation */
 extern int arg_gcd_1;
 extern int arg_gcd_2;
+extern int arg_pct;         /* Print trigram frequencies */
 
 /* Parse cmd-line args into variables. Returns 0 if OK, -1 if error */
 int arg_parse(int argc, char **argv);

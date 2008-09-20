@@ -18,6 +18,8 @@
 
 void cc_setup(int argc, char **argv);
 
+void print_trigrams(trigram input[], int size);
+
 /* Format and print letter frequencies. Takes an int array[size] of
  * frequencies */
 void print_freq(int freq[]);
@@ -27,4 +29,3 @@ void print_char_table(void);
 
 extern char *intext;
 extern int intext_size;
-

@@ -35,8 +35,8 @@
 #include "macros.h"
 
 #include "dictionary.h"
-#include "interface.h"
 #include "frequency_data.h"
+#include "interface.h"
 #include "vigenere.h"
 #include "affine.h"
 #include "ciphers.h"

@@ -133,7 +133,8 @@ void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size)
     h = (26 * 26) - 1 - i;
     tgt[i] = trigrams[h];
   }
-
-  /* Done. */
+  
+  /* TEMP */
+  print_trigrams(trigrams, tgt_size);
 }
 
