@@ -38,7 +38,6 @@
 #include "interface.h"
 #include "frequency_data.h"
 #include "vigenere.h"
-#include "random_substitution.h"
 #include "ciphers.h"
 #include "utility.h"
 #include "arg.h"

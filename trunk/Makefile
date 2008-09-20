@@ -21,12 +21,12 @@ CC=gcc
 CFLAGS=-Wall
 
 objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
-          src/interface.o src/input.o src/main.o src/random_substitution.o \
-          src/utility.o src/vigenere.o src/action.o
+          src/interface.o src/input.o src/main.o src/utility.o src/vigenere.o \
+          src/action.o
 
 cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
-         src/interface.c src/input.c src/main.c src/random_substitution.c \
-         src/utility.c src/vigenere.c src/action.c
+         src/interface.c src/input.c src/main.c src/utility.c src/vigenere.c \
+         src/action.c
 
 stdinc = src/stdinc.h
 
@@ -47,7 +47,6 @@ src/frequency_data.o      : src/frequency_data.h      $(stdinc)
 src/interface.o           : src/interface.h           $(stdinc)
 src/input.o               : src/input.h               $(stdinc)
 src/main.o                :                           $(stdinc)
-src/random_substitution.o : src/random_substitution.h $(stdinc)
 src/utility.o             : src/utility.h             $(stdinc) 
 src/vigenere.o            : src/vigenere.h            $(stdinc)
 
