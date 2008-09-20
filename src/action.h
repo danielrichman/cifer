@@ -18,4 +18,4 @@
 
 /* Controls the flow of the program. Figures out what needs to be called and
  * when. */
-void action_do(void);
+void action_do(char **argv);

@@ -45,7 +45,7 @@ void count_freq(char *text, int input_size, int tgt[])
   
   int i;
 
-  for (i = 0; i < 26; i++)          tgt = 0;
+  for (i = 0; i < 26; i++)          tgt[i] = 0;
   for (i = 0; i < input_size; i++)  tgt[ CHARNUM(*(text + i)) ]++;
 }
 

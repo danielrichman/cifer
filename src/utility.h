@@ -20,3 +20,9 @@
 #include "utility.i"
 #undef INSERTION_DEFINE
 
+#define MMIM(enc, inv, mod)      (((enc) * (inv)) % (mod))
+#define MMIM_POS(enc, inv, mod)  (MMIM((enc), (inv), (mod)) < 0 ?   \
+                                  MMIM((enc), (inv), (mod)) + (mod) : \
+                                  MMIM((enc), (inv), (mod))  )        
+
+int modular_multiplicative_inverse(int a, int b);

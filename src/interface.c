@@ -27,42 +27,40 @@ void cc_setup(int argc, char **argv)
   load_dict();
 }
 
-void print_freq(int *freq, int size)
+void print_freq(int freq[])
 {
   int i;
-  int j = 0;
-  
-  printf("Printing letter frequency count... \n");
-  
-  for (i = 0; i < size; i++)
-  {
-    printf("%c:%d ", NUMCHAR(i), *(freq + i));
-    j++;
-    if (j == 5)
-    {
-      printf("\n");
-      j = 0;
-    }
-  }
+ 
+  /* TODO: Some nice tabling thing please? sometimes the counts overflow */ 
+
+  printf("Char | CHARNUM | Frequency\n\n");
+
+  printf("C|");
+  for (i = 0; i < 26; i++) printf("%2c|", NUMCHAR(i));
   printf("\n");
+
+  printf("N|");
+  for (i = 0; i < 26; i++) printf("%2i|", i);
+  printf("\n");
+
+  printf("F|");
+  for (i = 0; i < 26; i++) printf("%2i|", freq[i]);
+  printf("\n\n");
+
 }
 
 void print_char_table(void)
 {
   int i;
-  int j = 0;
-  
-  printf("Printing char -> number table... \n");
-  
-  for (i = 0; i < 26; i++)
-  {
-    printf("%c:%d ", NUMCHAR(i), i + 1);
-    j++;
-    if (j == 5)
-    {
-      printf("\n");
-      j = 0;
-    }
-  }
+
+  printf("Char | CHARNUM\n\n"); 
+
+  printf("C|");
+  for (i = 0; i < 26; i++) printf("%2c|", NUMCHAR(i));
   printf("\n");
+
+  printf("N|");
+  for (i = 0; i < 26; i++) printf("%2i|", i);
+  printf("\n\n");
+ 
 }
