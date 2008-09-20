@@ -85,7 +85,7 @@ int gcd(int a, int b)
 /* http://en.wikipedia.org/wiki/Method_of_successive_substitution */
 /* For any equation ax + b = c (mod d) */
 
-void modular_sucessive_substitution(int *result_x, int *result_mod,
+void modular_successive_substitution(int *result_x, int *result_mod,
            int eq1_xcoeff, int eq1_coeff, int eq1_mod, int eq1_result,
            int eq2_xcoeff, int eq2_coeff, int eq2_mod, int eq2_result)
 {
