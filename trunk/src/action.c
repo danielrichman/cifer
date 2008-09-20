@@ -17,8 +17,9 @@
 */
 
 #include "stdinc.h"
-void action_do(char **argv)     /* TODO: see main.c */
+void action_do()
 {
+  int i;
   int frequency_graph[26];
   /* digram digrams[5] trigram trigrams[5] (Only get top five) */
 
@@ -26,7 +27,12 @@ void action_do(char **argv)     /* TODO: see main.c */
  
   if (arg_input) /* Have we got any input files? */
   {
-    input_open(arg_input_argc, argv);
+    i = input_open(arg_input);
+    if (i != 0)
+    {
+      printf("input_open failed, returned %i; exiting\n", i);
+      exit(1);
+    }
   }
  
   /* Let's start with the easy stuff */
@@ -37,8 +43,14 @@ void action_do(char **argv)     /* TODO: see main.c */
     print_char_table();
   }
   
+  if (arg_gcd) /* Do a GCD calculation */
+  {
+    printf("GCD of %i and %i: %i\n\n", arg_gcd_1, arg_gcd_2, 
+                              gcd(arg_gcd_1, arg_gcd_2) );
+  }
+
   if (arg_freq) /* Do (and print) letter frequency count */
-  { /* TODO: DON'T FREQCOUNT WITHOUT AN INPUT FILE! */
+  {
     printf("Letter frequency count requested... doing...\n");
     count_freq(intext, intext_size, frequency_graph);
     print_freq(frequency_graph);
@@ -51,6 +63,12 @@ void action_do(char **argv)     /* TODO: see main.c */
     printf("Vigenere cipher crack requested... doing...\n");
     crack_vigenere(intext, intext_size);
   }
-  
+
+  if (arg_aff) /* Crack Affine */
+  {
+    printf("Affine cipher crack requested... doing... \n");
+    crack_affine(intext, intext_size);
+  }
+
   printf("Finished doing requested actions.\n");
 }

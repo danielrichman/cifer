@@ -25,4 +25,7 @@
                                   MMIM((enc), (inv), (mod)) + (mod) : \
                                   MMIM((enc), (inv), (mod))  )        
 
+#define IS_COPRIME(a, b)         (gcd((a), (b)) == 1 ? 1 : 0)
+
 int modular_multiplicative_inverse(int a, int b);
+int gcd(int a, int b);

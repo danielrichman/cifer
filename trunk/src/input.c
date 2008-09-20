@@ -21,7 +21,7 @@
 char *intext;
 int intext_size;
 
-int input_open(int argc, char **argv)
+int input_open(char *filename)
 {
   FILE *infile;
   int i;
@@ -29,12 +29,12 @@ int input_open(int argc, char **argv)
   
   printf("Opening input source(s)... ");
   
-  if ((infile = fopen(argv[argc], "r")) == NULL)
+  if ((infile = fopen(filename, "r")) == NULL)
   {
     printf("failed, fopen returned NULL!\n");
     return INPUT_ERR_FOPEN;
   }
-  printf("opened %s, ", argv[argc]);
+  printf("opened %s, ", filename);
   
   /* Find out how big the file is */
   if ((intext_size = input_file_size(infile)) == 0)

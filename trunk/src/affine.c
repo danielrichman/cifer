@@ -20,7 +20,7 @@
 
 void crack_affine(char *text, int text_size)
 {
-  int a, b, i, j, m, c;
+  int a, b, i, j;
   digram  digrams[1];
   trigram trigrams[1];
 
@@ -42,13 +42,10 @@ void crack_affine(char *text, int text_size)
 
   /* CTEXT for T is in digrams[0].digram_ch1 as a CHARNUM */
   /* CTEXT for H is in digrams[0].digram_ch2 as a CHARNUM */
-
-  /* TODO HERE: solve the equation and put teh results of A and B into
-   * the variables M and C */
   
-  affine_solve(CHARNUM(digrams[0].digram_ch1), CHARNUM("T"), 
-               CHARNUM(digrams[0].digram_ch2), CHARNUM("H"), 
-               m, c);
+  affine_solve(CHARNUM(digrams[0].digram_ch1), CHARNUM('T'), 
+               CHARNUM(digrams[0].digram_ch2), CHARNUM('H'), 
+               &a, &b);
 
   /* END OF TODO */
 
@@ -64,11 +61,22 @@ void crack_affine(char *text, int text_size)
 
 int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
 {
-  printf("Solving affine equation... cl_1 = %d, pl_1 = %d, cl_2 = %d, pl_2 = %d, ", cl_1, pl_1, cl_2, pl_2);
+  printf("Solving affine equation... CL => PL: %d => %d (%c), %d => %d(%c)\n",
+                        cl_1, pl_1, NUMCHAR(pl_1), cl_2, pl_2, NUMCHAR(pl_2));
   
   *a = ((cl_1 - cl_2) % 26) / (pl_1 - pl_2);
-  
   *b = ((cl_1 % 26) - (*a * pl_1)) / *a;
-  
-  return 0;
+
+  printf("             Affine solution: a = %i, b = %i\n", *a, *b);
+
+  if (IS_COPRIME(*a, 26))
+  {
+    printf("             Affine solution seems OK (a coprime 26)\n");
+    return 0;
+  }
+  else
+  {
+    printf("             Affine solution might be bad (a not coprime 26)\n");
+    return -1;
+  }
 }

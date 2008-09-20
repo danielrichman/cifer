@@ -119,7 +119,7 @@ void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size)
     j = CHARNUM(ch1);
     k = CHARNUM(ch2);
     l = CHARNUM(ch3);
-    m = (i * (26 * 26)) + (j * 26) + l;
+    m = (j * (26 * 26)) + (k * 26) + l;
 
     trigrams[m].trigram_value ++;
   }

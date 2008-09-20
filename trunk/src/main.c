@@ -29,8 +29,7 @@ int main(int argc, char **argv)
   }
   
   load_dict();
-  action_do(argv);  /* TODO: Make arg_input_argc into a pointer to the
-                         input string/chars instead of this ugly hack */
+  action_do();
 
   return 0;
 } 
