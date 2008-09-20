@@ -62,6 +62,7 @@ void count_digrams(char *text, int input_size, digram tgt[], int tgt_size)
   {
     digrams[h].digram_ch1 = i;
     digrams[h].digram_ch2 = j;
+    digrams[h].digram_value = 0;
     h++;
   }
 
@@ -95,7 +96,7 @@ void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size)
   int i, h, j, k, l, m;
   char ch1, ch2, ch3;
   trigram trigrams[26 * 26 * 26];   /* You know something's wrong when one stack
-                                   * frame is 70KB. =P */
+                                     * frame is 70KB. =P */
 
   /* Setup */
   h = 0;
@@ -104,7 +105,7 @@ void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size)
     trigrams[h].trigram_ch1 = i;
     trigrams[h].trigram_ch2 = j;
     trigrams[h].trigram_ch3 = k;
-
+    trigrams[h].trigram_value = 0;
     h++;
   }
 
@@ -125,16 +126,13 @@ void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size)
   }
 
   /* Sort */
-  insertion_trigram_sort(trigrams, 26 * 26);
+  insertion_trigram_sort(trigrams, 26 * 26 * 26);
 
   /* Grab the top few */
   for (i = 0; i < tgt_size; i++)
   {
-    h = (26 * 26) - 1 - i;
+    h = (26 * 26 * 26) - 1 - i;
     tgt[i] = trigrams[h];
   }
-  
-  /* TEMP */
-  print_trigrams(trigrams, tgt_size);
 }
 

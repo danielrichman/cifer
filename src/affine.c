@@ -42,30 +42,49 @@ void crack_affine(char *text, int text_size)
 
   /* CTEXT for T is in digrams[0].digram_ch1 as a CHARNUM */
   /* CTEXT for H is in digrams[0].digram_ch2 as a CHARNUM */
-  
-  affine_solve(CHARNUM(digrams[0].digram_ch1), CHARNUM('T'), 
-               CHARNUM(digrams[0].digram_ch2), CHARNUM('H'), 
-               &a, &b);
 
-  /* END OF TODO */
+  printf("Affine best digram %c%c: %i, trigram %c%c%c: %i, let TH == %c%c\n",
+        NUMCHAR(digrams[0].digram_ch1), NUMCHAR(digrams[0].digram_ch2),
+        digrams[0].digram_value,
+        NUMCHAR(trigrams[0].trigram_ch1), NUMCHAR(trigrams[0].trigram_ch2),
+        NUMCHAR(trigrams[0].trigram_ch3), 
+        trigrams[0].trigram_value,
+        ALPHA_TOUPPER(NUMCHAR(digrams[0].digram_ch1)), 
+        ALPHA_TOUPPER(NUMCHAR(digrams[0].digram_ch2)) );
+
+  affine_solve(digrams[0].digram_ch1, CHARNUM('T'), 
+               digrams[0].digram_ch2, CHARNUM('H'), 
+               &a, &b);
 
   /* Fancy way of decoding: find the mod mul. inverse */
   j = modular_multiplicative_inverse(a, 26);
+
+  printf("Affine: Finding modular multiplicative inverse(a, 26) = %i;\n", j);
 
   for (i = 0; i < text_size; i++)
   {
     /* Subtract b, multiply by the inverse and mod */
     *(text + i) = NUMCHAR( MMIM_POS(CHARNUM(*(text + i)) - b, j, 26) );
   }
+
+  /* Print the results */
+  printf("Affine: Deciphered Plaintext (hopefully):\n\n");
+  printf("%*s\n\n", text_size, text);
 }
 
 int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
 {
-  printf("Solving affine equation... CL => PL: %d => %d (%c), %d => %d(%c)\n",
+  printf("Solving affine equation: CL => PL: %d => %d (%c), %d => %d (%c)\n",
                         cl_1, pl_1, NUMCHAR(pl_1), cl_2, pl_2, NUMCHAR(pl_2));
   
   *a = ((cl_1 - cl_2) % 26) / (pl_1 - pl_2);
   *b = ((cl_1 % 26) - (*a * pl_1)) / *a;
+
+  *a += 52;
+  *b += 52;
+
+  *a %= 26;
+  *b %= 26;
 
   printf("             Affine solution: a = %i, b = %i\n", *a, *b);
 
