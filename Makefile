@@ -22,11 +22,11 @@ CFLAGS=-Wall
 
 objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/input.o src/main.o src/utility.o src/vigenere.o \
-          src/action.o
+          src/action.o src/affine.o
 
 cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
          src/interface.c src/input.c src/main.c src/utility.c src/vigenere.c \
-         src/action.c
+         src/action.c arc/affine.c
 
 stdinc = src/stdinc.h
 
@@ -39,16 +39,17 @@ cifer-debug : dict
 cifer-opt : dict
 	gcc -Wall -O3 -o cifer-opt $(cfiles)
 
-src/arg.o                 : src/arg.h                 $(stdinc)
-src/action.o              : src/action.h              $(stdinc)
-src/ciphers.o             : src/ciphers.h             $(stdinc)
-src/dictionary.o          : src/dictionary.h          $(stdinc)
-src/frequency_data.o      : src/frequency_data.h      $(stdinc)
-src/interface.o           : src/interface.h           $(stdinc)
-src/input.o               : src/input.h               $(stdinc)
-src/main.o                :                           $(stdinc)
-src/utility.o             : src/utility.h             $(stdinc) 
-src/vigenere.o            : src/vigenere.h            $(stdinc)
+src/arg.o                 : src/arg.h                   $(stdinc)
+src/action.o              : src/action.h                $(stdinc)
+src/affine.o              : src/affine.h                $(stdinc)
+src/ciphers.o             : src/ciphers.h               $(stdinc)
+src/dictionary.o          : src/dictionary.h            $(stdinc)
+src/frequency_data.o      : src/frequency_data.h        $(stdinc)
+src/interface.o           : src/interface.h             $(stdinc)
+src/input.o               : src/input.h                 $(stdinc)
+src/main.o                :                             $(stdinc)
+src/utility.o             : src/utility.h src/utility.i $(stdinc) 
+src/vigenere.o            : src/vigenere.h              $(stdinc)
 
 .PHONY : clean
 clean :

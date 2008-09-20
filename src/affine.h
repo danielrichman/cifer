@@ -15,23 +15,3 @@
     You should have received a copy of the GNU General Public License
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-typedef struct {
-  int digram_ch1;
-  int digram_ch2;
-  int digram_value;
-} digram;
-
-typedef struct {
-  int trigram_ch1;
-  int trigram_ch2;
-  int trigram_ch3;
-  int trigram_value;
-} trigram;
-
-void create_identity_frequency_graph(int frequency_graph[], int text_size);
-
-/* Returns an int array[26] with letter frequencies of input text */
-int *ch_freq(char *text, int input_size);
-
-
