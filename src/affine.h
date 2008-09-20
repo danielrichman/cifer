@@ -15,3 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/* Given two ptext -> ctext mappings (cl_1/2 -> pl_1/2), will give values for
+ * a and b in equation: x -> ax + b (mod 26) */
+int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b);
