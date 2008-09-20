@@ -29,22 +29,38 @@ void cc_setup(int argc, char **argv)
 
 void print_freq(int freq[])
 {
-  int i;
- 
-  /* TODO: Some nice tabling thing please? sometimes the counts overflow */ 
+  int i, m;
+  int width[26];
 
   printf("Char | CHARNUM | Frequency\n\n");
 
+  m = 0;
+  for (i = 0; i < 26; i++)
+  {
+    if (freq[i] < 10 && i < 10) width[i] = 1;
+    else if (freq[i] < 100)     width[i] = 2;
+    else if (freq[i] < 1000)    width[i] = 3;
+    else                        width[i] = 4;
+
+    if (width[i] > m)           m = width[i];
+  }
+
+  if (m <= 2)
+  {
+    /* Then we can afford to have them all at 2. It looks nicer */
+    for (i = 0; i < 26; i++)    width[i] = 2;
+  }
+
   printf("C|");
-  for (i = 0; i < 26; i++) printf("%2c|", NUMCHAR(i));
+  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(i));
   printf("\n");
 
   printf("N|");
-  for (i = 0; i < 26; i++) printf("%2i|", i);
+  for (i = 0; i < 26; i++) printf("%*i|", width[i], i);
   printf("\n");
 
   printf("F|");
-  for (i = 0; i < 26; i++) printf("%2i|", freq[i]);
+  for (i = 0; i < 26; i++) printf("%*i|", width[i], freq[i]);
   printf("\n\n");
 
 }
