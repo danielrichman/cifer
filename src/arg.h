@@ -20,6 +20,7 @@ extern int arg_input;
 extern int arg_input_argc;
 extern int arg_freq;
 extern int arg_pct;
+extern int arg_vig;
 
 /* Parse cmd-line args into variables. Returns 0 if OK, -1 if error */
 int arg_parse(int argc, char **argv);
