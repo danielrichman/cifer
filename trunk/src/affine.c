@@ -20,7 +20,7 @@
 
 void crack_affine(char *text, int text_size)
 {
-  int a, b, i, j;
+  int a, b, i, j, m, c;
   digram  digrams[1];
   trigram trigrams[1];
 
@@ -45,6 +45,10 @@ void crack_affine(char *text, int text_size)
 
   /* TODO HERE: solve the equation and put teh results of A and B into
    * the variables M and C */
+  
+  affine_solve(CHARNUM(digrams[0].digram_ch1), CHARNUM("T"), 
+               CHARNUM(digrams[0].digram_ch2), CHARNUM("H"), 
+               m, c);
 
   /* END OF TODO */
 
@@ -58,3 +62,13 @@ void crack_affine(char *text, int text_size)
   }
 }
 
+int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
+{
+  printf("Solving affine equation... cl_1 = %d, pl_1 = %d, cl_2 = %d, pl_2 = %d, ", cl_1, pl_1, cl_2, pl_2);
+  
+  *a = ((cl_1 - cl_2) % 26) / (pl_1 - pl_2);
+  
+  *b = ((cl_1 % 26) - (*a * pl_1)) / *a;
+  
+  return 0;
+}
