@@ -34,4 +34,7 @@ typedef struct {
 void create_identity_frequency_graph(int frequency_graph[], int text_size);
 
 /* Returns an int array[26] with letter frequencies of input text */
-int *ch_freq(char *text, int input_size);
+void count_freq(char *text, int input_size, int tgt[]);
+void count_digrams(char *text, int input_size, digram tgt[], int tgt_size);
+void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size);
+

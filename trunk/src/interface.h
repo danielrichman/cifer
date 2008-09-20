@@ -20,7 +20,7 @@ void cc_setup(int argc, char **argv);
 
 /* Format and print letter frequencies. Takes an int array[size] of
  * frequencies */
-void print_freq(int *freq, int size);
+void print_freq(int freq[]);
 
 /* Print a table of letters mapped to their numeric equivalents */
 void print_char_table(void);

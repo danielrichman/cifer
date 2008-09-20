@@ -17,10 +17,18 @@
 */
 
 #include "stdinc.h"
-void action_do(void)
+void action_do(char **argv)     /* TODO: see main.c */
 {
+  int frequency_graph[26];
+  /* digram digrams[5] trigram trigrams[5] (Only get top five) */
+
   printf("Doing requested action(s)...\n");
-  
+ 
+  if (arg_input) /* Have we got any input files? */
+  {
+    input_open(arg_input_argc, argv);
+  }
+ 
   /* Let's start with the easy stuff */
   
   if (arg_pct) /* Print char -> number table */
@@ -30,9 +38,10 @@ void action_do(void)
   }
   
   if (arg_freq) /* Do (and print) letter frequency count */
-  {
+  { /* TODO: DON'T FREQCOUNT WITHOUT AN INPUT FILE! */
     printf("Letter frequency count requested... doing...\n");
-    print_freq(ch_freq(intext, intext_size), 26);
+    count_freq(intext, intext_size, frequency_graph);
+    print_freq(frequency_graph);
   }
   
   /* Ciphers */

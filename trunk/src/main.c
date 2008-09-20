@@ -28,18 +28,9 @@ int main(int argc, char **argv)
     return 0;
   }
   
-  if (arg_input) /* Have we got any input files? */
-  {
-    input_open(arg_input_argc, argv);
-  }
-
-  /* TODO: access action.c now to take over. */
-
-  /* Temporary: some diagnostics & cracking info */
-
   load_dict();
-  crack_vigenere(intext, intext_size);
-  printf("\n\n%*s\n\n", intext_size, intext);
+  action_do(argv);  /* TODO: Make arg_input_argc into a pointer to the
+                         input string/chars instead of this ugly hack */
 
   return 0;
 } 

@@ -48,3 +48,32 @@
 #include "utility.i"
 #undef INSERTION_DEFINE
 
+int modular_multiplicative_inverse(int a, int b)
+{
+  int x, y, temp, quotient, lastx, lasty;
+
+  x = 0;     y = 1;
+  lastx = 1; lasty = 0;
+
+  while (b != 0)
+  {
+    temp = b;
+    quotient = a / b;
+    b = a % b;
+    a = temp;
+
+    temp = x;
+    x = lastx - (quotient * x);
+    lastx = temp;
+
+    temp = y;
+    y = lasty - (quotient * y);
+    lasty = temp;
+  }
+
+  if (lasty < 0) return lasty;
+  if (lastx < 0) return lastx;
+
+  return 0; /* Fail */
+}
+
