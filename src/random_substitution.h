@@ -21,5 +21,11 @@ typedef struct {
   int digram_value;
 } digram;
 
+typedef struct {
+  int source;
+  int target;
+  int score;
+} hint_sort;
+
 void crack_random_substitution(char *text, int text_size);
 

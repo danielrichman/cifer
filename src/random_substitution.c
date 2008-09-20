@@ -35,12 +35,15 @@ digram_hinting_values dhv[5] = { {19, 7, RANDSUB_HINT_DIGRAM_TH},
 void crack_random_substitution(char *text, int text_size)
 {
   digram digrams[26 * 26];
+  hint_sort hint_sorts[26 * 26];
   int hinting[26][26], temp_hinting[26][26], best_cutoff_temp_hinting[26][26];
-  int i, h, j, k, l, m, n, o, improving;
+  int i, h, j, k, l, m, n, o, p, q, r, s, t, u, improving;
   int best_freq, best_freq_num, best_freq_num2;
-  int best_cutoff, best_cutoff_score;
+  int best_cutoff, best_cutoff_score, overall_match;
   int frequency_graph[26];
   int identity_frequency_graph[26];
+  int translation_array[26];
+  char ch;
 
   /* Setup hinting */
   for (i = 0; i < 26; i++) for (h = 0; h < 26; h++) hinting[i][h] = 0;
@@ -69,8 +72,10 @@ void crack_random_substitution(char *text, int text_size)
   /* Now heavily hint TH as the first, he, in, er, an for the next four */
   for (i = 0; i < 5; i++)  /* Sizeof DHV = 5 */
   {
-    j =  digrams[i].digram_num % 26;
-    h = (digrams[i].digram_num - j) / 26;
+    m = h - i - 1; /* Location of the sorted digram */
+
+    j =  digrams[m].digram_num % 26;
+    h = (digrams[m].digram_num - j) / 26;
     k = text_size / dhv[i].digram_hint;
 
     hinting[h][dhv[i].digram_ch1] += k;
@@ -129,19 +134,68 @@ void crack_random_substitution(char *text, int text_size)
   best_cutoff = 0; best_cutoff_score = 0;
   n = RANDSUB_CUTOFF_MAX;   /* This could be a macro */
   o = RANDSUB_CUTOFF_INC;
+  s = text_size / 26;       /* Used in temp_hinting match increase */
 
   for (k = 0; k < n; k += o)
   {
     /* Zero temporary hinting var */
-    /* Setup a match array */
+    for (i = 0; i < 26; i++) for (j = 0; j < 26; j++) temp_hinting[i][j] = 0;
 
+    improving = 1;
     while (improving)
     {
+      u = overall_match;
+      overall_match = 0;
+
+      /* Setup a match array */
+      for (i = 0; i < 26; i++)  translation_array[i] = -1;
+
+      /* Copy into our sorting struct */
+      for (i = 0; i < 26; i++) for (j = 0; j < 26; j++)
+      {
+        m = (i * 26) + j;
+        hint_sorts[ m ].source = i;
+        hint_sorts[ m ].target = j;
+        hint_sorts[ m ].score = hinting[i][j] + temp_hinting[i][j];
+      }
+
+      /* Sort */
+      insertion_hinting_sort(hint_sorts, 26 * 26);
+
+      /* Now extract the info */
+      m = 26 * 26;
+      for (i = (m - 1); i >= 0; i--)
+      {
+        /* Check if the target is already taken */
+        p = 1;
+        for (j = 0; j < 26; j++) 
+        {
+          if (translation_array[j] == hint_sorts[i].target)
+          {
+            p = 0;
+          }
+        }
+
+        /* Check if the source is taken */
+        if (translation_array[hint_sorts[i].source] != -1)
+        {
+          p = 0;
+        }
+
+        if (p && hint_sorts[i].score > k)
+        {
+          translation_array[hint_sorts[i].source] = hint_sorts[i].target;
+        }
+      }
+
       l = text_size - MIN_WORD_SIZE;
       for (i = 0; i < l; i++)
       {
+        printf("|"); /* Debug */
+        fflush(stdout);
+
         h = min(text_size - i, WORD_BUF_SIZE);
-        for (j = 0; j < h; i++)
+        for (j = 0; j < h; j++)
         {
           /* List of words of this length (j) are in dict_length_pointer[j] */
           /* dict_length_pointer[j] is of length dict_length_pointer_size[j] */
@@ -153,22 +207,118 @@ void crack_random_substitution(char *text, int text_size)
             for (m = 0; m < *(dict_length_pointer_size + j); m++)
             {
               /* see how well it macthes */
+              q = 0;
+
+              for (p = 0; p < j; p++)
+              {
+                if (translation_array[ CHARNUM(*(text + i + p)) ] == 
+                           CHARNUM(*(*(*(dict_length_pointer + j) + m) + p)))
+                {
+                  q++;
+                }
+              }
+
               /* does it reach RANDSUB_LETTER_CUTOFF */
-              /* yes: add to temp_hinting taking into account
-               * match/unkown letter ratio, RANDSUB_MATCH_RATIO_INCREASE 
-               * and this letter's freqency. */
+              if (q >= RANDSUB_MATCH_LETTER_CUTOFF)
+              {
+                for (r = 0; r < j; r++)
+                {
+                  /* Source CHARNUM(*(text + i + r)) */
+                  /* Target CHARNUM(*(*(*(dict_length_pointer + j) + m) + r)) */
+
+                  q = CHARNUM(*(text + i + r));
+                  t = CHARNUM(*(*(*(dict_length_pointer + j) + m) + r));
+
+                  if (translation_array[q] != t)
+                  {
+                    temp_hinting[ q ][ t ] += RANDSUB_MATCH_BASE;
+                  }
+                }
+              }
+
+              overall_match += q;
             }
           }
+        }
+
+        if (overall_match > u)
+        {
+          improving = 1;
+        }
+        else
+        {
+          improving = 0;
         }
       }
     }
 
+    printf("\n%i, %i\n", overall_match, k);
+
     /* record the best */
-    /* copy temp_hinting to best_cutoff_temp_hinting */
+    if (overall_match > best_cutoff_score)
+    {
+      best_cutoff = k;
+      best_cutoff_score = overall_match;
+
+      /* copy temp_hinting to best_cutoff_temp_hinting */
+      for (i = 0; i < 26; i++) for (j = 0; j < 26; j++) 
+            best_cutoff_temp_hinting[i][j] = temp_hinting[i][j];
+    }
   }
 
   /* merge best_cutoff_temp_hinting & hinting via addition */
+  for (i = 0; i < 26; i++) for (j = 0; j < 26; j++)
+        hinting[i][j] += best_cutoff_temp_hinting[i][j];
+
   /* setup the match/letter sub array */
-  /* Do the translation */
+  for (i = 0; i < 26; i++)  translation_array[i] = -1;
+
+  /* Copy into our sorting struct */
+  for (i = 0; i < 26; i++) for (j = 0; j < 26; j++)
+  {
+    m = (i * 26) + j;
+    hint_sorts[ m ].source = i;
+    hint_sorts[ m ].target = j;
+    hint_sorts[ m ].score = hinting[i][j];
+  }
+
+  /* Sort */
+  insertion_hinting_sort(hint_sorts, 26 * 26);
+
+  /* Now extract the info */
+  m = 26 * 26;
+  for (i = (m - 1); i >= 0; i--)
+  {
+    /* Check if the target is already taken */
+    p = 1;
+    for (j = 0; j < 26; j++)
+    {  
+      if (translation_array[j] == hint_sorts[i].target)
+      {
+        p = 0;
+      }
+    }
+
+    /* Check if the source is taken */
+    if (translation_array[hint_sorts[i].source] != -1)
+    {  
+      p = 0;
+    }
+
+    if (p && hint_sorts[i].score > best_cutoff)
+    {
+      translation_array[hint_sorts[i].source] = hint_sorts[i].target;
+    }
+  }
+
+  /* Do the translation - for any still unassigned make it an uppercase */
+  for (i = 0; i < text_size; i++)
+  {
+    ch = *(text + i);
+    j = CHARNUM(ch);
+
+    *(text + i) = (translation_array[j] == -1 ? 
+                        ALPHA_TOUPPER(ch) : NUMCHAR(translation_array[j]));
+  }
 }
 

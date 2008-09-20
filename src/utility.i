@@ -17,4 +17,6 @@
 */
 
 INSERTION_DEFINE(insertion_columnic_sort, vigenere_column_ic, column_ic_diff)
-INSERTION_DEFINE(insertion_digram_sort, digram, digram_value)
+INSERTION_DEFINE(insertion_digram_sort,   digram,             digram_value)
+INSERTION_DEFINE(insertion_hinting_sort,  hint_sort,          score)
+

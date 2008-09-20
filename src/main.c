@@ -32,12 +32,15 @@ int main(int argc, char **argv)
   {
     input_open(arg_input_argc, argv);
   }
-  exit(0);
-    
-  ch_freq_ar = ch_freq(intext, intext_size);
-  print_freq(ch_freq_ar, 26);
-  
-  crack_vigenere(intext, intext_size);
+
+  /* TODO: access action.c now to take over. */
+
+  /* Temporary: some diagnostics & cracking info */
+  /* crack_vigenere(intext, intext_size); */
+
+  load_dict();
+  crack_random_substitution(intext, intext_size);
+  printf("\n\n%*s\n\n", intext_size, intext);
 
   return 0;
 } 

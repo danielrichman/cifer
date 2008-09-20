@@ -29,7 +29,7 @@
 
 /* TODO: these figures need testing & revising */
 #define RANDSUB_CUTOFF_MAX  ((text_size / 7) + 1)    /* About 142? */
-#define RANDSUB_CUTOFF_INC  (text_size / 50)         /* Normally about 20 */
+#define RANDSUB_CUTOFF_INC  1//(text_size / 30)
 
 #define RANDSUB_HINT_DIGRAM_TH  2    /* as a text_size / x */
 #define RANDSUB_HINT_DIGRAM     10
@@ -37,5 +37,7 @@
 #define RANDSUB_HINT_FREQ1      7
 #define RANDSUB_HINT_FREQ2      14
 
-#define RANDSUB_MATCH_LETTER_CUTOFF  max(the_size_of_the_word / 5, 2)
+#define RANDSUB_MATCH_LETTER_CUTOFF  2
+
+#define RANDSUB_MATCH_BASE      2
 
