@@ -311,7 +311,7 @@ void load_dict(void)
     *(dict_length_pointer_size_temp + i) = 0;
   }
 
-  for (k = dict; k < dict_end; k += j)
+  for (k = dict; k < dict_end; k += j + 1)
   {
     j = strlen(k);
     *(*(dict_length_pointer + j) + *(dict_length_pointer_size_temp + j)) = k;

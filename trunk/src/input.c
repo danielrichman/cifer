@@ -52,7 +52,10 @@ int input_open(int argc, char **argv)
     return INPUT_ERR_MALLOC;
   }
   printf("malloc()'d %d bytes, ", intext_size + 1);
-  
+ 
+  /* Set the final null byte */
+  *(intext + intext_size) = 0;
+ 
   /* Read the file into intext */
   for (i = 0; i < intext_size; ch = fgetc(infile))
   {
