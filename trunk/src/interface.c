@@ -21,82 +21,28 @@
 char *intext;
 int intext_size;
 
+/* TODO: Be rid of this function */
 void cc_setup(int argc, char **argv)
 {
-  FILE *infile;
-  int i;
-  char ch;
-
-  printf("\n");
-
-  if (argc != 2)
-  {
-    printf("Usage: cipher_cracker input_filename\n\n");
-    exit(1);
-  }
-
-  infile  = fopen(argv[1], "r");
-  if (infile == NULL)
-  {
-    perror("infile-fopen");
-    printf("\n");
-    exit(1);
-  }
-
-  /* Load up the file's contents. */
-
-  intext_size = 0;
-  while (feof(infile) == 0)
-  {
-    ch = fgetc(infile);
-
-    if (ALPHAL_CH(ch) || ALPHAH_CH(ch))
-    {
-      intext_size++;
-    }
-  }
-
-  if (intext_size == 0)
-  {
-    printf("Input file is of 0 length.\n\n");
-    exit(1);
-  }
-
-  rewind(infile);
-  intext     = malloc( intext_size + 1 );
-
-  if (intext == NULL)
-  {
-    printf("*intext malloc( %i ) fail.\n\n", intext_size);
-    exit(1);
-  }
-
-  printf("Loading %i bytes of infile... ", intext_size);
-  fflush(stdout);
-
-  for (i = 0; i < intext_size; ch = fgetc(infile))
-  {
-    if (ALPHAL_CH(ch) || ALPHAH_CH(ch))
-    {
-      *(intext + i) = ALPHA_TOLOWER(ch);
-      i++;
-    }
-  }
-
-  printf("Done\n\n");
-  fflush(stdout);
-
   load_dict();
 }
 
 void print_freq(int *freq, int size)
 {
   int i;
+  int j = 0;
+  
+  printf("Printing letter frequency count... \n");
   
   for (i = 0; i < size; i++)
   {
     printf("%c:%d ", NUMCHAR(i), *(freq + i));
-    if ((i != 0) && ((i % 5) == 0)) printf("\n");
+    j++;
+    if (j == 5)
+    {
+      printf("\n");
+      j = 0;
+    }
   }
   printf("\n");
 }
@@ -104,11 +50,19 @@ void print_freq(int *freq, int size)
 void print_char_table(void)
 {
   int i;
+  int j = 0;
+  
+  printf("Printing char -> number table... \n");
   
   for (i = 0; i < 26; i++)
   {
     printf("%c:%d ", NUMCHAR(i), i + 1);
-    if ((i != 0) && (( i % 5) == 0)) printf("\n");
+    j++;
+    if (j == 5)
+    {
+      printf("\n");
+      j = 0;
+    }
   }
   printf("\n");
 }

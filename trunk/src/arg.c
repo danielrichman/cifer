@@ -23,6 +23,7 @@ int arg_input_argc; /* The value of argv for which there is an input
                        filename, ie. argv[arg_input_argc] */
 int arg_freq  = 0;  /* Do frequency analysis */
 int arg_pct   = 0;  /* Print char->number table */
+int arg_vig   = 0;  /* Do a vigenere crack */
 
 int arg_parse(int argc, char **argv)
 {
@@ -57,6 +58,14 @@ int arg_parse(int argc, char **argv)
     {
       arg_pct = 1;
       printf("arg_pct, ");
+      got_arg = 1;
+    }
+    
+    if ((strcmp(argv[i], "-vig")) == 0 ||
+       ((strcmp(argv[i], "--vigenere") == 0)))
+    {
+      arg_vig = 1;
+      printf("arg_vig, ");
       got_arg = 1;
     }
     

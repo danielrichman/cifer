@@ -17,3 +17,31 @@
 */
 
 #include "stdinc.h"
+void action_do(void)
+{
+  printf("Doing requested action(s)...\n");
+  
+  /* Let's start with the easy stuff */
+  
+  if (arg_pct) /* Print char -> number table */
+  {
+    printf("Char -> number table requested... printing...\n");
+    print_char_table();
+  }
+  
+  if (arg_freq) /* Do (and print) letter frequency count */
+  {
+    printf("Letter frequency count requested... doing...\n");
+    print_freq(ch_freq(intext, intext_size), 26);
+  }
+  
+  /* Ciphers */
+  
+  if (arg_vig) /* Crack vigenere */
+  {
+    printf("Vigenere cipher crack requested... doing...\n");
+    crack_vigenere(intext, intext_size);
+  }
+  
+  printf("Finished doing requested actions.\n");
+}

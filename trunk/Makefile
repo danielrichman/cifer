@@ -26,7 +26,7 @@ objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
 
 cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
          src/interface.c src/input.c src/main.c src/utility.c src/vigenere.c \
-         src/action.c arc/affine.c
+         src/action.c src/affine.c
 
 stdinc = src/stdinc.h
 

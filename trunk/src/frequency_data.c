@@ -18,6 +18,8 @@
 
 #include "stdinc.h"
 
+int *ch_freq_ar;
+
 double english_frequency[26] = { 0.08167, 0.01492, 0.02782, 0.04253, 0.12702, 
                                  0.02228, 0.02015, 0.06094, 0.06966, 0.00153, 
                                  0.00772, 0.04025, 0.02406, 0.06749, 0.07507, 
@@ -39,6 +41,8 @@ void create_identity_frequency_graph(int frequency_graph[], int text_size)
 /* Does not support jump/column implementation like frequency_analysis does */
 void count_freq(char *text, int input_size, int tgt[])
 {
+  printf("Doing letter frequency count... ");
+  
   int i;
 
   for (i = 0; i < 26; i++)          tgt = 0;
@@ -84,8 +88,6 @@ void count_digrams(char *text, int input_size, digram tgt[], int tgt_size)
     h = (26 * 26) - 1 - i;
     tgt[i] = digrams[h];
   }
-
-  /* Done. */
 }
 
 void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size)

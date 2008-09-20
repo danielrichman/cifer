@@ -15,3 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/* Controls the flow of the program. Figures out what needs to be called and
+ * when. */
+void action_do(void);

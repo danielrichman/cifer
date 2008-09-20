@@ -16,6 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+extern int *ch_freq_ar;
+
 typedef struct {
   int digram_ch1;
   int digram_ch2;
@@ -33,5 +35,3 @@ void create_identity_frequency_graph(int frequency_graph[], int text_size);
 
 /* Returns an int array[26] with letter frequencies of input text */
 int *ch_freq(char *text, int input_size);
-
-
