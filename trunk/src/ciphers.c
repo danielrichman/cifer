@@ -51,7 +51,7 @@ int frequency_analysis(char *text, int text_size, int jump)
     /* Compare the new letters against the identity */
     for (j = 0; j < 26; j++)
     {
-      temp_diff += diff(frequency_graph[((j + i) % 26)], 
+      temp_diff += diff(frequency_graph[modp(j + i, 26)], 
                         identity_frequency_graph[j]);
     }
 
