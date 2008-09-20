@@ -18,12 +18,14 @@
 
 #include "stdinc.h"
 
-int arg_input = 0;  /* Do we have any input files? */
-int arg_input_argc; /* The value of argv for which there is an input
-                       filename, ie. argv[arg_input_argc] */
-int arg_freq  = 0;  /* Do frequency analysis */
-int arg_pct   = 0;  /* Print char->number table */
-int arg_vig   = 0;  /* Do a vigenere crack */
+char *arg_input = NULL;  /* !NULL = load this file as input */
+int arg_freq  = 0;       /* Do frequency analysis */
+int arg_pct   = 0;       /* Print char->number table */
+int arg_vig   = 0;       /* Do a vigenere crack */
+int arg_aff   = 0;       /* Do an affine crack */
+int arg_gcd   = 0;       /* Do a GCD Calculation */
+int arg_gcd_1 = 0;
+int arg_gcd_2 = 0;
 
 int arg_parse(int argc, char **argv)
 {
@@ -34,6 +36,8 @@ int arg_parse(int argc, char **argv)
   
   for (i = 1; i < argc; i++)
   {
+    got_arg = 0;
+
     /* Do frequency analysis */
     if (((strcmp(argv[i], "-f")) == 0) || ((strcmp(argv[i], "--freq") == 0)))
     {
@@ -45,9 +49,14 @@ int arg_parse(int argc, char **argv)
     /* Input file */
     if (((strcmp(argv[i], "-i")) == 0) || ((strcmp(argv[i], "--input") == 0)))
     {
+      if (i + 1 >= argc)
+      {
+        printf("arg_bad\n");
+        return -1;
+      }
+
       printf("arg_input %s, ", argv[i+1]);
-      arg_input = 1;
-      arg_input_argc = i + 1; /* ie. the next arg */
+      arg_input = argv[i + 1];
       i++; /* We skip the next argument; it is a filename */
       got_arg = 1;
     }
@@ -68,7 +77,32 @@ int arg_parse(int argc, char **argv)
       printf("arg_vig, ");
       got_arg = 1;
     }
-    
+
+    if ((strcmp(argv[i], "-aff")) == 0 ||
+       ((strcmp(argv[i], "--affine") == 0)))
+    {
+      arg_aff = 1;
+      printf("arg_vig, ");
+      got_arg = 1;
+    }
+
+
+    if ((strcmp(argv[i], "-gcd")) == 0)
+    {
+      if (i + 2 >= argc)
+      {
+        printf("arg_bad\n");
+        return -1;
+      }
+
+      arg_gcd = 1;
+      arg_gcd_1 = atoi(argv[i + 1]);
+      arg_gcd_2 = atoi(argv[i + 2]);
+      printf("arg_gcd %i %i, ", arg_gcd_1, arg_gcd_2);
+      i += 2;
+      got_arg = 1;
+    }    
+
     if (!got_arg)
     {
       printf("arg_bad\n");

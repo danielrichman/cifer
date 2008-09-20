@@ -16,11 +16,14 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-extern int arg_input;
-extern int arg_input_argc;
-extern int arg_freq;
-extern int arg_pct;
-extern int arg_vig;
+extern char *arg_input;     /* !NULL = load this file as input */
+extern int arg_freq;        /* Do frequency analysis */
+extern int arg_pct;         /* Print char->number table */
+extern int arg_vig;         /* Do a vigenere crack */
+extern int arg_aff;         /* Do an affine crack */
+extern int arg_gcd;         /* Do a GCD Calculation */
+extern int arg_gcd_1;
+extern int arg_gcd_2;
 
 /* Parse cmd-line args into variables. Returns 0 if OK, -1 if error */
 int arg_parse(int argc, char **argv);

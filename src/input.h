@@ -25,7 +25,7 @@
  *                                   INPUT_ERR_ZERO_SIZE if the input file is
  *                                                       0 bytes long
  *                                   INPUT_ERR_MALLOC if malloc failed */
-int input_open(int argc, char **argv);
+int input_open(char *filename);
 
 /* Counts the size of infile. Returns the size (in bytes) */
 int input_file_size(FILE *infile);
