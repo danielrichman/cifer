@@ -20,13 +20,6 @@
 
 int main(int argc, char **argv)
 {
-  int result_x, result_mod;
-  modular_sucessive_substitution(&result_x, &result_mod,
-                                  1, 0, 4, 3, 1, 0, 6, 5);
-  printf("=> %i (mod %i)\n", result_x, result_mod);
-
-  return 0;
-
   if ((arg_parse(argc, argv)) == -1) /* Bad argument(s) */
   {
     printf("Bad argument(s), exiting!\n");
