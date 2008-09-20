@@ -36,10 +36,9 @@ int main(int argc, char **argv)
   /* TODO: access action.c now to take over. */
 
   /* Temporary: some diagnostics & cracking info */
-  /* crack_vigenere(intext, intext_size); */
 
   load_dict();
-  crack_random_substitution(intext, intext_size);
+  crack_vigenere(intext, intext_size);
   printf("\n\n%*s\n\n", intext_size, intext);
 
   return 0;
