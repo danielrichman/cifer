@@ -80,3 +80,18 @@ void print_char_table(void)
   printf("\n\n");
  
 }
+
+void print_trigrams(trigram input[], int size)
+{
+  int i;
+  
+  printf("Printing trigrams...\n");
+  
+  for (i = 0; i < size; i++)
+  {
+    printf("%c%c%c: %d\n", NUMCHAR(input[i].trigram_ch1), 
+                           NUMCHAR(input[i].trigram_ch2), 
+                           NUMCHAR(input[i].trigram_ch3),
+                           input[i].trigram_value);
+  }
+}

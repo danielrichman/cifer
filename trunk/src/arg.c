@@ -26,6 +26,7 @@ int arg_aff   = 0;       /* Do an affine crack */
 int arg_gcd   = 0;       /* Do a GCD Calculation */
 int arg_gcd_1 = 0;
 int arg_gcd_2 = 0;
+int arg_pt    = 0;       /* Print trigram frequencies */
 
 int arg_parse(int argc, char **argv)
 {
@@ -102,6 +103,14 @@ int arg_parse(int argc, char **argv)
       i += 2;
       got_arg = 1;
     }    
+    
+    if (((strcmp(argv[i], "-pt")) == 0) || 
+        ((strcmp(argv[i], "--print-trigram-freq")) == 0))
+    {
+      arg_pt = 1;
+      printf("arg_pt, ");
+      got_arg = 1;
+    }
 
     if (!got_arg)
     {
