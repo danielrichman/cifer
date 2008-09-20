@@ -18,8 +18,6 @@
 
 #include "stdinc.h"
 
-int *ch_freq_ar;
-
 int main(int argc, char **argv)
 {
   if ((arg_parse(argc, argv)) == -1) /* Bad argument(s) */
@@ -28,7 +26,8 @@ int main(int argc, char **argv)
     return 0;
   }
   
-  load_dict();
+  if (arg_input) load_dict();
+  
   action_do();
 
   return 0;
