@@ -96,14 +96,8 @@ int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
   printf("Solving affine equation: CL => PL: %d => %d (%c), %d => %d (%c)\n",
                         cl_1, pl_1, NUMCHAR(pl_1), cl_2, pl_2, NUMCHAR(pl_2));
   
-  *a = ((cl_1 - cl_2) % 26) / (pl_1 - pl_2);
-  *b = ((cl_1 % 26) - (*a * pl_1)) / *a;
-
-  *a += 52;
-  *b += 52;
-
-  *a %= 26;
-  *b %= 26;
+  *a = (modn((cl_1 - cl_2), 26)) / (pl_1 - pl_2);
+  *b = ((modn(cl_1, 26)) - (*a * pl_1)) / *a;
 
   printf("             Affine solution: a = %i, b = %i\n", *a, *b);
 
