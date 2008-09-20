@@ -20,12 +20,11 @@
 #include "utility.i"
 #undef INSERTION_DEFINE
 
-#define MMIM(enc, inv, mod)      (((enc) * (inv)) % (mod))
-#define MMIM_POS(enc, inv, mod)  (MMIM((enc), (inv), (mod)) < 0 ?   \
-                                  MMIM((enc), (inv), (mod)) + (mod) : \
-                                  MMIM((enc), (inv), (mod))  )        
-
 #define IS_COPRIME(a, b)         (gcd((a), (b)) == 1 ? 1 : 0)
 
 int modular_multiplicative_inverse(int a, int b);
 int gcd(int a, int b);
+void modular_sucessive_substitution(int &result_x, &result_mod,
+           int eq1_xcoeff, int eq1_coeff, int eq1_mod, int eq1_result,
+           int eq2_xcoeff, int eq2_coeff, int eq2_mod, int eq2_result);
+

@@ -20,7 +20,7 @@
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 #define diff(X, Y) ((X) > (Y) ? ((X) - (Y)) : ((Y) - (X)))
 #define modp(X, B)  ((X) % (B))
-#define modn(X, B)  (((X % B) + B) % B)
+#define modn(X, B)  ((X) % (B)) + ((X) < 0 ? (B) : 0)
 
 #define ASCII_CH(ch)           (ch >= 32 && ch <= 128)
 #define ALPHAL_CH(ch)          (ch >= 97 && ch <= 122)
