@@ -7,7 +7,7 @@ http://www.cipher.maths.soton.ac.uk/TeachersPack.pdf
 Ciphers we need to crack (cross them off):
 [X] Caesar
 [X] Vigenere
-[ ] Affine
+[X] Affine
 [ ] Keyword
 [ ] Bacon
 [ ] Polybus Square
@@ -23,36 +23,14 @@ Ciphers we need to crack (cross them off):
 [ ] Fialka         (Is this really needed? I doubt that it will be used again)
 
 Features that are needed
-[ ] Reimplement fast dictionary searching (Assigned to DR)
-[ ] Bigrams and Trigrams frequency data
+[X] Reimplement fast dictionary searching (Assigned to DR)
+[X] Bigrams and Trigrams frequency data
 [ ] Detection and guessing of cipher, eg- Delta IC tells us that the letters are
     not totally malformed and just need a caesar/vigenere crack? etc.
 [ ] Epic win phrases when it cracks a cipher, eg. "Yum yum, that was an epic 
     fail of a cipher" or "Totally freaking owned"
 [ ] Printing of the process used to arrive at the cipher, eg. Cipher methods 
     used, keywords, the lot.
-[ ] Implement proper command line parsing using flags (-*) so we can tell the
+[X] Implement proper command line parsing using flags (-*) so we can tell the
     program exactly what we need to do.
 
-//////////////////////////////////////////////////////////////////////////////
-AFFINE CIPHER
-//////////////////////////////////////////////////////////////////////////////
-
-Easy stuff. We do freq. analysis on the ciphertext. We only need to figure out
-2 of the mappings (ie. a = g, y = d) and then solve a simultaneous equation.
-(Simrun Basuita)
-
-//////////////////////////////////////////////////////////////////////////////
-
-Maybe - perhaps this could just be taken down by a system that solves 
-substitution ciphers that are just totally random, eg, via frequency Analysis
-and bigrams/trigrams/dictionary.?
-
-The huge advantage of getting this to work is that it can totally take out a
-Keyword Cipher, Affine (and possibly some others)
-
-The system used to destroy polybus could also be used for ADFGVX? Hopefully
-it should be easily adapted to either.
-(Daniel Richman)
-
-//////////////////////////////////////////////////////////////////////////////
