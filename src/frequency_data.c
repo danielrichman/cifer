@@ -37,12 +37,60 @@ void create_identity_frequency_graph(int frequency_graph[], int text_size)
   }
 }
 
+/* This function takes two graphs and tries to generate the best match
+ * table. (table being array[source] => identity or array[cipher] => plain */
+void random_frequency_match(int frequency_graph[], 
+                            int identity_frequency_graph[], 
+                            int table[])
+{
+  /* In order to take into account all the crossmatching and consider
+   * all the data in one go, we build up a struct array of diffs, scores
+   * sources and targets; then sort & extract. Tastey. */
+
+  /* stack variables */
+  int i, j, k;
+  rand_freq scores[26 * 26];
+
+  /* Load up the structs */
+  for (i = 0; i < 26; i++)  for (j = 0; j < 26; j++)
+  {
+    k = (i * 26) + j;
+    scores[k].source = i;
+    scores[k].target = j;
+    scores[k].diff = diff(frequency_graph[i], identity_frequency_graph[j]);
+  }
+
+  /* Sort. */
+  insertion_randfreq_sort(scores, 26 * 26);
+
+  /* Zero the table */
+  for (i = 0; i < 26; i++) table[i] = -1;
+
+  /* Extract the information. */
+  for (i = 0; i < (26 * 26); i++)
+  {
+    /* If the source is not taken... */
+    if (table[scores[i].source] == -1)
+    {
+      /* Check if the target is taken */
+      k = 1;
+      for (j = 0; j < 26; j++)  if (table[j] == scores[i].target)  k = 0;
+
+      /* And save */
+      if (k)
+      {
+        table[scores[i].source] = scores[i].target;
+      }
+    }
+  }
+
+  /* Done */
+}
+
 /* Counts letters 0 -> 26 into the tgt array as [key == letter] => count */
 /* Does not support jump/column implementation like frequency_analysis does */
 void count_freq(char *text, int input_size, int tgt[])
 {
-  printf("Doing letter frequency count... ");
-  
   int i;
 
   for (i = 0; i < 26; i++)          tgt[i] = 0;
@@ -84,7 +132,8 @@ void count_digrams(char *text, int input_size, digram tgt[], int tgt_size)
   insertion_digram_sort(digrams, 26 * 26);
 
   /* Grab the top few */
-  for (i = 0; i < tgt_size; i++)
+  j = min(tgt_size, 26 * 26);
+  for (i = 0; i < j; i++)
   {
     h = (26 * 26) - 1 - i;
     tgt[i] = digrams[h];
@@ -129,7 +178,8 @@ void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size)
   insertion_trigram_sort(trigrams, 26 * 26 * 26);
 
   /* Grab the top few */
-  for (i = 0; i < tgt_size; i++)
+  j = min(tgt_size, 26 * 26 * 26);
+  for (i = 0; i < j; i++)
   {
     h = (26 * 26 * 26) - 1 - i;
     tgt[i] = trigrams[h];

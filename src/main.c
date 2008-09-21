@@ -26,7 +26,6 @@ int main(int argc, char **argv)
     return 0;
   }
   
-  if (arg_input) load_dict();
   action_do();
 
   return 0;

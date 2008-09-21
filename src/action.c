@@ -20,8 +20,9 @@
 void action_do()
 {
   int i;
-  int frequency_graph[26];
-  /* digram digrams[5] trigram trigrams[5] (Only get top five) */
+  int frequency_graph[26], identity_frequency_graph[26];
+  digram *digrams;
+  trigram *trigrams;
 
   printf("Doing requested action(s)...\n");
  
@@ -35,6 +36,11 @@ void action_do()
     }
   }
  
+  if (arg_key)  /* Will the dictionary be needed? Currenlty only for arg_key */
+  {
+    load_dict();
+  }
+
   /* Let's start with the easy stuff */
   
   if (arg_pct) /* Print char -> number table */
@@ -49,13 +55,58 @@ void action_do()
                               gcd(arg_gcd_1, arg_gcd_2) );
   }
 
+  if (arg_mmi) /* Do a ModMulInv Calcuation */
+  {
+    printf("MMI of %i (mod %i): %i\n\n", arg_mmi_1, arg_mmi_2,
+              modular_multiplicative_inverse(arg_mmi_1, arg_mmi_2));
+  }
+
   if (arg_freq) /* Do (and print) letter frequency count */
   {
     printf("Letter frequency count requested... doing...\n");
     count_freq(intext, intext_size, frequency_graph);
-    print_freq(frequency_graph);
+    create_identity_frequency_graph(identity_frequency_graph, intext_size);
+    print_freq(frequency_graph, identity_frequency_graph);
   }
   
+  if (arg_pd) /* Print digram counts */
+  {
+    arg_pd_1 = max(min(arg_pd_1, 26 * 26), 1); /* Enforce minimum and maximum */
+    digrams = malloc( sizeof(digram) * arg_pd_1 );
+
+    printf("Printing top %i digram counts\n", arg_pd_1);
+    if (digrams == NULL)
+    {
+      printf("Digrams Malloc fail.\n");
+    }
+    else
+    {
+      count_digrams(intext, intext_size, digrams, arg_pd_1);
+      print_digrams(digrams, arg_pd_1);
+
+      free(digrams);
+    }
+  }
+
+  if (arg_pt) /* Print trigram counts */
+  {
+    arg_pt_1 = max(min(arg_pt_1, 26 * 26 * 26), 1);
+    trigrams = malloc( sizeof(trigram) * arg_pt_1 );
+
+    printf("Printing top %i trigram counts\n", arg_pt_1);
+    if (trigrams == NULL)
+    {  
+      printf("Trigrams Malloc fail.\n");
+    }
+    else
+    {
+      count_trigrams(intext, intext_size, trigrams, arg_pt_1);
+      print_trigrams(trigrams, arg_pt_1);
+
+      free(trigrams);
+    }
+  }
+
   /* Ciphers */
   
   if (arg_vig) /* Crack vigenere */
@@ -68,6 +119,19 @@ void action_do()
   {
     printf("Affine cipher crack requested... doing... \n");
     crack_affine(intext, intext_size);
+  }
+
+  if (arg_key) /* Crack Keyword */
+  {
+    printf("Keyword cipher crack requested... doing... \n");
+    keyword_crack(intext, intext_size);
+  }
+
+  if (arg_keyd) /* Decode Keyword */
+  {
+    printf("Keyword cipher decode mode requested... doing... \n");
+    keyword_decode(intext, intext_size, 
+                        arg_keyd_string, strlen(arg_keyd_string));
   }
 
   printf("Finished doing requested actions.\n");
