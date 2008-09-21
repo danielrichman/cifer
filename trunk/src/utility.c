@@ -40,7 +40,7 @@
  *   }
  * }                                                                */
 
-#define INSERTION_DEFINE(nm, ty, sval) void nm(ty a[], int asize) { \
+#define INSERTION_DEFINE(nm, ty, sval) void nm(ty *a, int asize) { \
     int i, j, k; ty d; k = asize; for (i = 0; i < k; i++) { \
     d = a[i]; j = i - 1; while (j >= 0 && a[j].sval > d.sval) { \
     a[j + 1] = a[j]; j = j - 1; } a[j + 1] = d; } }

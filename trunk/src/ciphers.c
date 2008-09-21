@@ -18,52 +18,14 @@
 
 #include "stdinc.h"
 
-/* This frequency counter & analyser is different in that it incorporates 
- * jumps; ie, columns */
-int frequency_analysis(char *text, int text_size, int jump)
+void monoalph_substitute(char *text, int text_size, int *translation)
 {
-  int frequency_graph[26];
-  int identity_frequency_graph[26];
-  int i, j, temp_diff, best_diff, best_diff_shift;
+  int i;
 
-  /* Prepare the variables */
-  best_diff = -1;
-  best_diff_shift = 0;
-  j = 0;
-
-  /* Zero the freq. graph and then scan the text */
-  for (i = 0; i < 26; i++)  frequency_graph[i] = 0;
-
-  /* J is used to temporarily store the total text/column size */
-  for (i = 0; i < text_size; i += jump) 
+  for (i = 0; i < text_size; i++)
   {
-    frequency_graph[CHARNUM(*(text + i))] += 1;
-    j++;
+    *(text + i) = NUMCHAR(translation[CHARNUM(*(text + i))]);
   }
-
-  /* Setup the identity freq graphs */
-  create_identity_frequency_graph(identity_frequency_graph, j);
-
-  for (i = 0; i < 26; i++)
-  {
-    temp_diff = 0;
-
-    /* Compare the new letters against the identity */
-    for (j = 0; j < 26; j++)
-    {
-      temp_diff += diff(frequency_graph[modp(j + i, 26)], 
-                        identity_frequency_graph[j]);
-    }
-
-    /* And keep track of the best match */
-    if (best_diff == -1 || temp_diff < best_diff)
-    {
-      best_diff = temp_diff;
-      best_diff_shift = i;
-    }
-  }
-
-  return best_diff_shift;
 }
 
 void caesar_cipher_enc(char *text, int text_size, int *shift, int shift_size)

@@ -23,9 +23,8 @@ int arg_freq  = 0;         /* Do frequency analysis */
 int arg_pct   = 0;         /* Print char->number table */
 int arg_vig   = 0;         /* Do a vigenere crack */
 int arg_aff   = 0;         /* Do an affine crack */
-int arg_key   = 0;         /* Do a keyword crack */
-int arg_keyd  = 0;         /* Do a keyword decode */
-char *arg_keyd_string = NULL; 
+int arg_key   = 0;         /* Do a keyword decode */
+char *arg_key_string = NULL; 
 int arg_gcd   = 0;         /* Do a GCD Calculation */
 int arg_gcd_1 = 0;
 int arg_gcd_2 = 0;
@@ -36,6 +35,8 @@ int arg_pt    = 0;         /* Print trigram frequencies */
 int arg_pt_1  = 0;
 int arg_pd    = 0;         /* Print digram frequencies */
 int arg_pd_1  = 0;
+
+/* TODO: Add frequency_guesses() -fd --frequency-guesses to arg & action.c\h */
 
 int arg_parse(int argc, char **argv)
 {
@@ -97,14 +98,6 @@ int arg_parse(int argc, char **argv)
     }
 
     if ((strcmp(argv[i], "-key")) == 0 ||
-       ((strcmp(argv[i], "--keyword-crack") == 0)))
-    {
-      arg_key = 1;
-      printf("arg_key, ");
-      got_arg = 1;
-    }
-
-    if ((strcmp(argv[i], "-keyd")) == 0 ||
        ((strcmp(argv[i], "--keyword-decode") == 0)))
     {
       if (i + 1 >= argc)
@@ -113,9 +106,9 @@ int arg_parse(int argc, char **argv)
         return -1;
       }
 
-      arg_keyd = 1;
-      arg_keyd_string = argv[i + 1];
-      printf("arg_keyd %s, ", arg_keyd_string);
+      arg_key = 1;
+      arg_key_string = argv[i + 1];
+      printf("arg_key %s, ", arg_key_string);
       i++;
       got_arg = 1;
     }

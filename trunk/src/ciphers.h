@@ -16,8 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-int frequency_analysis(char *text, int text_size, int jump);
 void caesar_cipher_enc(char *text, int text_size, int *shift, int shift_size);
 void caesar_cipher_dec(char *text, int text_size, int *shift, int shift_size);
 double delta_ic (char *text, int text_size, int jump);
+void monoalph_substitute(char *text, int text_size, int *translation);
 

@@ -16,17 +16,13 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* This function does frequency analysis and prints the information
- * out, and also uses the dictionary to try to guess the keyword */
-void keyword_crack(char *text, int text_size);
-
 /* This function fills out an int array[26] from the keyword */
-void keyword_table(char *keyword, int keyword_length, int table[]);
+void keyword_table(char *keyword, int keyword_length, int *table);
 
 /* This function will take a keyword and decode a keyword cipher */
 void keyword_decode(char *text, int text_size, char *keyword, int key_size);
 
 /* This takes a array[plaintext]  => ciphertext and makes it into
  *              array[ciphertext] => plaintext */
-void keyword_table_flip(int table[]);
+void keyword_table_flip(int *table);
 
