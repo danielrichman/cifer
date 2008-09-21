@@ -159,6 +159,8 @@ void load_dict(void)
   fflush(stdout);
 
   /* Read it in */
+  i = 0;
+
   while (feof(dictf) == 0)
   {
     ch = getc(dictf);

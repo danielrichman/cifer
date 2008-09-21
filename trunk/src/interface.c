@@ -27,29 +27,17 @@ void cc_setup(int argc, char **argv)
   load_dict();
 }
 
-void print_freq(int freq[])
+void print_freq(int freq[], int idfreq[])
 {
   int i, m;
   int width[26];
 
-  printf("Char | CHARNUM | Frequency\n\n");
+  printf("Char | CHARNUM | Frequency | Identity Frequency\n\n");
 
-  m = 0;
-  for (i = 0; i < 26; i++)
-  {
-    if (freq[i] < 10 && i < 10) width[i] = 1;
-    else if (freq[i] < 100)     width[i] = 2;
-    else if (freq[i] < 1000)    width[i] = 3;
-    else                        width[i] = 4;
-
-    if (width[i] > m)           m = width[i];
-  }
-
-  if (m <= 2)
-  {
-    /* Then we can afford to have them all at 2. It looks nicer */
-    for (i = 0; i < 26; i++)    width[i] = 2;
-  }
+  print_setup_width(width, &m);
+  print_count_width(freq, width, &m);
+  print_count_width(idfreq, width, &m);
+  print_finalise_width(width, &m);
 
   printf("C|");
   for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(i));
@@ -61,8 +49,47 @@ void print_freq(int freq[])
 
   printf("F|");
   for (i = 0; i < 26; i++) printf("%*i|", width[i], freq[i]);
+  printf("\n");
+
+  printf("I|");
+  for (i = 0; i < 26; i++) printf("%*i|", width[i], idfreq[i]);
   printf("\n\n");
 
+}
+
+void print_setup_width(int width[], int *m)
+{
+  int i;
+
+  *m = 0;
+  for (i = 0; i < 26; i++)  width[i] = (i < 10 ? 1 : 2);
+}
+
+void print_count_width(int freq[], int width[], int *m)
+{
+  int i, w;
+
+  for (i = 0; i < 26; i++)
+  {
+    if (freq[i] < 10 && i < 10) w = 1;
+    else if (freq[i] < 100)     w = 2;
+    else if (freq[i] < 1000)    w = 3;
+    else                        w = 4;
+
+    if (w > *m)       *m = w;
+    if (w > width[i]) width[i] = w;
+  }
+}
+
+void print_finalise_width(int width[], int *m)
+{
+  int i;
+
+  if (*m <= 2)
+  {
+    /* Then we can afford to have them all at 2. It looks nicer */
+    for (i = 0; i < 26; i++)    width[i] = 2;
+  }
 }
 
 void print_char_table(void)
@@ -81,11 +108,21 @@ void print_char_table(void)
  
 }
 
+void print_digrams(digram input[], int size)
+{
+  int i;
+
+  for (i = 0; i < size; i++)
+  {
+    printf("%c%c: %d\n", NUMCHAR(input[i].digram_ch1),
+                         NUMCHAR(input[i].digram_ch2),
+                         input[i].digram_value);
+  }
+}
+
 void print_trigrams(trigram input[], int size)
 {
   int i;
-  
-  printf("Printing trigrams...\n");
   
   for (i = 0; i < size; i++)
   {

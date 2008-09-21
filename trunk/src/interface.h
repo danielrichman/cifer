@@ -18,11 +18,16 @@
 
 void cc_setup(int argc, char **argv);
 
+void print_digrams(digram input[], int size);
 void print_trigrams(trigram input[], int size);
 
 /* Format and print letter frequencies. Takes an int array[size] of
  * frequencies */
-void print_freq(int freq[]);
+void print_freq(int freq[], int idfreq[]);
+
+void print_setup_width(int width[], int *m);
+void print_count_width(int freq[], int width[], int *m);
+void print_finalise_width(int width[], int *m);
 
 /* Print a table of letters mapped to their numeric equivalents */
 void print_char_table(void);

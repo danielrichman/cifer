@@ -57,6 +57,8 @@ int input_open(char *filename)
   *(intext + intext_size) = 0;
  
   /* Read the file into intext */
+  ch = 0;
+
   for (i = 0; i < intext_size; ch = fgetc(infile))
   {
     if (ALPHAL_CH(ch) || ALPHAH_CH(ch))

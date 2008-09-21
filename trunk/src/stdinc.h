@@ -39,6 +39,7 @@
 #include "interface.h"
 #include "vigenere.h"
 #include "affine.h"
+#include "keyword.h"
 #include "ciphers.h"
 #include "utility.h"
 #include "arg.h"
