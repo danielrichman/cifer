@@ -24,7 +24,4 @@
 
 int modular_multiplicative_inverse(int a, int b);
 int gcd(int a, int b);
-void modular_successive_substitution(int *result_x, int *result_mod,
-           int eq1_xcoeff, int eq1_coeff, int eq1_mod, int eq1_result,
-           int eq2_xcoeff, int eq2_coeff, int eq2_mod, int eq2_result);
 

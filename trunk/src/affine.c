@@ -93,15 +93,71 @@ void crack_affine(char *text, int text_size)
 
 int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
 {
+  int i, j;
+
   printf("Solving affine equation: CL => PL: %d => %d (%c), %d => %d (%c)\n",
                         cl_1, pl_1, NUMCHAR(pl_1), cl_2, pl_2, NUMCHAR(pl_2));
-  
-  *a = (modn((cl_1 - cl_2), 26)) / (pl_1 - pl_2);
-  *b = ((modn(cl_1, 26)) - (*a * pl_1)) / *a;
+ 
+  /* ax + b = c (mod d)    where X and C are known. */
+  /* ay + b = e (mod d)    where Y and E are known. */
+  /* X = pl_1; C = cl_1;
+   * Y = pl_2; E = cl_2; */
+  /* Step 1) Subtract so that B is eliminated.
+   *        => a*(x-y) = c-e (mod d)
+   * Step 2) Use the GCD to simplify
+   *    STO => i = gcd(x-y, c-e, d)
+   *        => a*((x-y)/i) = (c-e)/i (mod d/i)
+   * Step 3) Elmininate (x-y)/i by finding the MMI.
+   *        => a = m(x-y/i, d/i)(c-e/i)
+   *        to get the answer for A!
+   *        now, to sort that number out, modn(a, 26);
+   * Step 4) Substitute back into both equations... 
+   *        => ax + b = c (mod d) (where A is now known)
+   * Step 5) Subtract from each side, AX 
+   *        => b = c - ax (mod d)
+   * Step 6) Tidy up, and do the same for equ2.
+   *    STO => b = s(c-ax) (mod d)
+   *    STO => b = s(e-ay) (mod d)
+   *
+   * Check: That b was the same in both equations.
+   *        That A and 26 are coprime. */
 
+  /* Store A from the first completed rearrangement... */
+  i = gcd(pl_1 - pl_2, gcd(cl_1 - cl_2, 26));
+  *a = modn(modular_multiplicative_inverse((pl_1 - pl_2)/i, 26/i) * 
+                                               ((cl_1 - cl_2)/i),  26/i);
+
+  printf("             Affine simplified solution: %i, looking for real\n", *a);
+  printf("             ");
+
+  /* Because we had to simplify to get a proper MMI, we now have to look for
+   * the value in mod 26. (There's probably some better way to do this, but
+   * I don't know it. */
+  for (j = *a; j < 26; j += (26/i))
+  {
+    printf("%i, ", j);
+
+    if (IS_COPRIME(j, 26))
+    {
+      *a = j;
+    }
+  }
+
+  printf("chosen %i.\n", *a);
+
+  /* Store B from the second completed rearrangement... */
+  *b = modn(cl_1 - (*a * pl_1), 26);
+
+  /* Print the information we have found... */
   printf("             Affine solution: a = %i, b = %i\n", *a, *b);
 
-  if (IS_COPRIME(*a, 26))
+  /* First check: do the bs match up? */
+  if (*b != modn(cl_2 - (*a * pl_2), 26))
+  {
+    printf("             Affine solution is bad: has two results for B!\n");
+    return -2;
+  }
+  else if (IS_COPRIME(*a, 26))
   {
     printf("             Affine solution seems OK (a coprime 26)\n");
     return 0;
