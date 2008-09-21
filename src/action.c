@@ -36,10 +36,10 @@ void action_do()
     }
   }
  
-  if (arg_key)  /* Will the dictionary be needed? Currenlty only for arg_key */
-  {
-    load_dict();
-  }
+  /*if () */ /* Will the dictionary be needed? Currenlty only for arg_key */
+  /*{
+   *  load_dict();
+   *}   */
 
   /* Let's start with the easy stuff */
   
@@ -131,17 +131,11 @@ void action_do()
     crack_affine(intext, intext_size);
   }
 
-  if (arg_key) /* Crack Keyword */
-  {
-    printf("Keyword cipher crack requested... doing... \n");
-    keyword_crack(intext, intext_size);
-  }
-
-  if (arg_keyd) /* Decode Keyword */
+  if (arg_key) /* Decode Keyword */
   {
     printf("Keyword cipher decode mode requested... doing... \n");
     keyword_decode(intext, intext_size, 
-                        arg_keyd_string, strlen(arg_keyd_string));
+                        arg_key_string, strlen(arg_key_string));
   }
 
   printf("Finished doing requested actions.\n");

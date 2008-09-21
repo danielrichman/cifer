@@ -19,12 +19,6 @@
 extern int *ch_freq_ar;
 
 typedef struct {
-  int source;
-  int target;
-  int diff;
-} rand_freq;
-
-typedef struct {
   int digram_ch1;
   int digram_ch2;
   int digram_value;
@@ -37,13 +31,10 @@ typedef struct {
   int trigram_value;
 } trigram;
 
-void create_identity_frequency_graph(int frequency_graph[], int text_size);
-void random_frequency_match(int frequency_graph[],
-                            int identity_frequency_graph[],
-                            int table[]);
+void create_identity_frequency_graph(int *frequency_graph, int text_size);
 
 /* Returns an int array[26] with letter frequencies of input text */
-void count_freq(char *text, int input_size, int tgt[]);
-void count_digrams(char *text, int input_size, digram tgt[], int tgt_size);
-void count_trigrams(char *text, int input_size, trigram tgt[], int tgt_size);
+void count_freq(char *text, int input_size, int *tgt);
+void count_digrams(char *text, int input_size, digram *tgt, int tgt_size);
+void count_trigrams(char *text, int input_size, trigram *tgt, int tgt_size);
 

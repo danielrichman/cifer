@@ -21,13 +21,7 @@
 char *intext;
 int intext_size;
 
-/* TODO: Be rid of this function */
-void cc_setup(int argc, char **argv)
-{
-  load_dict();
-}
-
-void print_freq(int freq[], int idfreq[])
+void print_freq(int *freq, int *idfreq)
 {
   int i, m;
   int width[26];
@@ -57,7 +51,7 @@ void print_freq(int freq[], int idfreq[])
 
 }
 
-void print_setup_width(int width[], int *m)
+void print_setup_width(int *width, int *m)
 {
   int i;
 
@@ -65,7 +59,7 @@ void print_setup_width(int width[], int *m)
   for (i = 0; i < 26; i++)  width[i] = (i < 10 ? 1 : 2);
 }
 
-void print_count_width(int freq[], int width[], int *m)
+void print_count_width(int *freq, int *width, int *m)
 {
   int i, w;
 
@@ -81,7 +75,7 @@ void print_count_width(int freq[], int width[], int *m)
   }
 }
 
-void print_finalise_width(int width[], int *m)
+void print_finalise_width(int *width, int *m)
 {
   int i;
 
@@ -108,7 +102,7 @@ void print_char_table(void)
  
 }
 
-void print_digrams(digram input[], int size)
+void print_digrams(digram *input, int size)
 {
   int i;
 
@@ -120,7 +114,7 @@ void print_digrams(digram input[], int size)
   }
 }
 
-void print_trigrams(trigram input[], int size)
+void print_trigrams(trigram *input, int size)
 {
   int i;
   

@@ -16,37 +16,14 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STDINC_CIPHERCRACK
-#define STDINC_CIPHERCRACK 1
+typedef struct {
+  int source;
+  int target;
+  int diff;
+} rand_freq;
 
-#include <stdio.h>
-
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <sys/file.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "settings.h"
-#include "macros.h"
-
-#include "dictionary.h"
-#include "frequency_data.h"
-#include "frequency_analysis.h"
-#include "improvements.h"
-#include "interface.h"
-#include "vigenere.h"
-#include "affine.h"
-#include "keyword.h"
-#include "ciphers.h"
-#include "utility.h"
-#include "arg.h"
-#include "input.h"
-#include "action.h"
-
-#endif
-
+void random_frequency_match(int *frequency_graph,
+                            int *identity_frequency_graph,
+                            int *table);
+void frequency_guesses(char *text, int text_size);
+int frequency_analysis(char *text, int text_size, int jump);

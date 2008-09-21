@@ -20,4 +20,5 @@ INSERTION_DEFINE(insertion_columnic_sort, vigenere_column_ic, column_ic_diff)
 INSERTION_DEFINE(insertion_digram_sort,   digram,             digram_value)
 INSERTION_DEFINE(insertion_trigram_sort,  trigram,            trigram_value)
 INSERTION_DEFINE(insertion_randfreq_sort, rand_freq,          diff)
+INSERTION_DEFINE(ga_natural_selection,    ga_parent_list,     parent_score)
 

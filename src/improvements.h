@@ -16,37 +16,14 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STDINC_CIPHERCRACK
-#define STDINC_CIPHERCRACK 1
+typedef struct {
+  int parent_id;
+  int parent_score;
+} ga_parent_list;
 
-#include <stdio.h>
-
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <sys/file.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "settings.h"
-#include "macros.h"
-
-#include "dictionary.h"
-#include "frequency_data.h"
-#include "frequency_analysis.h"
-#include "improvements.h"
-#include "interface.h"
-#include "vigenere.h"
-#include "affine.h"
-#include "keyword.h"
-#include "ciphers.h"
-#include "utility.h"
-#include "arg.h"
-#include "input.h"
-#include "action.h"
-
-#endif
+/* Monoalphabetic, (keyword, affine, caesar) improvements via
+ * a genetic algorithm, using score_text as its evaluator
+ * THIS FUNCTION REQUIRES 30 PARENTS! */
+void monoalph_imp_genetic(int **parents, char *text, int text_size, 
+                             int *target_success);
 
