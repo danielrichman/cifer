@@ -51,14 +51,24 @@ void action_do()
   
   if (arg_gcd) /* Do a GCD calculation */
   {
-    printf("GCD of %i and %i: %i\n\n", arg_gcd_1, arg_gcd_2, 
+    printf("GCD of %i and %i: %i\n", arg_gcd_1, arg_gcd_2, 
                               gcd(arg_gcd_1, arg_gcd_2) );
   }
 
   if (arg_mmi) /* Do a ModMulInv Calcuation */
   {
-    printf("MMI of %i (mod %i): %i\n\n", arg_mmi_1, arg_mmi_2,
-              modular_multiplicative_inverse(arg_mmi_1, arg_mmi_2));
+    if (arg_mmi_1 <= 0 || arg_mmi_2 <= 0 || arg_mmi_1 > arg_mmi_2)
+    {
+      printf("MMI: Bad Arguments.\n");
+    }
+    else
+    {
+      i = gcd(arg_mmi_1, arg_mmi_2);
+      if (i != 1) printf("MMI: Simplied args by gcd of %i...\n", i);
+
+      printf("MMI of %i (mod %i): %i\n", arg_mmi_1/i, arg_mmi_2/i,
+                modular_multiplicative_inverse(arg_mmi_1/i, arg_mmi_2/i));
+    }
   }
 
   if (arg_freq) /* Do (and print) letter frequency count */
