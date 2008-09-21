@@ -135,7 +135,24 @@ int arg_parse(int argc, char **argv)
       i += 2;
       got_arg = 1;
     }    
-    
+
+    if ((strcmp(argv[i], "-mmi")) == 0)
+    {
+      if (i + 2 >= argc)
+      {
+        printf("arg_bad\n");
+        return -1;
+      }
+
+      arg_mmi = 1;
+      arg_mmi_1 = atoi(argv[i + 1]);
+      arg_mmi_2 = atoi(argv[i + 2]);
+      printf("arg_mmi %i %i, ", arg_mmi_1, arg_mmi_2);
+      i += 2;
+      got_arg = 1;
+    }
+ 
+   
     if (((strcmp(argv[i], "-pt")) == 0) || 
         ((strcmp(argv[i], "--print-trigram-freq")) == 0))
     {
