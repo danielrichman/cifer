@@ -16,38 +16,20 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STDINC_CIPHERCRACK
-#define STDINC_CIPHERCRACK 1
+#include "stdinc.h"
 
-#include <stdio.h>
+FILE *urandom;
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <sys/file.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+void setup_random()
+{
+  if (urandom != NULL) return;
 
-#include "settings.h"
-#include "macros.h"
-
-#include "urandom_access.h"
-#include "dictionary.h"
-#include "frequency_data.h"
-#include "frequency_analysis.h"
-#include "improvements.h"
-#include "interface.h"
-#include "vigenere.h"
-#include "affine.h"
-#include "keyword.h"
-#include "ciphers.h"
-#include "utility.h"
-#include "arg.h"
-#include "input.h"
-#include "action.h"
-
-#endif
+  /* Open the random number generator */
+  urandom = fopen("/dev/urandom", "r");
+  if (urandom == NULL)
+  {
+    printf("opening genetic radiation/urandom: fail\n");
+    exit(1);
+  }
+}
 

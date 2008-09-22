@@ -36,10 +36,10 @@ void action_do()
     }
   }
  
-  /*if () */ /* Will the dictionary be needed? Currenlty only for arg_key */
-  /*{
-   *  load_dict();
-   *}   */
+  if (arg_gama)  /* Will the dictionary be needed? */
+  {
+    load_dict();
+  }
 
   /* Let's start with the easy stuff */
   
@@ -129,6 +129,12 @@ void action_do()
   {
     printf("Affine cipher crack requested... doing... \n");
     crack_affine(intext, intext_size);
+  }
+
+  if (arg_gama)
+  {
+    printf("GA Monoalph crack requested... doing... \n");
+    monoalph_ga_crack(intext, intext_size);
   }
 
   if (arg_key) /* Decode Keyword */
