@@ -23,6 +23,8 @@ typedef struct {
 
 void monoalph_ga_crack(char *text, int text_size);
 void auto_monoalph_parents(char *text, int text_size, int *target_success);
-void monoalph_imp_genetic(int parents[30][26], char *text, int text_size,
+void monoalph_imp_genetic(int parents[30][26], char *text, int text_size, 
                              int *target_success);
+void ga_monoalph_create_random(int *target);
+void ga_monoalph_create_child(int *parenta, int *parentb, int *child);
 

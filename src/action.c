@@ -36,7 +36,7 @@ void action_do()
     }
   }
  
-  if (arg_gama)  /* Will the dictionary be needed? */
+  if (arg_gama || arg_keyb)  /* Will the dictionary be needed? */
   {
     load_dict();
   }
@@ -137,11 +137,17 @@ void action_do()
     monoalph_ga_crack(intext, intext_size);
   }
 
-  if (arg_key) /* Decode Keyword */
+  if (arg_keyb) /* Bruteforce Keyword */
+  {
+    printf("Ugly bruteforce of keyword cipher requested... doing...\n");
+    keyword_bruteforce(intext, intext_size);
+  }
+
+  if (arg_keyd) /* Decode Keyword */
   {
     printf("Keyword cipher decode mode requested... doing... \n");
-    keyword_decode(intext, intext_size, 
-                        arg_key_string, strlen(arg_key_string));
+    keyword_decode_print(intext, intext_size, 
+                        arg_keyd_string, strlen(arg_keyd_string));
   }
 
   printf("Finished doing requested actions.\n");
