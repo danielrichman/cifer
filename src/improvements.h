@@ -21,9 +21,8 @@ typedef struct {
   int parent_score;
 } ga_parent_list;
 
-/* Monoalphabetic, (keyword, affine, caesar) improvements via
- * a genetic algorithm, using score_text as its evaluator
- * THIS FUNCTION REQUIRES 30 PARENTS! */
-void monoalph_imp_genetic(int **parents, char *text, int text_size, 
+void monoalph_ga_crack(char *text, int text_size);
+void auto_monoalph_parents(char *text, int text_size, int *target_success);
+void monoalph_imp_genetic(int parents[30][26], char *text, int text_size,
                              int *target_success);
 
