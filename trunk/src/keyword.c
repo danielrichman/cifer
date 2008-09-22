@@ -18,6 +18,55 @@
 
 #include "stdinc.h"
 
+void keyword_bruteforce(char *text, int text_size)
+{
+  char *j, *e, *best, *text_tmp;
+  int len, score, best_score, temp_table[26];
+
+  printf("keyword_bruteforce: Trying to find Keyword Cipher from the dict.\n");
+
+  /* Dict will have been opened by action.c */
+  e = *(dict_pointer + (26 * 26));  /* The end of the dictionary */
+
+  /* Setup text_temp */
+  text_tmp = malloc(text_size);
+  if (text_tmp == NULL)
+  {
+    printf("Malloc for text_tmp in keyword_brutefoce fail\n");
+    return;
+  }
+
+  /* Prepare */
+  best_score = 0;
+
+  for (j = dict; j < e; j += len + 1)
+  {
+    len = strlen(j);
+
+    memcpy(text_tmp, text, text_size);
+    keyword_table(j, len, temp_table);
+    keyword_table_flip(temp_table);
+    keyword_decode(text_tmp, text_size, temp_table);
+    score = score_text_dict_fast(text_tmp, text_size);
+
+    if (score > best_score)
+    {
+      best = j;
+      best_score = score;
+    }
+  }
+
+  /* Free up */
+  free(text_tmp);
+
+  /* Now retrieve best */
+  keyword_table(best, strlen(best), temp_table);
+  keyword_table_flip(temp_table);
+  keyword_decode(text, text_size, temp_table);
+  keyword_table_flip(temp_table);
+  keyword_print_info(text, text_size, best, strlen(best), temp_table);
+}
+
 /* This function fills out an int array[26] from the keyword */
 /* in this table, the KEY is the plaintext. */
 void keyword_table(char *keyword, int keyword_length, int *table)
@@ -72,40 +121,69 @@ void keyword_table_flip(int *table)
   for (i = 0; i < 26; i++) table[temp[i]] = i;
 }
 
-/* This function will take a keyword and decode a keyword cipher */
-void keyword_decode(char *text, int text_size, char *keyword, int key_size)
+int keyword_check(char *keyword, int key_size)
 {
-  int i, m;
-  int width[26], otable[26], table[26];
+  int i;
 
   /* Check the keyword is ok! */
   for (i = 0; i < key_size; i++)
   {
     if (!ALPHAL_CH(*(keyword + i)) && !ALPHAH_CH(*(keyword + i)))
     {
-      printf("Keyword Decode: Malformed keyword?\n\n");
-      return;
+      return 0;
     }
   }
 
-  /* Setup the table */
-  keyword_table(keyword, key_size, table);
-  for (i = 0; i < 26; i++) otable[i] = table[i];
-  keyword_table_flip(table);
+  return 1;
+}
+
+/* This function will take a keyword and decode a keyword cipher */
+void keyword_decode(char *text, int text_size, int *table)
+{
+  int i;
 
   /* Translate... */
   for (i = 0; i < text_size; i++)
   {
     *(text + i) = NUMCHAR( table[CHARNUM(*(text + i))] );
   }
+}
+
+void keyword_table_copy(int *dest, int *source)
+{
+  int i;
+  for (i = 0; i < 26; i++) dest[i] = source[i];
+}
+
+void keyword_decode_print(char *text, int text_size, 
+                          char *keyword, int key_size)
+{
+  int table[26], otable[26];
+
+  if (!keyword_check(keyword, key_size))
+  {
+    printf("Keyword Decode: Malformed keyword?\n\n");
+    return;
+  }
+
+  keyword_table(keyword, key_size, table);
+  keyword_table_copy(otable, table);
+  keyword_table_flip(table);
+  keyword_decode(text, text_size, table);
+  keyword_print_info(text, text_size, keyword, key_size, otable);
+}
+
+void keyword_print_info(char *text, int text_size, 
+                         char *keyword, int key_size, int *table)
+{
+  int m, i, width[26];
 
   /* The width should just end up as 2 everywhere */
   print_setup_width(width, &m);
-  print_count_width(otable, width, &m);
+  print_count_width(table, width, &m);
   print_finalise_width(width, &m);
 
   printf("Keyword Cipher Decode using keyword %s: \n\n", keyword);
-
   printf("Plaintext Char | PCharNum | Ciphertext Char | CCharNum\n");
 
   printf("P|");
@@ -117,11 +195,11 @@ void keyword_decode(char *text, int text_size, char *keyword, int key_size)
   printf("\n");
 
   printf("C|");
-  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(otable[i]));
+  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(table[i]));
   printf("\n");
 
   printf("N|");
-  for (i = 0; i < 26; i++) printf("%*i|", width[i], otable[i]);
+  for (i = 0; i < 26; i++) printf("%*i|", width[i], table[i]);
   printf("\n\n");
 
   printf("%*s\n\n", text_size, text);

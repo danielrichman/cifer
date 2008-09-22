@@ -24,8 +24,9 @@ int arg_pct   = 0;         /* Print char->number table */
 int arg_vig   = 0;         /* Do a vigenere crack */
 int arg_aff   = 0;         /* Do an affine crack */
 int arg_gama  = 0;         /* Do a GA Monoalph Crack */
-int arg_key   = 0;         /* Do a keyword decode */
-char *arg_key_string = NULL; 
+int arg_keyb  = 0;         /* Do a Keyword bruteforce */
+int arg_keyd  = 0;         /* Do a keyword decode */
+char *arg_keyd_string = NULL; 
 int arg_gcd   = 0;         /* Do a GCD Calculation */
 int arg_gcd_1 = 0;
 int arg_gcd_2 = 0;
@@ -94,11 +95,19 @@ int arg_parse(int argc, char **argv)
        ((strcmp(argv[i], "--affine") == 0)))
     {
       arg_aff = 1;
-      printf("arg_vig, ");
+      printf("arg_aff, ");
       got_arg = 1;
     }
 
-    if ((strcmp(argv[i], "-key")) == 0 ||
+    if ((strcmp(argv[i], "-keyb")) == 0 ||
+       ((strcmp(argv[i], "--keyword-bruteforce") == 0)))
+    {
+      arg_keyb = 1;
+      printf("arg_keyb, ");
+      got_arg = 1;
+    }
+
+    if ((strcmp(argv[i], "-keyd")) == 0 ||
        ((strcmp(argv[i], "--keyword-decode") == 0)))
     {
       if (i + 1 >= argc)
@@ -107,9 +116,9 @@ int arg_parse(int argc, char **argv)
         return -1;
       }
 
-      arg_key = 1;
-      arg_key_string = argv[i + 1];
-      printf("arg_key %s, ", arg_key_string);
+      arg_keyd = 1;
+      arg_keyd_string = argv[i + 1];
+      printf("arg_keyd %s, ", arg_keyd_string);
       i++;
       got_arg = 1;
     }
