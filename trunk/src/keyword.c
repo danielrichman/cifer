@@ -18,6 +18,8 @@
 
 #include "stdinc.h"
 
+/* TODO: Test this function's speed & effectivness */
+
 void keyword_bruteforce(char *text, int text_size)
 {
   char *j, *e, *best, *text_tmp;
