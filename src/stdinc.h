@@ -38,7 +38,6 @@
 #include "dictionary.h"
 #include "frequency_data.h"
 #include "frequency_analysis.h"
-#include "improvements.h"
 #include "interface.h"
 #include "vigenere.h"
 #include "affine.h"

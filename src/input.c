@@ -18,8 +18,8 @@
 
 #include "stdinc.h"
 
-char *intext;
-int intext_size;
+char *intext, *intext_original;
+int intext_size, intext_original_size;
 
 int input_open(char *filename)
 {
