@@ -37,6 +37,7 @@ extern int arg_pd;
 extern int arg_pd_1;
 extern int arg_is;
 extern int arg_is_1;
+extern int arg_bacon;
 
 /* Parse cmd-line args into variables. Returns 0 if OK, -1 if error */
 int arg_parse(int argc, char **argv);

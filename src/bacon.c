@@ -28,5 +28,48 @@ char *bacon_alphabet[26] = { "AAAAA", "AAAAB", "AAABA", "AAABB",
 
 int bacon_crack(char *intext, int intext_size)
 {
+  int i, h;                 /* Counters */
+  int j = 0;                /* j is the current number of values in cur_set */
+  int ptext_done = 0;       /* Number of ptext chars written */
+  char cur_set[5];
+  char ptext[intext_size/5];
+  
+  /* TODO: fail if intext_size % 5 != 0 */
+  
+  printf("Cracking bacon cipher... intext_size %d\n", intext_size);
+  
+  for (i = 0; i < intext_size; i++)
+  {
+    if (j < 5)
+    {
+      cur_set[j] = *(intext + i);
+      break;
+    }
+    
+    /* If we get to here, we have a full set */
+    
+    for (h = 0; h < 26; h++)
+    {
+      if ((strcmp(cur_set, bacon_alphabet[h])) == 0)
+      { 
+        /* We have a match! */
+        ptext[ptext_done] = NUMCHAR(h);
+        printf("%c", NUMCHAR(h));
+      } else {
+        /* Something bad happened; tell the user it's their fault xP */
+      }
+    }
+  }
+  
   return 0;
+}
+
+void bacon_upperlower_convert(char *text, int text_size)
+{
+  int i;
+  for (i = 0; i < text_size; i++)
+  {
+    if (ALPHAH_CH(*(text + i))) *(text + i) = 'A';
+    if (ALPHAL_CH(*(text + i))) *(text + i) = 'B';
+  }
 }

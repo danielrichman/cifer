@@ -18,3 +18,5 @@
 
 /* Returns 0 if OK, -1 on fail */
 int bacon_crack(char *intext, int intext_size);
+
+void bacon_upperlower_convert(char *text, int text_size);
