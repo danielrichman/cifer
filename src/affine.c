@@ -16,6 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* TODO: Implement affine encryption/decryption utility */
+
 #include "stdinc.h"
 
 void crack_affine(char *text, int text_size)
