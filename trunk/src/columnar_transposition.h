@@ -15,3 +15,12 @@
     You should have received a copy of the GNU General Public License
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+void columnar_transposition_col2col(char *text, char *outtext, 
+                           int text_size, int *key, int key_size);
+void columnar_transposition_col2row(char *text, char *outtext, 
+                           int text_size, int *key, int key_size);
+void columnar_transposition_row2col(char *text, char *outtext, 
+                           int text_size, int *key, int key_size);
+void columnar_transposition_flip_key(int *key, int key_size);
+
