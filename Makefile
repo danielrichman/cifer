@@ -56,7 +56,7 @@ src/utility.o             : src/utility.h src/utility.i $(stdinc)
 src/urandom_access.o      : src/urandom_access.h        $(stdinc)
 src/vigenere.o            : src/vigenere.h              $(stdinc)
 
-.PHONY : clean
+.PHONY : clean clean-objects
 clean :
 	rm -rf cifer cifer-debug cifer-opt dict $(objects)
 
