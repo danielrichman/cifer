@@ -41,26 +41,29 @@ int bacon_crack(char *intext, int intext_size)
   
   for (i = 0; i < intext_size; i++)
   {
-    for (j = 0; j < 5; j++)
-    {
-      cur_set[j] = *(intext + i);
-    }
+    cur_set[j] = *(intext + i);
+    j++;
     
-    j = 0;
-    
-    for (h = 0; h < 26; h++)
+    if (j == 5)
     {
-      if ((strcmp(cur_set, bacon_alphabet[h])) == 0)
-      { 
-        /* We have a match! */
-        ptext[ptext_done] = NUMCHAR(h);
-        printf("%c", NUMCHAR(h));
-      } else {
-        /* Something bad happened; tell the user it's their fault xP */
+      j = 0;
+      
+      for (h = 0; h < 26; h++)
+      {
+        /* TODO: fix strcmp fail here */
+        if ((strcmp(cur_set, bacon_alphabet[h])) == 0)
+        { 
+          /* We have a match! */
+          ptext[ptext_done] = NUMCHAR(h);
+          ptext_done++;
+          /* TEMP */ printf("%c", NUMCHAR(h));
+          break;
+        }
       }
     }
   }
   
+  printf("\n\n");
   return 0;
 }
 
