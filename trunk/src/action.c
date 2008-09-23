@@ -126,18 +126,21 @@ void action_do()
   {
     printf("Vigenere cipher crack requested... doing...\n");
     crack_vigenere(intext, intext_size);
+    input_restore();
   }
 
   if (arg_aff) /* Crack Affine */
   {
     printf("Affine cipher crack requested... doing... \n");
     crack_affine(intext, intext_size);
+    input_restore();
   }
 
   if (arg_keyb) /* Bruteforce Keyword */
   {
     printf("Ugly bruteforce of keyword cipher requested... doing...\n");
     keyword_bruteforce(intext, intext_size);
+    input_restore();
   }
 
   if (arg_keyd) /* Decode Keyword */
@@ -145,6 +148,7 @@ void action_do()
     printf("Keyword cipher decode mode requested... doing... \n");
     keyword_decode_print(intext, intext_size, 
                         arg_keyd_string, strlen(arg_keyd_string));
+    input_restore();
   }
 
   printf("Finished doing requested actions.\n");

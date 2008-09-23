@@ -43,14 +43,21 @@ int input_open(char *filename)
     return INPUT_ERR_ZERO_SIZE;
   }
   printf("intext_size %d bytes, \n", intext_size);
-  printf("                            ");
+
+  /* Allocate space */
+  intext = malloc(intext_size + 1);
+  intext_original = malloc(intext_size + 1);
 
   /* malloc() enough space for the file */
-  if ((intext = malloc(intext_size + 1)) == NULL)
+  if (intext == NULL || intext_original == NULL)
   {
-    printf("failed, malloc(%i) returned NULL!\n", intext_size + 1);
+    printf("intext or intext_original failed, malloc(%i) returned NULL!\n", 
+                       intext_size + 1);
     return INPUT_ERR_MALLOC;
   }
+
+  /* Makes it look nicer =) */
+  printf("                            ");
   printf("malloc()'d %d bytes, ", intext_size + 1);
  
   /* Set the final null byte */
@@ -69,8 +76,21 @@ int input_open(char *filename)
   }
   printf("read into intext, ");
   printf("done.\n");
-  
+ 
+  /* Backup the ctext */
+  memcpy(intext_original, intext, intext_size);
+  intext_original_size = intext_size;
+  printf("Copied intext to intext_original (memcpy)\n");
+ 
   return 0;
+}
+
+void input_restore()
+{
+  printf("Restored intext from intext_original, size (old/new): %i/%i\n",
+              intext_size, intext_original_size);
+  intext_size = intext_original_size;
+  memcpy(intext, intext_original, intext_original_size);
 }
 
 int input_file_size(FILE *infile)
