@@ -39,7 +39,7 @@ void action_do()
     }
   }
  
-  if (arg_gama || arg_keyb)  /* Will the dictionary be needed? */
+  if (arg_keyb)  /* Will the dictionary be needed? */
   {
     load_dict();
   }
@@ -132,12 +132,6 @@ void action_do()
   {
     printf("Affine cipher crack requested... doing... \n");
     crack_affine(intext, intext_size);
-  }
-
-  if (arg_gama)
-  {
-    printf("GA Monoalph crack requested... doing... \n");
-    monoalph_ga_crack(intext, intext_size);
   }
 
   if (arg_keyb) /* Bruteforce Keyword */
