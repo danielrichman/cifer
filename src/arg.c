@@ -37,8 +37,7 @@ int arg_pt    = 0;         /* Print trigram frequencies */
 int arg_pt_1  = 0;
 int arg_pd    = 0;         /* Print digram frequencies */
 int arg_pd_1  = 0;
-
-/* TODO: Add frequency_guesses() -fd --frequency-guesses to arg & action.c\h */
+int arg_fd    = 0;         /* Frequency guesses */
 
 int arg_parse(int argc, char **argv)
 {
@@ -193,6 +192,14 @@ int arg_parse(int argc, char **argv)
       arg_pd_1 = atoi(argv[i + 1]);
       printf("arg_pd %d, ", arg_pd_1);
       i++;
+      got_arg = 1;
+    }
+    
+    if (((strcmp(argv[i], "-fd")) == 0) || 
+        ((strcmp(argv[i], "--frequency-guesses")) == 0))
+    {
+      arg_fd = 1;
+      printf("arg_fd, ");
       got_arg = 1;
     }
 
