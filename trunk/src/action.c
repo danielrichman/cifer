@@ -32,7 +32,6 @@ void action_do()
   if (arg_input) /* Have we got any input files? */
   {
     i = input_open(arg_input);
-    /* TEMP */ shift_text(intext, intext_size, 5); printf("%*s\n\n", intext_size, intext); exit(0); /* TEMP */
     if (i != 0)
     {
       printf("input_open failed, returned %i; exiting\n", i);
