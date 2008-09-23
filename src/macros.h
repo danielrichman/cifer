@@ -31,6 +31,8 @@
 
 #define ALPHA_TOUPPER(ch)      (ALPHAL_CH(ch) ? ch - 32 : ch)
 #define ALPHA_TOLOWER(ch)      (ALPHAH_CH(ch) ? ch + 32 : ch)
+#define ALPHA_FLIP_CASE(ch)    (ALPHAL_CH(ch) ? ALPHA_TOUPPER(ch) : \
+                                (ALPHAH_CH(ch) ? ALPHA_TOLOWER(ch) : ch))
 
 #define IS_NEWLINE(ch)         (ch == 10)
 #define CHARNUM(ch)            (ALPHAL_CH(ch) || ALPHAH_CH(ch) ? \

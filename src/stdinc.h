@@ -41,6 +41,7 @@
 #include "interface.h"
 #include "vigenere.h"
 #include "affine.h"
+#include "columnar_transposition.h"
 #include "keyword.h"
 #include "ciphers.h"
 #include "utility.h"

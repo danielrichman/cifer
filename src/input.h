@@ -35,3 +35,6 @@ void shift_text(char *intext, int intext_size, int shift);
 
 /* Restores to the original - without using fopen :) */
 void input_restore();
+
+/* Fairly self-explanatry */
+void input_flip_case();

@@ -70,7 +70,7 @@ int input_open(char *filename)
   {
     if (ALPHAL_CH(ch) || ALPHAH_CH(ch))
     {
-      *(intext + i) = ALPHA_TOLOWER(ch);
+      *(intext + i) = ch;  /* Preserve case */
       i++;
     }
   }
@@ -83,6 +83,16 @@ int input_open(char *filename)
   printf("Copied intext to intext_original (memcpy)\n");
  
   return 0;
+}
+
+void input_flip_case()
+{
+  int i;
+
+  for (i = 0; i < intext_size; i++)
+  {
+    *(intext + i) = ALPHA_FLIP_CASE(*(intext + i));
+  }
 }
 
 void input_restore()
