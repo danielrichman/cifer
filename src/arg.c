@@ -19,24 +19,26 @@
 #include "stdinc.h"
 
 char *arg_input = NULL;    /* !NULL = load this file as input */
-int arg_freq  = 0;         /* Do frequency analysis */
-int arg_pct   = 0;         /* Print char->number table */
-int arg_vig   = 0;         /* Do a vigenere crack */
-int arg_aff   = 0;         /* Do an affine crack */
-int arg_keyb  = 0;         /* Do a Keyword bruteforce */
-int arg_keyd  = 0;         /* Do a keyword decode */
+int arg_freq    = 0;         /* Do frequency analysis */
+int arg_pct     = 0;         /* Print char->number table */
+int arg_vig     = 0;         /* Do a vigenere crack */
+int arg_aff     = 0;         /* Do an affine crack */
+int arg_keyb    = 0;         /* Do a Keyword bruteforce */
+int arg_keyd    = 0;         /* Do a keyword decode */
 char *arg_keyd_string = NULL; 
-int arg_gcd   = 0;         /* Do a GCD Calculation */
-int arg_gcd_1 = 0;
-int arg_gcd_2 = 0;
-int arg_mmi   = 0;         /* Do a ModMulInv Calculation */
-int arg_mmi_1 = 0;
-int arg_mmi_2 = 0;
-int arg_pt    = 0;         /* Print trigram frequencies */
-int arg_pt_1  = 0;
-int arg_pd    = 0;         /* Print digram frequencies */
-int arg_pd_1  = 0;
-int arg_fd    = 0;         /* Frequency guesses */
+int arg_gcd     = 0;         /* Do a GCD Calculation */
+int arg_gcd_1   = 0;
+int arg_gcd_2   = 0;
+int arg_mmi     = 0;         /* Do a ModMulInv Calculation */
+int arg_mmi_1   = 0;
+int arg_mmi_2   = 0;
+int arg_pt      = 0;         /* Print trigram frequencies */
+int arg_pt_1    = 0;
+int arg_pd      = 0;         /* Print digram frequencies */
+int arg_pd_1    = 0;
+int arg_fd      = 0;         /* Frequency guesses */
+int arg_shift   = 0;         /* Shift the intext by arg_shift_1 */
+int arg_shift_1 = 0;
 
 int arg_parse(int argc, char **argv)
 {
@@ -70,6 +72,11 @@ int arg_parse(int argc, char **argv)
       arg_input = argv[i + 1];
       i++; /* We skip the next argument; it is a filename */
       got_arg = 1;
+    }
+    
+    /* Shift input */
+    if (((strcmp(argv[i], "-is")) == 0) || ((strcmp(argv[i], "--input-shift") == 0)))
+    {
     }
     
     /* Print a table of mappings from chars to numbers */
