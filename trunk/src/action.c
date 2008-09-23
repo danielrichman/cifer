@@ -140,6 +140,13 @@ void action_do()
     crack_affine(intext, intext_size);
     input_restore();
   }
+  
+  if (arg_bacon)
+  {
+    printf("Bacon cipher crack requested... doing... \n");
+    bacon_crack(intext, intext_size);
+    input_restore();
+  }
 
   if (arg_keyb) /* Bruteforce Keyword */
   {

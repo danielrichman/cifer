@@ -38,7 +38,8 @@ int arg_pd      = 0;         /* Print digram frequencies */
 int arg_pd_1    = 0;
 int arg_fd      = 0;         /* Frequency guesses */
 int arg_is      = 0;         /* Shift the intext by arg_shift_1 */
-int arg_is_1   = 0;
+int arg_is_1    = 0;
+int arg_bacon   = 0;         /* Do bacon cipher crack */
 
 int arg_parse(int argc, char **argv)
 {
@@ -96,6 +97,14 @@ int arg_parse(int argc, char **argv)
     {
       arg_pct = 1;
       printf("arg_pct, ");
+      got_arg = 1;
+    }
+    
+    if ((strcmp(argv[i], "-bac")) == 0 ||
+       ((strcmp(argv[i], "--bacon") == 0)))
+    {
+      arg_bacon = 1;
+      printf("arg_bacon, ");
       got_arg = 1;
     }
     
