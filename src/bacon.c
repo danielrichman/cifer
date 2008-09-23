@@ -16,38 +16,17 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STDINC_CIPHERCRACK
-#define STDINC_CIPHERCRACK 1
+#include "stdinc.h"
 
-#include <stdio.h>
+char *bacon_alphabet[26] = { "AAAAA", "AAAAB", "AAABA", "AAABB", 
+                             "AABAA", "AABAB", "AABBA", "AABBB", 
+                             "ABAAA", "ABAAA", "ABAAB", "ABABA", 
+                             "ABABB", "ABBAA", "ABBAB", "ABBBA", 
+                             "ABBBB", "BAAAA", "BAAAB", "BAABA", 
+                             "BAABB", "BAABB", "BABAA", "BABAB", 
+                             "BABBA", "BABBB" };
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <sys/file.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "settings.h"
-#include "macros.h"
-
-#include "urandom_access.h"
-#include "dictionary.h"
-#include "frequency_data.h"
-#include "frequency_analysis.h"
-#include "interface.h"
-#include "vigenere.h"
-#include "affine.h"
-#include "keyword.h"
-#include "ciphers.h"
-#include "utility.h"
-#include "arg.h"
-#include "input.h"
-#include "action.h"
-#include "bacon.h"
-
-#endif
-
+int bacon_crack(char *intext, int intext_size)
+{
+  return 0;
+}

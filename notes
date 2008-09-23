@@ -21,6 +21,7 @@ Ciphers we need to crack (cross them off):
 [ ] Book
 [ ] Enigma
 [ ] Fialka         (Is this really needed? I doubt that it will be used again)
+[X] Multiplicative (Just use --affine)
 
 Features that are needed
 [X] Reimplement fast dictionary searching (Assigned to DR)

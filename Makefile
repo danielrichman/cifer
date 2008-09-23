@@ -23,12 +23,12 @@ CFLAGS=-Wall
 objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/input.o src/main.o src/utility.o src/vigenere.o \
           src/action.o src/affine.o src/keyword.o  \
-          src/frequency_analysis.o src/urandom_access.o
+          src/frequency_analysis.o src/urandom_access.o src/bacon.o
 
 cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
          src/interface.c src/input.c src/main.c src/utility.c src/vigenere.c \
          src/action.c src/affine.c src/keyword.c \
-         src/frequency_analysis.c src/urandom_access.c
+         src/frequency_analysis.c src/urandom_access.c src/bacon.c
 
 stdinc = src/stdinc.h  src/macros.h  src/settings.h
 
@@ -44,6 +44,7 @@ cifer-opt : dict $(cfiles)
 src/arg.o                 : src/arg.h                   $(stdinc)
 src/action.o              : src/action.h                $(stdinc)
 src/affine.o              : src/affine.h                $(stdinc)
+src/bacon.o               : src/bacon.h                 $(stdinc)
 src/ciphers.o             : src/ciphers.h               $(stdinc)
 src/dictionary.o          : src/dictionary.h            $(stdinc)
 src/frequency_data.o      : src/frequency_data.h        $(stdinc)
