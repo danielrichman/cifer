@@ -31,11 +31,16 @@ void action_do()
  
   if (arg_input) /* Have we got any input files? */
   {
-    i = input_open(arg_input);
-    if (i != 0)
+    if ((i = input_open(arg_input)) != 0)
     {
       printf("input_open failed, returned %i; exiting\n", i);
       exit(1);
+    }
+    
+    if (arg_is)
+    {
+      printf("Input text shift by %d requested... doing...\n", arg_is_1);
+      shift_text(intext, intext_size, modn(arg_is_1, 26));
     }
   }
  

@@ -37,8 +37,8 @@ int arg_pt_1    = 0;
 int arg_pd      = 0;         /* Print digram frequencies */
 int arg_pd_1    = 0;
 int arg_fd      = 0;         /* Frequency guesses */
-int arg_shift   = 0;         /* Shift the intext by arg_shift_1 */
-int arg_shift_1 = 0;
+int arg_is      = 0;         /* Shift the intext by arg_shift_1 */
+int arg_is_1   = 0;
 
 int arg_parse(int argc, char **argv)
 {
@@ -77,6 +77,17 @@ int arg_parse(int argc, char **argv)
     /* Shift input */
     if (((strcmp(argv[i], "-is")) == 0) || ((strcmp(argv[i], "--input-shift") == 0)))
     {
+      if (i + 1 >= argc)
+      {
+        printf("arg_bad\n");
+        return -1;
+      }
+      
+      printf("arg_is %s, ", argv[i+1]);
+      arg_is = 1;
+      arg_is_1 = atoi(argv[i+1]);
+      i++; /* Skip the next argument, is arg_shift_1 */ 
+      got_arg = 1;
     }
     
     /* Print a table of mappings from chars to numbers */
