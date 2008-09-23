@@ -99,7 +99,7 @@ void shift_text(char *intext, int intext_size, int shift)
 {
   int i;
   
-  for (i = 0; i < intext_size; i++);
+  for (i = 0; i < intext_size; i++)
   {
     *(intext + i) = NUMCHAR(modp(CHARNUM(*(intext + i)) + shift, 26));
   }
