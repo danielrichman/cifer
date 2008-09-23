@@ -29,3 +29,6 @@ int input_open(char *filename);
 
 /* Counts the size of infile. Returns the size (in bytes) */
 int input_file_size(FILE *infile);
+
+/* Shifts intext by 'shift' amount */
+void shift_text(char *intext, int intext_size, int shift);
