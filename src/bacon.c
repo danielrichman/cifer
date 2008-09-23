@@ -36,17 +36,17 @@ int bacon_crack(char *intext, int intext_size)
   
   /* TODO: fail if intext_size % 5 != 0 */
   
-  printf("Cracking bacon cipher... intext_size %d\n", intext_size);
+  printf("Cracking bacon cipher... intext_size %d, (mod 5) %d\n", intext_size,
+                                                         modp(intext_size, 5));
   
   for (i = 0; i < intext_size; i++)
   {
-    if (j < 5)
+    for (j = 0; j < 5; j++)
     {
       cur_set[j] = *(intext + i);
-      break;
     }
     
-    /* If we get to here, we have a full set */
+    j = 0;
     
     for (h = 0; h < 26; h++)
     {
