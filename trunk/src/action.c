@@ -16,7 +16,10 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* TODO: Add action for arg_fd (frequency_guesses in src/frequency_analysis) */
+
 #include "stdinc.h"
+
 void action_do()
 {
   int i;
