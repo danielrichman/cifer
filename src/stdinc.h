@@ -46,7 +46,7 @@
 #include "ciphers.h"
 #include "utility.h"
 #include "arg.h"
-#include "input.h"
+#include "io.h"
 #include "action.h"
 #include "bacon.h"
 
