@@ -26,7 +26,7 @@ char *bacon_alphabet[26] = { "AAAAA", "AAAAB", "AAABA", "AAABB",
                              "BAABB", "BAABB", "BABAA", "BABAB", 
                              "BABBA", "BABBB" };
 
-int bacon_crack(char *intext, int intext_size)
+int bacon_dec(char *intext, int intext_size)
 {
   int i, h;                 /* Counters */
   int j = 0;                /* j is the current number of values in cur_set */
@@ -34,7 +34,6 @@ int bacon_crack(char *intext, int intext_size)
   char cur_set[5];
   char ptext[intext_size/5];
   
-  /* TODO: fail if intext_size % 5 != 0 */
   
   printf("Cracking bacon cipher... intext_size %d, (mod 5) %d\n", intext_size,
                                                          modp(intext_size, 5));
@@ -50,13 +49,11 @@ int bacon_crack(char *intext, int intext_size)
       
       for (h = 0; h < 26; h++)
       {
-        /* TODO: fix strcmp fail here */
-        if ((strcmp(cur_set, bacon_alphabet[h])) == 0)
+        if ((strncmp(cur_set, bacon_alphabet[h], 5)) == 0)
         { 
           /* We have a match! */
           ptext[ptext_done] = NUMCHAR(h);
           ptext_done++;
-          /* TEMP */ printf("%c", NUMCHAR(h));
           break;
         }
       }

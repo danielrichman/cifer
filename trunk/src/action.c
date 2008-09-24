@@ -143,8 +143,8 @@ void action_do()
   
   if (arg_bacon)
   {
-    printf("Bacon cipher crack requested... doing... \n");
-    bacon_crack(intext, intext_size);
+    printf("Bacon cipher decrypt requested... doing... \n");
+    bacon_dec(intext, intext_size);
     input_restore();
   }
 
