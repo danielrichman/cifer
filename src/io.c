@@ -138,3 +138,29 @@ void shift_text(char *intext, int intext_size, int shift)
   
   printf("done.\n");
 }
+
+int print_file(char *tofile, int tofile_size, char *filename, int filename_size,
+                char *mode)
+{
+  FILE *fp;
+  int size;
+  
+  
+  printf("Printing output to %s... ", tofile);
+  
+  if ((fp = fopen(filename, mode)) == NULL)
+  {
+    printf("failed, fopen() returned NULL!\n");
+    return PRINT_FILE_ERR_FOPEN;
+  }
+  
+  if ((size = fprintf(fp, "%s", tofile)) < 0)
+  {
+    printf("failed, fprintf() error!\n");
+    return PRINT_FILE_ERR_FPRINTF;
+  }
+  
+  printf("printed %d/%d byte(s), done\n", size, tofile_size);
+  
+  return 0;
+}

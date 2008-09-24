@@ -20,6 +20,9 @@
 #define INPUT_ERR_ZERO_SIZE -2
 #define INPUT_ERR_MALLOC    -3
 
+#define PRINT_FILE_ERR_FOPEN   -1
+#define PRINT_FILE_ERR_FPRINTF -2
+
 /* Open our input source(s). Returns 0 if all OK,
  *                                   INPUT_ERR_FOPEN if fopen failed,
  *                                   INPUT_ERR_ZERO_SIZE if the input file is
@@ -38,3 +41,8 @@ void input_restore();
 
 /* Fairly self-explanatry */
 void input_flip_case();
+
+/* Writes *tofile, yes - you guessed it, to filename ;) */
+/* Returns 0 if OK, negative if failed (see PRINT_FILE_ERR_*) above */
+int print_file(char *tofile, int tofile_size, char *filename, 
+                int filename_size, char *mode);
