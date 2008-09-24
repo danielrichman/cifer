@@ -39,7 +39,7 @@ int arg_pd_1    = 0;
 int arg_fd      = 0;         /* Frequency guesses */
 int arg_is      = 0;         /* Shift the intext by arg_shift_1 */
 int arg_is_1    = 0;
-int arg_bacon   = 0;         /* Do bacon cipher crack */
+int arg_bacon   = 0;         /* Do bacon cipher decrypt */
 
 int arg_parse(int argc, char **argv)
 {
