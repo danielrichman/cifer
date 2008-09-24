@@ -9,7 +9,7 @@ Ciphers we need to crack (cross them off):
 [X] Vigenere
 [X] Affine
 [ ] Keyword
-[ ] Bacon
+[X] Bacon
 [ ] Polybius Square
 [ ] Playfair
 [ ] Double Playfair
@@ -34,4 +34,3 @@ Features that are needed
     used, keywords, the lot.
 [X] Implement proper command line parsing using flags (-*) so we can tell the
     program exactly what we need to do.
-
