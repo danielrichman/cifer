@@ -20,6 +20,22 @@
 CC=gcc
 CFLAGS=-Wall
 
+rm = rm -rf
+cat = cat
+
+opt_lvl = 3
+
+dict_name = dict
+dict_file = /usr/share/dict/british-english
+
+bin_norm_name   = cifer
+bin_debug_name  = cifer-debug
+bin_opt_name    = cifer-opt
+bin_all_name    = $(bin_norm_name) $(bin_debug_name) $(bin_opt_name)
+
+cflags_debug = -g
+cflags_opt   = -O$(opt_lvl)
+
 objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/main.o src/utility.o src/vigenere.o \
           src/action.o src/affine.o src/keyword.o src/columnar_transposition.o \
@@ -32,41 +48,42 @@ cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
          src/frequency_analysis.c src/urandom_access.c src/bacon.c src/io.c \
          src/polybius.c
 
-stdinc = src/stdinc.h  src/macros.h  src/settings.h
+common_headers = src/stdinc.h  src/macros.h  src/settings.h
 
-cifer : $(objects) dict
-	gcc -Wall -o cifer $(objects)
+$(bin_norm_name) : $(objects) $(dict_name)
+	$(CC) $(CFLAGS) -o $(bin_norm_name) $(objects)
 
-cifer-debug : dict $(cfiles)
-	gcc -Wall -g -o cifer-debug $(cfiles)
+$(bin_debug_name) : $(dict_name) $(cfiles)
+	$(CC) $(CFLAGS) $(cflags_debug) -o $(bin_debug_name) $(cfiles)
 
-cifer-opt : dict $(cfiles)
-	gcc -Wall -O3 -o cifer-opt $(cfiles)
+$(bin_opt_name) : $(dict_name) $(cfiles)
+	$(CC) $(CFLAGS) $(cflags_opt) -o $(bin_opt_name) $(cfiles)
 
-src/arg.o                    : src/arg.h                    $(stdinc)
-src/action.o                 : src/action.h                 $(stdinc)
-src/affine.o                 : src/affine.h                 $(stdinc)
-src/bacon.o                  : src/bacon.h                  $(stdinc)
-src/ciphers.o                : src/ciphers.h                $(stdinc)
-src/columnar_transposition.o : src/columnar_transposition.h $(stdinc)
-src/dictionary.o             : src/dictionary.h             $(stdinc)
-src/frequency_data.o         : src/frequency_data.h         $(stdinc)
-src/frequency_analysis.o     : src/frequency_analysis.h     $(stdinc)
-src/keyword.c                : src/keyword.h                $(stdinc)
-src/interface.o              : src/interface.h              $(stdinc)
-src/io.o                     : src/io.h                     $(stdinc)
-src/main.o                   :                              $(stdinc)
-src/polybius.o               : src/polybius.h               $(stdinc)
-src/utility.o                : src/utility.h src/utility.i  $(stdinc) 
-src/urandom_access.o         : src/urandom_access.h         $(stdinc)
-src/vigenere.o               : src/vigenere.h               $(stdinc)
+src/arg.o                    : src/arg.h                    $(common-headers)
+src/action.o                 : src/action.h                 $(common-headers)
+src/affine.o                 : src/affine.h                 $(common-headers)
+src/bacon.o                  : src/bacon.h                  $(common-headers)
+src/ciphers.o                : src/ciphers.h                $(common-headers)
+src/columnar_transposition.o : src/columnar_transposition.h $(common-headers)
+src/dictionary.o             : src/dictionary.h             $(common-headers)
+src/frequency_data.o         : src/frequency_data.h         $(common-headers)
+src/frequency_analysis.o     : src/frequency_analysis.h     $(common-headers)
+src/keyword.c                : src/keyword.h                $(common-headers)
+src/interface.o              : src/interface.h              $(common-headers)
+src/io.o                     : src/io.h                     $(common-headers)
+src/main.o                   :                              $(common-headers)
+src/polybius.o               : src/polybius.h               $(common-headers)
+src/utility.o                : src/utility.h src/utility.i  $(common-headers) 
+src/urandom_access.o         : src/urandom_access.h         $(common-headers)
+src/vigenere.o               : src/vigenere.h               $(common-headers)
+
+$(dict_name) :
+	$(cat) $(dict_file) | sort > $(dict_name)
 
 .PHONY : clean clean-objects
+
 clean :
-	rm -rf cifer cifer-debug cifer-opt dict $(objects)
+	$(rm) $(bin_all_name) $(dict_name) $(objects)
 
 clean-objects :
-	rm -rf $(objects)
-
-dict :
-	cat /usr/share/dict/british-english | sort > dict
+	$(rm) $(objects)
