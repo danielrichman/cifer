@@ -29,6 +29,3 @@ void print_finalise_width(int *width, int *m);
 
 /* Print a table of letters mapped to their numeric equivalents */
 void print_char_table(void);
-
-extern char *intext;
-extern int intext_size;

@@ -16,6 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* TODO: fix bug where random crap is on the end of output */
+
 #include "stdinc.h"
 
 int polybius_grid_25_int[26] = { 11, 12, 13, 14,     15,
@@ -37,12 +39,12 @@ int polybius_dec(char *text, int text_size)
   int output_count = 0;
   int text_size_mod_2;
   
-  printf("Doing polybius decrypt... text_size %d,  mod 2 %d, ",
+  printf("Doing polybius decrypt... text_size %d, mod 2 %d, ",
          text_size, (text_size_mod_2 = modp(text_size, 2)));
   
   if (text_size_mod_2 != 0)
   {
-    printf("failed, text_size % 2 == %d (!= 0)!\n", text_size_mod_2);
+    printf("failed, text_size %% 2 == %d (!= 0)!\n", text_size_mod_2);
     return -1;
   }
   char output[text_size/2];
@@ -52,7 +54,7 @@ int polybius_dec(char *text, int text_size)
     cur_set[0] = *(text + i);
     cur_set[1] = *(text + i + 1);
     
-    for (h = 0; h < 25; h++)
+    for (h = 0; h < 26; h++)
     {
       if ((strncmp(cur_set, polybius_grid_25_char[h], 2)) == 0)
       {

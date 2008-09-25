@@ -154,10 +154,10 @@ void action_do()
     input_restore();
   }
   
-  if (arg_pb) /* Polybius */
+  if (arg_pb) /* Polybius. Needs alphanumeric input */
   {
     printf("Polybius cipher decrypt requested... doing... \n");
-    polybius_dec(intext, intext_size);
+    polybius_dec(intext_num, intext_num_size);
     input_restore();
   }
 
