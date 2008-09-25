@@ -28,7 +28,7 @@ int input_open(char *filename)
   int i;
   char ch;
   
-  printf("Opening input source(s)... ");
+  printf("Opening input source(s)...  ");
   
   if ((infile = fopen(filename, "r")) == NULL)
   {
@@ -38,20 +38,17 @@ int input_open(char *filename)
   printf("opened %s, ", filename);
   
   /* Find out how big the file is */
-  if (!(((intext_size = input_file_size_alpha(infile)) == 0) ||
-      ((intext_num_size = input_file_size_alphanum(infile)) == 0)))
+  if ( ((intext_size = input_file_size_alpha(infile)) == 0)   &&
+       ((intext_num_size = input_file_size_alphanum(infile)) == 0)  )
   {
-    printf("failed, intext_size is 0!\n");
+    printf("failed, no data to read!\n");
     return INPUT_ERR_ZERO_SIZE;
   }
-  printf("intext_size %d bytes, \n", intext_size);
-   
-  if ((intext_num_size = input_file_size_alphanum(infile)) == 0)
-  {
-    printf("failed, intext_num_size is 0!\n");
-    return INPUT_ERR_ZERO_SIZE;
-  }
-  printf("intext_num_size %d bytes, \n", intext_num_size);
+
+  printf("\n");
+  printf("                            intext_size %d bytes, \n", intext_size);
+  printf("                            intext_num_size %d bytes, \n", 
+                                                     intext_num_size);
 
   /* Allocate space */
   intext              = malloc(intext_size     + 1);
@@ -70,8 +67,8 @@ int input_open(char *filename)
 
   /* Makes it look nicer =) */
   printf("                            ");
-  printf("malloc()'d %d bytes intext, %d bytes intext_num, ", intext_size + 1,
-                                                          intext_num_size + 1);
+  printf("malloc()'d %d bytes intext, %d bytes intext_num, \n", 
+                         intext_size + 1, intext_num_size + 1);
  
   /* Set the final null byte */
   *(intext     + intext_size    ) = 0;
@@ -89,7 +86,7 @@ int input_open(char *filename)
       i++;
     }
   }
-  printf("read into intext, ");
+  printf("                            read into intext, ");
   
   ch = 0;
   rewind(infile);

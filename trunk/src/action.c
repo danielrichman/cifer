@@ -16,8 +16,6 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* TODO: Add action for arg_fd (frequency_guesses in src/frequency_analysis) */
-
 #include "stdinc.h"
 
 void action_do()
@@ -26,6 +24,7 @@ void action_do()
   int frequency_graph[26], identity_frequency_graph[26];
   digram *digrams;
   trigram *trigrams;
+  char *text_tmp;
 
   printf("Doing requested action(s)...\n");
  
@@ -178,11 +177,46 @@ void action_do()
 
   if (arg_ctrans)
   {
-/* int arg_ctrans  = 0;       Do some sort of columnar transposition */
-/* int arg_ctrans_type = 0;     c2c, r2c, c2r? */
-/* int arg_ctrans_mode = 0;     bruteforce, de/en code, flip+de/en code */
-/* int *arg_ctrans_key = 0;     If decode, this points to a key array */
-/* int arg_ctrans_key_size = 0; */
+    if (arg_ctrans_mode == 0)
+    {
+      columnar_transposition_bruteforce(intext_num, intext_num_size, 
+             CTRANS_MIN_KEYLEN, CTRANS_MAX_KEYLEN, arg_ctrans_type);
+    }
+    else
+    {
+      if (arg_ctrans_mode == 2) 
+        columnar_transposition_flip_key(arg_ctrans_key, arg_ctrans_key_size);
+
+      text_tmp = malloc(intext_num_size + 1);
+      if (text_tmp == NULL)
+      {
+        printf("action_do: allocate %i for text_temp (ctrans decode) failed.\n",
+                     intext_num_size + 1);
+      }
+
+      *(text_tmp + intext_num_size) = 0;
+
+      (*arg_ctrans_type)(intext_num, text_tmp, intext_num_size, arg_ctrans_key,
+                                   arg_ctrans_key_size);
+
+      printf("Columnar Transposition Decode:\n");
+
+      printf("Reverse/decode key (used to crack):");
+      for (i = 0; i < arg_ctrans_key_size; i++) 
+            printf("%i|", arg_ctrans_key[i]);
+      printf("\n");
+
+      columnar_transposition_flip_key(arg_ctrans_key, arg_ctrans_key_size);
+
+      printf("Forward key (used for initial encode):");
+      for (i = 0; i < arg_ctrans_key_size; i++) 
+            printf("%i|", arg_ctrans_key[i]);
+      printf("\n\n");
+
+      printf("%*s\n\n", intext_num_size, text_tmp);
+
+      free(text_tmp);
+    }
   }
 
   printf("Finished doing requested actions.\n");

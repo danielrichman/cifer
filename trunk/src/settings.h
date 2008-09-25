@@ -21,6 +21,9 @@
 // #define VIGENERE_MAX_KEYLEN text_size      /* Size of ctext */
 /* Todo: Make the max keylen dynamically increase using the auto-detect stuff */
 
+#define CTRANS_MIN_KEYLEN 2
+#define CTRANS_MAX_KEYLEN 10
+
 #define DICTIONARY "./dict"
 #define WORD_BUF_SIZE  30      /* Slightly more than `cat dict | wc -L` */
 #define MIN_WORD_SIZE  2

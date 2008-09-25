@@ -26,7 +26,7 @@ extern int arg_keyb;
 extern int arg_keyd;
 extern char *arg_keyd_string;
 extern int arg_ctrans;
-extern int arg_ctrans_type;
+extern columnar_transposition_function arg_ctrans_type;
 extern int arg_ctrans_mode;
 extern int *arg_ctrans_key;
 extern int arg_ctrans_key_size;

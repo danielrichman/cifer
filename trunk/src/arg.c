@@ -27,7 +27,7 @@ int arg_keyb    = 0;         /* Do a Keyword bruteforce */
 int arg_keyd    = 0;         /* Do a keyword decode */
 char *arg_keyd_string = NULL; 
 int arg_ctrans  = 0;         /* Do some sort of columnar transposition */
-int arg_ctrans_type = 0;     /* c2c, r2c, c2r? */
+columnar_transposition_function arg_ctrans_type;
 int arg_ctrans_mode = 0;     /* bruteforce, de/en code, flip+de/en code */
 int *arg_ctrans_key;         /* If decode, this points to a key array */
 int arg_ctrans_key_size = 0;
@@ -176,19 +176,19 @@ int arg_parse(int argc, char **argv)
       if ((strcmp(argv[i + 1], "c2c")) == 0 ||
           (strcmp(argv[i + 1], "col2col")) == 0)
       {
-        arg_ctrans_type = 0;
+        arg_ctrans_type = &columnar_transposition_col2col;
         printf("arg_ctrans col2col: ");
       }
       else if ((strcmp(argv[i + 1], "r2c")) == 0 ||
                (strcmp(argv[i + 1], "row2col")) == 0)
       {
-        arg_ctrans_type = 1;
+        arg_ctrans_type = &columnar_transposition_row2col;
         printf("arg_ctrans row2col: ");
       }
       else if ((strcmp(argv[i + 1], "c2r")) == 0 ||
                (strcmp(argv[i + 1], "col2row")) == 0)
       {
-        arg_ctrans_type = 2;
+        arg_ctrans_type = &columnar_transposition_col2row;
         printf("arg_ctrans col2row: ");
       }
       else
