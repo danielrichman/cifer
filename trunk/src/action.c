@@ -43,7 +43,8 @@ void action_do()
     }
   }
  
-  if (arg_keyb)  /* Will the dictionary be needed? */
+  /* Will the dictionary be needed? */
+  if (arg_keyb || (arg_ctrans && arg_ctrans_mode == 0))
   {
     load_dict();
   }

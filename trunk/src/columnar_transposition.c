@@ -63,6 +63,10 @@ void columnar_transposition_bruteforce(char *text, int text_size,
     factorial = 1;
     for (i = 2; i <= key_size; i++)  factorial *= i;
 
+    /* Progress indicator */
+    printf(" -> %3i - %8i", key_size, factorial); 
+    fflush(stdout);
+
     for (i = 1; i <= factorial; i++)
     {
       /* Initialise the key */
@@ -100,10 +104,10 @@ void columnar_transposition_bruteforce(char *text, int text_size,
       }
     }
 
-    printf("        -> %3i - %8i: best score %i, from length %i; key:  ", 
-                   key_size, factorial, best_score, best_size); 
-    printf("%2i", key_best[0]);
-    for (i = 0; i < best_size; i++) printf(",%2i", key[i]);
+    printf(": best score %4i, from length %i; key: ", 
+                   best_score, best_size); 
+    printf("%i", key_best[0]);
+    for (i = 1; i < best_size; i++) printf("|%i", key_best[i]);
     printf("\n");
   }
 
