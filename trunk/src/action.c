@@ -86,7 +86,13 @@ void action_do()
     create_identity_frequency_graph(identity_frequency_graph, intext_size);
     print_freq(frequency_graph, identity_frequency_graph);
   }
-  
+ 
+  if (arg_fd) /* Frequency Guesses */
+  {
+    printf("Frequency Guesses... doing...\n");
+    frequency_guesses(intext, intext_size);
+  }
+ 
   if (arg_pd) /* Print digram counts */
   {
     arg_pd_1 = max(min(arg_pd_1, 26 * 26), 1); /* Enforce minimum and maximum */

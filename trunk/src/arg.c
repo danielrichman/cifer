@@ -76,7 +76,8 @@ int arg_parse(int argc, char **argv)
     }
     
     /* Shift input */
-    if (((strcmp(argv[i], "-is")) == 0) || ((strcmp(argv[i], "--input-shift") == 0)))
+    if (((strcmp(argv[i], "-is")) == 0) || 
+        ((strcmp(argv[i], "--input-shift") == 0)))
     {
       if (i + 1 >= argc)
       {
