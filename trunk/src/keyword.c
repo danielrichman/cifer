@@ -22,9 +22,9 @@
 
 void keyword_bruteforce(char *text, int text_size)
 {
-  char *j, *e, *best, *text_tmp;
+  char *j, *e, *best, *text_tmp, statusbuf[75];
   int len, score, best_score, temp_table[26];
-  int p, lastp, l, lastl;
+  int p, lastp, l, lastl, lastplen;
 
   printf("keyword_bruteforce: Trying to find Keyword Cipher from the dict.\n");
 
@@ -51,8 +51,34 @@ void keyword_bruteforce(char *text, int text_size)
 
     l = CHARNUM(*j);
     p = (l * 26) + CHARNUM(*(j + 1));
-    if (l != lastl) { printf("\n"); fflush(stdout); }
-    if (p != lastp) { printf("|"); fflush(stdout); }
+
+    if (l != lastl)
+    {
+      if (lastl != -1)
+      {
+        keyword_table(best, strlen(best), temp_table);
+        keyword_table_flip(temp_table);
+        keyword_decode(text, text_tmp, text_size, temp_table);
+
+        /* We have 80 - lastplen chars left. Spare 5 for ... \0, \n and ) */
+        snprintf(statusbuf, 75 - lastplen, " (best so far: %i, %s: %s",
+                  best_score, best,  text_tmp);
+
+        /* Write out the now trimmed string (with the suffix blah...) \n */
+        printf("%s...)", statusbuf);
+      }
+
+      printf("\n");
+      fflush(stdout);
+      lastplen = 0;
+    }
+    if (p != lastp)
+    {
+      printf("|");
+      fflush(stdout);
+      lastplen++;
+    }
+
     lastl = l;
     lastp = p;
 

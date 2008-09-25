@@ -176,5 +176,14 @@ void action_do()
     input_restore();
   }
 
+  if (arg_ctrans)
+  {
+/* int arg_ctrans  = 0;       Do some sort of columnar transposition */
+/* int arg_ctrans_type = 0;     c2c, r2c, c2r? */
+/* int arg_ctrans_mode = 0;     bruteforce, de/en code, flip+de/en code */
+/* int *arg_ctrans_key = 0;     If decode, this points to a key array */
+/* int arg_ctrans_key_size = 0; */
+  }
+
   printf("Finished doing requested actions.\n");
 }

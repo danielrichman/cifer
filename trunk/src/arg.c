@@ -26,6 +26,11 @@ int arg_aff     = 0;         /* Do an affine crack */
 int arg_keyb    = 0;         /* Do a Keyword bruteforce */
 int arg_keyd    = 0;         /* Do a keyword decode */
 char *arg_keyd_string = NULL; 
+int arg_ctrans  = 0;         /* Do some sort of columnar transposition */
+int arg_ctrans_type = 0;     /* c2c, r2c, c2r? */
+int arg_ctrans_mode = 0;     /* bruteforce, de/en code, flip+de/en code */
+int *arg_ctrans_key;         /* If decode, this points to a key array */
+int arg_ctrans_key_size = 0;
 int arg_gcd     = 0;         /* Do a GCD Calculation */
 int arg_gcd_1   = 0;
 int arg_gcd_2   = 0;
@@ -44,7 +49,7 @@ int arg_pb      = 0;         /* Do polybius square decrypt */
 
 int arg_parse(int argc, char **argv)
 {
-  int i;
+  int i, j, h;
   int got_arg = 0;
   
   printf("Parsing command line arguments... ");
@@ -66,7 +71,7 @@ int arg_parse(int argc, char **argv)
     {
       if (i + 1 >= argc)
       {
-        printf("arg_bad\n");
+        printf("arg_bad (not enough args)\n");
         return -1;
       }
 
@@ -82,7 +87,7 @@ int arg_parse(int argc, char **argv)
     {
       if (i + 1 >= argc)
       {
-        printf("arg_bad\n");
+        printf("arg_bad (not enough args)\n");
         return -1;
       }
       
@@ -147,7 +152,7 @@ int arg_parse(int argc, char **argv)
     {
       if (i + 1 >= argc)
       {
-        printf("arg_bad\n");
+        printf("arg_bad (not enough args)\n");
         return -1;
       }
 
@@ -158,11 +163,118 @@ int arg_parse(int argc, char **argv)
       got_arg = 1;
     }
 
+    if ((strcmp(argv[i], "-ctrans")) == 0 ||
+       ((strcmp(argv[i], "--columnar_transposition") == 0)))
+    {
+      if (i + 2 >= argc)
+      {
+        printf("arg_bad (not enough args)\n");
+        return -1;
+      }
+
+      arg_ctrans = 1;
+      got_arg = 1;
+
+      if ((strcmp(argv[i + 1], "c2c")) == 0 ||
+          (strcmp(argv[i + 1], "col2col")) == 0)
+      {
+        arg_ctrans_type = 0;
+        printf("arg_ctrans col2col: ");
+      }
+      else if ((strcmp(argv[i + 1], "r2c")) == 0 ||
+               (strcmp(argv[i + 1], "row2col")) == 0)
+      {
+        arg_ctrans_type = 1;
+        printf("arg_ctrans row2col: ");
+      }
+      else if ((strcmp(argv[i + 1], "c2r")) == 0 ||
+               (strcmp(argv[i + 1], "col2row")) == 0)
+      {
+        arg_ctrans_type = 2;
+        printf("arg_ctrans col2row: ");
+      }
+      else
+      {
+        printf("arg_bad (must be c2c, r2c or c2r)\n");
+        return -1;
+      }
+
+      if ((strcmp(argv[i + 2], "b")) == 0 ||
+          (strcmp(argv[i + 2], "bruteforce")) == 0)
+      {
+        arg_ctrans_mode = 0;
+        printf("bruteforce mode,");
+      }
+      else if ((strcmp(argv[i + 2], "d")) == 0 ||
+               (strcmp(argv[i + 2], "decode")) == 0)
+      {
+        arg_ctrans_mode = 1;
+        printf("decode mode: ");
+      }
+      else if ((strcmp(argv[i + 2], "f")) == 0 ||
+               (strcmp(argv[i + 2], "flipdecode")) == 0)
+      {
+        arg_ctrans_mode = 2;
+        printf("flipdecode mode: ");
+      }
+      else
+      {
+        printf("arg_bad (must be b, d or f)\n");
+        return -1;
+      }
+
+      if (arg_ctrans_mode == 1 || arg_ctrans_mode == 2)
+      {
+        if (i + 3 >= argc)
+        {
+          printf("arg_bad (not enough args)\n");
+          return -1;
+        }
+
+        arg_ctrans_key_size = atoi(argv[i + 3]);
+
+        if (arg_ctrans_key_size < 2 || i + 3 + arg_ctrans_key_size >= argc)
+        {
+          printf("arg_bad (bad key size or not enough elements)\n");
+          return -1;
+        }
+
+        arg_ctrans_key = malloc( sizeof(int) * arg_ctrans_key_size );
+
+        if (arg_ctrans_key == NULL)
+        {
+          printf("\n Failed to allocate (sizeof_int:%i * key_size:%i) = %i\n",
+          sizeof(int), arg_ctrans_key_size, sizeof(int) * arg_ctrans_key_size);
+          exit(1);
+        }
+
+        for (j = 0; j < arg_ctrans_key_size; j++)
+        {
+          arg_ctrans_key[j] = atoi(argv[i + 4 + j]);
+
+          if (arg_ctrans_key[j] < 0 || arg_ctrans_key[j] >= arg_ctrans_key_size)
+          {
+            printf("arg_bad (bad key element)\n");
+            return -1;
+          }
+
+          for (h = 0; h < j; h++)
+          {
+            if (arg_ctrans_key[h] == arg_ctrans_key[j])
+            {
+              printf("arg_bad (duplicate key element)\n");
+              return -1;
+            }
+          }
+        }
+      }
+    }
+
     if ((strcmp(argv[i], "-gcd")) == 0)
     {
       if (i + 2 >= argc)
       {
-        printf("arg_bad\n");
+        printf("arg_bad (not enough args)\n");
         return -1;
       }
 
@@ -178,7 +290,7 @@ int arg_parse(int argc, char **argv)
     {
       if (i + 2 >= argc)
       {
-        printf("arg_bad\n");
+        printf("arg_bad (not enough args)\n");
         return -1;
       }
 
@@ -196,7 +308,7 @@ int arg_parse(int argc, char **argv)
     {
       if (i + 1 >= argc)
       {
-        printf("arg_bad\n");
+        printf("arg_bad (not enough args)\n");
         return -1;
       }
 
@@ -212,7 +324,7 @@ int arg_parse(int argc, char **argv)
     {
       if (i + 1 >= argc)
       {
-        printf("arg_bad\n");
+        printf("arg_bad (not enough args)\n");
         return -1;
       }
 
@@ -233,7 +345,7 @@ int arg_parse(int argc, char **argv)
 
     if (!got_arg)
     {
-      printf("arg_bad\n");
+      printf("arg_bad (not got)\n");
       return -1;
     }
     
