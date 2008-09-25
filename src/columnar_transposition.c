@@ -26,7 +26,7 @@
 void columnar_transposition_bruteforce(char *text, int text_size,
           int key_min, int key_max, columnar_transposition_function *routine)
 {
-  int key_size, i, j, k, t, it, score, best_score, best_size;
+  int key_size, i, j, k, h, factorial, score, best_score, best_size;
   int *key, *key_best;
   char *text_tmp;
 
@@ -51,27 +51,32 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   /* Prepare */
   best_score = -1;
 
+  /* Print a header */
+  printf("Columnar Transposition Bruteforce, starting %i => %i\n", 
+                                                  key_min, key_max);
+
   /* Start teh cracking! */
   for (key_size = key_min; key_size < key_max; key_size++)
   {
     /* Calcualte the factorial */
-    k = 1;
-    for (i = 1; i <= key_size; i++)  k *= i;
+    factorial = 1;
+    for (i = 2; i <= key_size; i++)  factorial *= i;
 
-    /* Initialise the key */
-    for (i = 0; i < key_size; i++)  key[i] = i;
-
-    /* Crack */
-    for (i = 0; i < k; i++)
+    for (i = 1; i <= factorial; i++)
     {
+      /* Initialise the key */
+      for (j = 0; j < key_size; j++)  key[j] = j;
+
+      /* Prepare */
+      k = i;
+
       /* Generate the permutation */
-      it = i;
-      for (j = 1; j < key_size; j++)
+      for (j = 2; j <= key_size; j++)
       {
-        it = it / j;
-        t = key[j - 1];
-        key[j - 1] = key[modp(it, j)];
-        key[modp(it, j)] = t;
+        k = k / (j - 1);
+        h = key[modp(k, j)];
+        key[modp(k, j)] = key[j - 1];
+        key[j - 1] = h;
       }
 
       /* Try it */
@@ -87,14 +92,30 @@ void columnar_transposition_bruteforce(char *text, int text_size,
         for (j = 0; j < key_size; j++) key_best[j] = key[j];
       }
     }
+
+    printf("        -> %3i - %8i: best score %i, from length %i; key:  ", 
+                   key_size, factorial, best_score, best_size); 
+    printf("%2i", key_best[0]);
+    for (i = 0; i < best_size; i++) printf(", %2i", key[i]);
+    printf("\n");
   }
 
   /* Results */
   (*routine)(text, text_tmp, text_size, key_best, best_size);
 
-  printf("Columnar Transposition Bruteforce: ");
+  printf("Columnar Transposition Bruteforce: best_score %i; key size %i\n",
+                                      best_score, best_size);
+
+  printf("Reverse/decode key (used to crack):");
   for (i = 0; i < best_size; i++) printf("%i|", key_best[i]);
-  printf(" (%i) \n\n", best_score);
+  printf("\n"); 
+
+  columnar_transposition_flip_key(key_best, best_size);
+
+  printf("Forward key (used for initial encode):");
+  for (i = 0; i < best_size; i++) printf("%i|", key_best[i]);
+  printf("\n\n");
+
   printf("%*s\n\n", text_size, text);
 
   /* Free up */
