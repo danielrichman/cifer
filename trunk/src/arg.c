@@ -50,24 +50,22 @@ int arg_pb      = 0;         /* Do polybius square decrypt */
 int arg_parse(int argc, char **argv)
 {
   int i, j, h;
-  int got_arg = 0;
   
   printf("Parsing command line arguments... ");
   
   for (i = 1; i < argc; i++)
   {
-    got_arg = 0;
-
     /* Do frequency analysis */
     if (((strcmp(argv[i], "-f")) == 0) || ((strcmp(argv[i], "--freq") == 0)))
     {
       arg_freq = 1;
       printf("arg_freq, ");
-      got_arg = 1;
+
     }
     
     /* Input file */
-    if (((strcmp(argv[i], "-i")) == 0) || ((strcmp(argv[i], "--input") == 0)))
+    else if (((strcmp(argv[i], "-i")) == 0) || 
+             ((strcmp(argv[i], "--input") == 0)))
     {
       if (i + 1 >= argc)
       {
@@ -78,11 +76,11 @@ int arg_parse(int argc, char **argv)
       printf("arg_input %s, ", argv[i+1]);
       arg_input = argv[i + 1];
       i++; /* We skip the next argument; it is a filename */
-      got_arg = 1;
+
     }
     
     /* Shift input */
-    if (((strcmp(argv[i], "-is")) == 0) || 
+    else if (((strcmp(argv[i], "-is")) == 0) || 
         ((strcmp(argv[i], "--input-shift") == 0)))
     {
       if (i + 1 >= argc)
@@ -95,59 +93,59 @@ int arg_parse(int argc, char **argv)
       arg_is = 1;
       arg_is_1 = atoi(argv[i+1]);
       i++; /* Skip the next argument, is arg_shift_1 */ 
-      got_arg = 1;
+
     }
     
     /* Print a table of mappings from chars to numbers */
-    if (((strcmp(argv[i], "-pct")) == 0) ||
+    else if (((strcmp(argv[i], "-pct")) == 0) ||
         ((strcmp(argv[i], "--print-char-table") == 0)))
     {
       arg_pct = 1;
       printf("arg_pct, ");
-      got_arg = 1;
+
     }
     
-    if ((strcmp(argv[i], "-bac")) == 0 ||
+    else if ((strcmp(argv[i], "-bac")) == 0 ||
        ((strcmp(argv[i], "--bacon") == 0)))
     {
       arg_bacon = 1;
       printf("arg_bacon, ");
-      got_arg = 1;
+
     }
     
-    if ((strcmp(argv[i], "-vig")) == 0 ||
+    else if ((strcmp(argv[i], "-vig")) == 0 ||
        ((strcmp(argv[i], "--vigenere") == 0)))
     {
       arg_vig = 1;
       printf("arg_vig, ");
-      got_arg = 1;
+
     }
 
-    if ((strcmp(argv[i], "-aff")) == 0 ||
+    else if ((strcmp(argv[i], "-aff")) == 0 ||
        ((strcmp(argv[i], "--affine") == 0)))
     {
       arg_aff = 1;
       printf("arg_aff, ");
-      got_arg = 1;
+
     }
     
-    if ((strcmp(argv[i], "-pb")) == 0 ||
+    else if ((strcmp(argv[i], "-pb")) == 0 ||
        ((strcmp(argv[i], "--polybius") == 0)))
     {
       arg_pb = 1;
       printf("arg_pb, ");
-      got_arg = 1;
+
     }
 
-    if ((strcmp(argv[i], "-keyb")) == 0 ||
+    else if ((strcmp(argv[i], "-keyb")) == 0 ||
        ((strcmp(argv[i], "--keyword-bruteforce") == 0)))
     {
       arg_keyb = 1;
       printf("arg_keyb, ");
-      got_arg = 1;
+
     }
 
-    if ((strcmp(argv[i], "-keyd")) == 0 ||
+    else if ((strcmp(argv[i], "-keyd")) == 0 ||
        ((strcmp(argv[i], "--keyword-decode") == 0)))
     {
       if (i + 1 >= argc)
@@ -160,10 +158,10 @@ int arg_parse(int argc, char **argv)
       arg_keyd_string = argv[i + 1];
       printf("arg_keyd %s, ", arg_keyd_string);
       i++;
-      got_arg = 1;
+
     }
 
-    if ((strcmp(argv[i], "-ctrans")) == 0 ||
+    else if ((strcmp(argv[i], "-ctrans")) == 0 ||
        ((strcmp(argv[i], "--columnar_transposition") == 0)))
     {
       if (i + 2 >= argc)
@@ -173,7 +171,7 @@ int arg_parse(int argc, char **argv)
       }
 
       arg_ctrans = 1;
-      got_arg = 1;
+
 
       if ((strcmp(argv[i + 1], "c2c")) == 0 ||
           (strcmp(argv[i + 1], "col2col")) == 0)
@@ -203,7 +201,7 @@ int arg_parse(int argc, char **argv)
           (strcmp(argv[i + 2], "bruteforce")) == 0)
       {
         arg_ctrans_mode = 0;
-        printf("bruteforce mode,");
+        printf("bruteforce mode, ");
       }
       else if ((strcmp(argv[i + 2], "d")) == 0 ||
                (strcmp(argv[i + 2], "decode")) == 0)
@@ -267,10 +265,16 @@ int arg_parse(int argc, char **argv)
             }
           }
         }
+
+        i += 3 + arg_ctrans_key_size;
+      }
+      else
+      {
+        i += 2;
       }
     }
 
-    if ((strcmp(argv[i], "-gcd")) == 0)
+    else if ((strcmp(argv[i], "-gcd")) == 0)
     {
       if (i + 2 >= argc)
       {
@@ -283,10 +287,10 @@ int arg_parse(int argc, char **argv)
       arg_gcd_2 = atoi(argv[i + 2]);
       printf("arg_gcd %i %i, ", arg_gcd_1, arg_gcd_2);
       i += 2;
-      got_arg = 1;
+
     }    
 
-    if ((strcmp(argv[i], "-mmi")) == 0)
+    else if ((strcmp(argv[i], "-mmi")) == 0)
     {
       if (i + 2 >= argc)
       {
@@ -299,11 +303,11 @@ int arg_parse(int argc, char **argv)
       arg_mmi_2 = atoi(argv[i + 2]);
       printf("arg_mmi %i %i, ", arg_mmi_1, arg_mmi_2);
       i += 2;
-      got_arg = 1;
+
     }
  
    
-    if (((strcmp(argv[i], "-pt")) == 0) || 
+    else if (((strcmp(argv[i], "-pt")) == 0) || 
         ((strcmp(argv[i], "--print-trigram-freq")) == 0))
     {
       if (i + 1 >= argc)
@@ -316,10 +320,10 @@ int arg_parse(int argc, char **argv)
       arg_pt_1 = atoi(argv[i + 1]);
       printf("arg_pt %d, ", arg_pt_1);
       i++;
-      got_arg = 1;
+
     }
 
-    if (((strcmp(argv[i], "-pd")) == 0) ||
+    else if (((strcmp(argv[i], "-pd")) == 0) ||
         ((strcmp(argv[i], "--print-digram-freq")) == 0))
     {
       if (i + 1 >= argc)
@@ -332,18 +336,17 @@ int arg_parse(int argc, char **argv)
       arg_pd_1 = atoi(argv[i + 1]);
       printf("arg_pd %d, ", arg_pd_1);
       i++;
-      got_arg = 1;
+
     }
     
-    if (((strcmp(argv[i], "-fd")) == 0) || 
+    else if (((strcmp(argv[i], "-fd")) == 0) || 
         ((strcmp(argv[i], "--frequency-guesses")) == 0))
     {
       arg_fd = 1;
       printf("arg_fd, ");
-      got_arg = 1;
-    }
 
-    if (!got_arg)
+    }
+    else
     {
       printf("arg_bad (not got)\n");
       return -1;
