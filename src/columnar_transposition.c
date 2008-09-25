@@ -24,7 +24,7 @@
  * function below to do that). The key must be starting at 0. */
 
 void columnar_transposition_bruteforce(char *text, int text_size,
-          int key_min, int key_max, columnar_transposition_function *routine)
+          int key_min, int key_max, columnar_transposition_function routine)
 {
   int key_size, i, j, k, h, factorial, score, best_score, best_size;
   int *key, *key_best;
@@ -41,12 +41,13 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   }
 
   /* Create our temporary space */
-  text_tmp = malloc(text_size);
+  text_tmp = malloc(text_size + 1);
   if (text_tmp == NULL)
   {
-    printf("c.trans._bruteforce malloc(%i) text_temp fail\n", text_size);
+    printf("c.trans._bruteforce malloc(%i) text_temp fail\n", text_size + 1);
     exit(1);
   }
+  *(text_tmp + intext_size) = 0;
 
   /* Prepare */
   best_score = -1;
@@ -82,6 +83,12 @@ void columnar_transposition_bruteforce(char *text, int text_size,
       /* Try it */
       (*routine)(text, text_tmp, text_size, key, key_size);
 
+      /* Strip any numbers for scoring ='( (TODO: Fix this, score text doesn't
+       * support numbers) */
+      for (j = 0; j < text_size; j++) 
+        if (NUMBER_CH(*(text_tmp + j))) *(text_tmp + j) = 
+          CHARNUM(NUMCHARNUM(*(text_tmp + k)));
+
       /* Score it */
       score = score_text_dict_fast(text_tmp, text_size);
 
@@ -96,7 +103,7 @@ void columnar_transposition_bruteforce(char *text, int text_size,
     printf("        -> %3i - %8i: best score %i, from length %i; key:  ", 
                    key_size, factorial, best_score, best_size); 
     printf("%2i", key_best[0]);
-    for (i = 0; i < best_size; i++) printf(", %2i", key[i]);
+    for (i = 0; i < best_size; i++) printf(",%2i", key[i]);
     printf("\n");
   }
 
