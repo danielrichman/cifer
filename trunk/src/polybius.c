@@ -29,26 +29,35 @@ int polybius_dec(char *text, int text_size)
   int i, h;
   char cur_set[2];
   int output_count = 0;
+  int text_size_mod_2;
+  
+  printf("Doing polybius decrypt... text_size %d,  mod 2 %d, ",
+         text_size, (text_size_mod_2 = modp(text_size, 2)));
+  
+  if (text_size_mod_2 != 0)
+  {
+    printf("failed, text_size % 2 == %d (!= 0)!\n", text_size_mod_2);
+    return -1;
+  }
   char output[text_size/2];
   
-  printf("Doing polybius decrypt... text_size %d mod 2 %d... \n",
-         text_size, modp(text_size, 2));
-  
-  for (i = 0; i < text_size; i + 2)
+  for (i = 0; i < text_size; i += 2)
   {
     cur_set[0] = *(text + i);
     cur_set[1] = *(text + i + 1);
     
     for (h = 0; h < 25; h++)
     {
-      if ((strncmp(cur_set, polybius_grid_25[h], 2)) == 0)
+      if ((strncmp(cur_set, atoi(polybius_grid_25[h]), 2)) == 0)
       {
         /* Match */
         output[output_count] = NUMCHAR(h);
         output_count++;
-        /* TEMP */ printf("%c", NUMCHAR(h)); /* TEMP */
         break;
       }
     }
   }
+  
+  printf("\n\n%*s\n\n", output_count, output);
+  return 0;
 }

@@ -40,6 +40,7 @@ int arg_fd      = 0;         /* Frequency guesses */
 int arg_is      = 0;         /* Shift the intext by arg_shift_1 */
 int arg_is_1    = 0;
 int arg_bacon   = 0;         /* Do bacon cipher decrypt */
+int arg_pb      = 0;         /* Do polybius square decrypt */
 
 int arg_parse(int argc, char **argv)
 {
@@ -122,6 +123,14 @@ int arg_parse(int argc, char **argv)
     {
       arg_aff = 1;
       printf("arg_aff, ");
+      got_arg = 1;
+    }
+    
+    if ((strcmp(argv[i], "-pb")) == 0 ||
+       ((strcmp(argv[i], "--polybius") == 0)))
+    {
+      arg_pb = 1;
+      printf("arg_pb, ");
       got_arg = 1;
     }
 

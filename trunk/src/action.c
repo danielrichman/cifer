@@ -153,6 +153,13 @@ void action_do()
     bacon_dec(intext, intext_size);
     input_restore();
   }
+  
+  if (arg_pb) /* Polybius */
+  {
+    printf("Polybius cipher decrypt requested... doing... \n");
+    polybius_dec(intext, intext_size);
+    input_restore();
+  }
 
   if (arg_keyb) /* Bruteforce Keyword */
   {
