@@ -23,6 +23,12 @@
 #define PRINT_FILE_ERR_FOPEN   -1
 #define PRINT_FILE_ERR_FPRINTF -2
 
+extern char *intext;
+extern char *intext_num;
+ 
+extern int intext_size;
+extern int intext_num_size;
+
 /* Open our input source(s). Returns 0 if all OK,
  *                                   INPUT_ERR_FOPEN if fopen failed,
  *                                   INPUT_ERR_ZERO_SIZE if the input file is
@@ -31,7 +37,8 @@
 int input_open(char *filename);
 
 /* Counts the size of infile. Returns the size (in bytes) */
-int input_file_size(FILE *infile);
+int input_file_size_alpha(FILE *infile);
+int input_file_size_alphanum(FILE *infile);
 
 /* Shifts intext by 'shift' amount */
 void shift_text(char *intext, int intext_size, int shift);

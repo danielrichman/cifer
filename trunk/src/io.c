@@ -18,8 +18,9 @@
 
 #include "stdinc.h"
 
-char *intext, *intext_original;
-int intext_size, intext_original_size;
+char *intext, *intext_num, *intext_original, *intext_num_original;
+int intext_size, intext_num_size, intext_original_size,
+    intext_num_original_size;
 
 int input_open(char *filename)
 {
@@ -37,35 +38,49 @@ int input_open(char *filename)
   printf("opened %s, ", filename);
   
   /* Find out how big the file is */
-  if ((intext_size = input_file_size(infile)) == 0)
+  if (!(((intext_size = input_file_size_alpha(infile)) == 0) ||
+      ((intext_num_size = input_file_size_alphanum(infile)) == 0)))
   {
     printf("failed, intext_size is 0!\n");
     return INPUT_ERR_ZERO_SIZE;
   }
   printf("intext_size %d bytes, \n", intext_size);
+   
+  if ((intext_num_size = input_file_size_alphanum(infile)) == 0)
+  {
+    printf("failed, intext_num_size is 0!\n");
+    return INPUT_ERR_ZERO_SIZE;
+  }
+  printf("intext_num_size %d bytes, \n", intext_num_size);
 
   /* Allocate space */
-  intext = malloc(intext_size + 1);
-  intext_original = malloc(intext_size + 1);
+  intext              = malloc(intext_size     + 1);
+  intext_original     = malloc(intext_size     + 1);
+  intext_num          = malloc(intext_num_size + 1);
+  intext_num_original = malloc(intext_num_size + 1);
 
   /* malloc() enough space for the file */
-  if (intext == NULL || intext_original == NULL)
+  if (intext == NULL || intext_original == NULL || intext_num == NULL ||
+      intext_num_original == NULL)
   {
-    printf("intext or intext_original failed, malloc(%i) returned NULL!\n", 
+    printf("intext_* failed, malloc(%i) returned NULL!\n", 
                        intext_size + 1);
     return INPUT_ERR_MALLOC;
   }
 
   /* Makes it look nicer =) */
   printf("                            ");
-  printf("malloc()'d %d bytes, ", intext_size + 1);
+  printf("malloc()'d %d bytes intext, %d bytes intext_num, ", intext_size + 1,
+                                                          intext_num_size + 1);
  
   /* Set the final null byte */
-  *(intext + intext_size) = 0;
+  *(intext     + intext_size    ) = 0;
+  *(intext_num + intext_num_size) = 0;
  
   /* Read the file into intext */
   ch = 0;
-
+  
+    /* intext is alpha upper/lower only */
   for (i = 0; i < intext_size; ch = fgetc(infile))
   {
     if (ALPHAL_CH(ch) || ALPHAH_CH(ch))
@@ -75,12 +90,30 @@ int input_open(char *filename)
     }
   }
   printf("read into intext, ");
+  
+  ch = 0;
+  rewind(infile);
+  
+    /* intext_num is alphanumeric only */
+  for (i = 0; i < intext_num_size; ch = fgetc(infile))
+  {
+    if (ALPHAL_CH(ch) || ALPHAH_CH(ch) || NUMBER_CH(ch))
+    {
+      *(intext_num + i) = ch;  /* Preserve case */
+      i++;
+    }
+  }
+  printf("read into intext_num, ");
   printf("done.\n");
  
   /* Backup the ctext */
-  memcpy(intext_original, intext, intext_size);
-  intext_original_size = intext_size;
-  printf("Copied intext to intext_original (memcpy)\n");
+  memcpy(intext_original,     intext,     intext_size    );
+  memcpy(intext_num_original, intext_num, intext_num_size);
+  
+  intext_original_size     = intext_size;
+  intext_num_original_size = intext_num_size;
+  
+  printf("Copied intext_* to intext_*_original (memcpy)\n");
  
   return 0;
 }
@@ -103,7 +136,7 @@ void input_restore()
   memcpy(intext, intext_original, intext_original_size);
 }
 
-int input_file_size(FILE *infile)
+int input_file_size_alpha(FILE *infile)
 {
   int size = 0;
   char ch;
@@ -121,6 +154,28 @@ int input_file_size(FILE *infile)
   }
 
   rewind(infile);  
+
+  return size;
+}
+
+int input_file_size_alphanum(FILE *infile)
+{
+  int size = 0;
+  char ch;
+
+  /* We assume that its already rewound. */
+
+  while (feof(infile) == 0)
+  {
+    ch = fgetc(infile);
+
+    if (ALPHAL_CH(ch) || ALPHAH_CH(ch) || NUMBER_CH(ch))
+    {
+      size++;
+    }
+  }
+
+  rewind(infile);
 
   return size;
 }
