@@ -38,8 +38,10 @@ int input_open(char *filename)
   printf("opened %s, ", filename);
   
   /* Find out how big the file is */
-  if ( ((intext_size = input_file_size_alpha(infile)) == 0)   &&
-       ((intext_num_size = input_file_size_alphanum(infile)) == 0)  )
+  intext_size = input_file_size_alpha(infile);
+  intext_num_size = input_file_size_alphanum(infile);
+
+  if ( intext_size == 0 && intext_num_size == 0 )
   {
     printf("failed, no data to read!\n");
     return INPUT_ERR_ZERO_SIZE;
