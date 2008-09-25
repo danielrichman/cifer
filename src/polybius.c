@@ -18,11 +18,17 @@
 
 #include "stdinc.h"
 
-int polybius_grid_25[26] = { 11, 12, 13, 14,     15,
-                             21, 22, 23, 24, 24, 25,
-                             31, 32, 33, 34,     35,
-                             41, 42, 43, 44,     45,
-                             51, 52, 53, 54,     55 };
+int polybius_grid_25_int[26] = { 11, 12, 13, 14,     15,
+                                 21, 22, 23, 24, 24, 25,
+                                 31, 32, 33, 34,     35,
+                                 41, 42, 43, 44,     45,
+                                 51, 52, 53, 54,     55 };
+
+char *polybius_grid_25_char[26] = { "11", "12", "13", "14",       "15",
+                                    "21", "22", "23", "24", "24", "25",
+                                    "31", "32", "33", "34",       "35",
+                                    "41", "42", "43", "44",       "45",
+                                    "51", "52", "53", "54",       "55" };
 
 int polybius_dec(char *text, int text_size)
 {
@@ -48,7 +54,7 @@ int polybius_dec(char *text, int text_size)
     
     for (h = 0; h < 25; h++)
     {
-      if ((strncmp(cur_set, atoi(polybius_grid_25[h]), 2)) == 0)
+      if ((strncmp(cur_set, polybius_grid_25_char[h], 2)) == 0)
       {
         /* Match */
         output[output_count] = NUMCHAR(h);
