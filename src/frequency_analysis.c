@@ -71,7 +71,7 @@ void random_frequency_match(int *frequency_graph,
 void frequency_guesses(char *text, int text_size)
 {
   int frequency_graph[26], identity_frequency_graph[26], gid_freq[26];
-  int table[26], width[26];
+  int table[26], rtable[26], width[26];
   int i, m;
 
   /* Count */
@@ -88,10 +88,7 @@ void frequency_guesses(char *text, int text_size)
   }
 
   /* Print out the information we gathered */
-  printf("Frequency Guesses:\n");
-
-  printf("Char | Char's Number | Char's Frequency | Char's Id-Freq | \n");
-  printf("  Guessed PlainChar  | PlainChar's  num | PlainChar's ID-freq\n\n");
+  printf("Charnums and Frequencies: \n");
 
   print_setup_width(width, &m);
   print_count_width(frequency_graph, width, &m);
@@ -115,11 +112,37 @@ void frequency_guesses(char *text, int text_size)
   printf("I|");
   for (i = 0; i < 26; i++)
         printf("%*i|", width[i], identity_frequency_graph[i]);
+  printf("\n\n");
+
+  printf("Guessed Letters, ctext => ptext: \n");
+
+  printf("C|");
+  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(i));
   printf("\n");
 
   printf("G|");
-  for (i = 0; i < 26; i++)
-        printf("%*i|", width[i], identity_frequency_graph[table[i]]);
+  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(table[i]));
+  printf("\n");
+
+  printf("Guessed letters, ptext => ctext: \n");
+
+  for (i = 0; i < 26; i++) rtable[table[i]] = i;
+
+  printf("G|");
+  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(i));
+  printf("\n");
+
+  printf("C|");
+  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(rtable[i]));
+  printf("\n\n");
+
+  printf("*Possible* but unlikely decrypt based purely on letters: \n");
+
+  for (i = 0; i < text_size; i++)
+  {
+    printf("%c", NUMCHAR(table[CHARNUM(*(text + i))]));
+  }
+
   printf("\n\n");
 }
 
