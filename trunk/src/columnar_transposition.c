@@ -33,7 +33,7 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   /* Allocate to the maximum size, that's means we only have to alloc once */
   key = malloc(sizeof(int) * key_max);
   key_best = malloc(sizeof(int) * key_max);
-  if (key == NULL)
+  if (key == NULL || key_best == NULL)
   {
     printf("c.trans._bruteforce malloc(%i * %i) key/key_best = fail\n",
                                                 sizeof(int), key_max);
