@@ -51,18 +51,13 @@ int score_text_dict_fast(char *text, int size)
     /* Find the smallest possibility */
     match_size = 1;
 
-    if ( test_start != NULL )
+    for (j = test_start; j < test_end; j += jlen_buf + 1) /* Remember \0 */
     {
-      jlen_buf = 0; /* Should never ever be accessed in this state */
-
-      for (j = test_start; j < test_end; j += jlen_buf + 1) /* Remember \0 */
+      jlen_buf = strlen(j);
+      if ((i + jlen_buf) <= size && (match_size == 1 || jlen_buf < match_size)
+                    /* && strncmp(j, text + i, jlen_buf) == 0 */)
       {
-        jlen_buf = strlen(j);
-        if ((i + jlen_buf) <= size && (match_size == 1 || jlen_buf < match_size)
-                      /* && strncmp(j, text + i, jlen_buf) == 0 */)
-        {
-          match_size = jlen_buf;
-        }
+        match_size = jlen_buf;
       }
     }
 
@@ -130,8 +125,8 @@ void load_dict(void)
   rewind(dictf);
 
   dict             = malloc( filesize + 1 );
-  dict_pointer     = malloc( (26 * 26) + 1 );
-  dict_pointer_end = malloc( (26 * 26) + 1 );
+  dict_pointer     = malloc( sizeof(char *) * ((26 * 26) + 1) );
+  dict_pointer_end = malloc( sizeof(char *) * ((26 * 26) + 1) );
 
   if (dict == NULL || dict_pointer == NULL || dict_pointer_end == NULL)
   {
@@ -181,6 +176,9 @@ void load_dict(void)
     }
   }
 
+  /* Close the file */
+  fclose(dictf);
+
   printf("Done.\n");
   printf("Indexing the dictionary... ");
   fflush(stdout);
@@ -223,7 +221,7 @@ void load_dict(void)
       /* Mark the end */
       if (last_prefix != -1)
       {
-        *(dict_pointer_end + last_prefix) = dict_insert;
+        dict_pointer_end[last_prefix] = dict_insert;
       }
 
       last_prefix = prefix;
