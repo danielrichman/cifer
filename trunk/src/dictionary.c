@@ -24,13 +24,11 @@
 
 char *dict;
 char **dict_pointer;
-
-char ***dict_length_pointer;
-int  *dict_length_pointer_size;
+char **dict_pointer_end;
 
 int score_text_dict_fast(char *text, int size)
 {
-  int i, h, jlen_buf, prefix, match_size, score;
+  int i, jlen_buf, prefix, match_size, score;
   char *test_start, *test_end, *j;
   char ch1, ch2;
 
@@ -47,26 +45,8 @@ int score_text_dict_fast(char *text, int size)
 
     prefix = (CHARNUM( ch1 ) * 26) + CHARNUM( ch2 );
 
-    if ( *(dict_pointer + prefix) != NULL )
-    {
-      test_start = *(dict_pointer + prefix);
-      test_end = NULL;
-
-      /* Find TEST_END (If we don't find it, we'll segfault so heh) */
-      for (h = 1; test_end == NULL; h++)
-      {
-        if ( *(dict_pointer + prefix + h) != NULL )
-        {
-          test_end = *(dict_pointer + prefix + h);
-          /* The condition clause in the for loop will break this so no need */
-        }
-      }
-    }
-    else
-    {
-      test_start = NULL;
-      test_end = NULL;
-    }
+    test_start = *(dict_pointer + prefix);
+    test_end = *(dict_pointer_end + prefix);
 
     /* Find the smallest possibility */
     match_size = 1;
@@ -79,7 +59,7 @@ int score_text_dict_fast(char *text, int size)
       {
         jlen_buf = strlen(j);
         if ((i + jlen_buf) <= size && (match_size == 1 || jlen_buf < match_size)
-                      && strncmp(j, text + i, jlen_buf) == 0)
+                      /* && strncmp(j, text + i, jlen_buf) == 0 */)
         {
           match_size = jlen_buf;
         }
@@ -101,10 +81,9 @@ void load_dict(void)
 
   int i, j, filesize;
   int last_prefix, prefix;
-  int *dict_length_pointer_size_temp;
 
   char ch;
-  char *dict_insert, *dict_end, *k;
+  char *dict_insert, *dict_end;
 
   char buf[WORD_BUF_SIZE];
   int buf_size;
@@ -150,8 +129,17 @@ void load_dict(void)
 
   rewind(dictf);
 
-  dict = malloc( filesize + 1 );
-  dict_pointer = malloc( (26 * 26) + 1 );
+  dict             = malloc( filesize + 1 );
+  dict_pointer     = malloc( (26 * 26) + 1 );
+  dict_pointer_end = malloc( (26 * 26) + 1 );
+
+  if (dict == NULL || dict_pointer == NULL || dict_pointer_end == NULL)
+  {
+    /* Epic fail */
+    printf("Malloc for dictionary failed. \n");
+    exit(1);
+  }
+
   dict_insert = dict;
   buf_size = 0;
 
@@ -200,11 +188,12 @@ void load_dict(void)
   /* Build up our quickjump pointaz */
   searching = 1;
   dict_insert = dict;
-  last_prefix = -100;
+  last_prefix = -1;
 
   for (i = 0; i < (26 * 26); i++)
   {
     *(dict_pointer + i) = NULL;
+    *(dict_pointer_end + i) = NULL;
   }
 
   /* Set the final one to be the very end; the final \0 to show filesize */
@@ -228,101 +217,25 @@ void load_dict(void)
 
     if (prefix != last_prefix)
     {
+      /* Start the next prefix */
       *(dict_pointer + prefix) = dict_insert;
+
+      /* Mark the end */
+      if (last_prefix != -1)
+      {
+        *(dict_pointer_end + last_prefix) = dict_insert;
+      }
+
       last_prefix = prefix;
     }
 
     dict_insert += j + 1;
 
-    if (dict_insert >= (dict + filesize))
+    if (dict_insert >= dict_end)
     {
       searching = 0;
     }
   }
-
-  /* Build up the length arrays (lists of words of a spesific length) */
-  /* Possible TODO: With heinsight, perhaps not using [] shorthand notation 
-   * was a bad idea (although I prefer using longhand for arrays as it
-   * otherwise confuses me =X =P - maybe cleanup this? Not sure */
-
-  dict_length_pointer = malloc( sizeof(char **) * WORD_BUF_SIZE );
-  dict_length_pointer_size = malloc( sizeof(int) * WORD_BUF_SIZE );
-
-  /* Daniel: You can tell I've had enough of malloc checking */
-  /* <DanielRichman> Aslong as all the messages are different, 
-   *                 we know which one failed
-   * <DanielRichman> and that's good enough
-   * <DRebellion> lol */
-
-  if (dict_length_pointer == NULL || dict_length_pointer_size == NULL)
-  {
-    printf("\ndict_length_pointer | _size malloc fail. \n");
-    exit(1);
-  }
-
-  for (i = 0; i < WORD_BUF_SIZE; i++)
-  {
-    *(dict_length_pointer_size + i) = 0;
-  }
-
-  j = 0;
-  dict_insert = dict;
-  searching = 1;
-
-  for (k = dict; k < dict_end; k++)
-  {
-    if (*k == 0)
-    {
-      (*(dict_length_pointer_size + j))++;
-      j = 0;
-    }
-    else
-    {
-      j++;
-    }
-  }
-
-  /* Now malloc. */
-  for (j = 0; j < WORD_BUF_SIZE; j++)
-  {
-    if (*(dict_length_pointer_size + j) != 0)
-    {
-      /* Asterisk haven. */
-      *(dict_length_pointer + j) = malloc( sizeof(char *) * 
-                                dict_length_pointer_size[j] );
-
-      if (*(dict_length_pointer + j) == NULL)
-      {
-        printf("\n *(dict_length_pointer + j) malloc fail \n");
-        exit(1);
-      }
-    }
-  }
-
-  /* Now provide the references to each word. */
-  dict_length_pointer_size_temp = malloc( sizeof(int) * WORD_BUF_SIZE );
-
-  if (dict_length_pointer_size_temp == NULL)
-  {
-    printf("\n dict_length_pointer_size_temp malloc fail \n");
-    exit(1);
-  }
-
-  for (i = 0; i < WORD_BUF_SIZE; i++)
-  {
-    *(dict_length_pointer_size_temp + i) = 0;
-  }
-
-  for (k = dict; k < dict_end; k += j + 1)
-  {
-    j = strlen(k);
-    *(*(dict_length_pointer + j) + *(dict_length_pointer_size_temp + j)) = k;
-    (*(dict_length_pointer_size_temp + j))++;
-
-    /* Just don't think about it. Accept it, and don't ask me to explain it */
-  }
-
-  free(dict_length_pointer_size_temp);
 
   printf("Done.\n");
   fflush(stdout);
