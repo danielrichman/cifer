@@ -23,7 +23,7 @@ CFLAGS=-Wall
 rm = rm -rf
 cat = cat
 
-opt_lvl = 3
+opt_lvl = 2
 
 dict_name = dict
 dict_file = /usr/share/dict/british-english
@@ -35,7 +35,7 @@ bin_opt_debug_name = cifer-opt-debug
 bin_all_name       = $(bin_norm_name) $(bin_debug_name) $(bin_opt_name) \
                      $(bin_opt_debug_name)
 
-cflags_debug = -g
+cflags_debug = -pg
 cflags_opt   = -O$(opt_lvl)
 cflags_opt_debug = $(cflags_opt) -pg
 
