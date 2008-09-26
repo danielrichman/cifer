@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <sys/select.h>
 
 #include "settings.h"
 #include "macros.h"
