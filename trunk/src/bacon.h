@@ -16,7 +16,6 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Returns 0 if OK, -1 on fail */
-int bacon_dec(char *intext, int intext_size);
-
+void bacon_dec(char *text, int text_size, int *new_size);
 void bacon_upperlower_convert(char *text, int text_size);
+

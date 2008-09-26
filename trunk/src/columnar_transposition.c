@@ -219,7 +219,7 @@ void columnar_transposition_flip_key(int *key, int key_size)
 {
   int i, *temp;  /* Dynamic size */
 
-  temp = malloc( sizeof(int) * key_size);
+  temp = malloc( sizeof(int) * key_size );
   if (temp == NULL)
   {
     printf("columnar_transposition_flip_key: malloc(%i) temp failed.\n",

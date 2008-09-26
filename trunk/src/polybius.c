@@ -16,8 +16,6 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* TODO: fix bug where random crap is on the end of output */
-
 #include "stdinc.h"
 
 int polybius_grid_25_int[26] = { 11, 12, 13, 14,     15,
@@ -26,46 +24,56 @@ int polybius_grid_25_int[26] = { 11, 12, 13, 14,     15,
                                  41, 42, 43, 44,     45,
                                  51, 52, 53, 54,     55 };
 
-char *polybius_grid_25_char[26] = { "11", "12", "13", "14",       "15",
-                                    "21", "22", "23", "24", "24", "25",
-                                    "31", "32", "33", "34",       "35",
-                                    "41", "42", "43", "44",       "45",
-                                    "51", "52", "53", "54",       "55" };
-
-int polybius_dec(char *text, int text_size)
+void polybius_dec(char *text, int text_size, int *new_size)
 {
-  int i, h;
-  char cur_set[2];
-  int output_count = 0;
-  int text_size_mod_2;
+  int i, n, h, ptext_done;
+  char ch1, ch2;
   
-  printf("Doing polybius decrypt... text_size %d, mod 2 %d, ",
-         text_size, (text_size_mod_2 = modp(text_size, 2)));
-  
-  if (text_size_mod_2 != 0)
+  printf("Doing polybius decrypt... text_size %d, mod 2 %d... \n",
+         text_size, modp(text_size, 2));
+
+  /* Prepare */
+  ptext_done = 0;
+
+  /* Must be an even number of characters. */  
+  if (modp(text_size, 2))
   {
-    printf("failed, text_size %% 2 == %d (!= 0)!\n", text_size_mod_2);
-    return -1;
+    printf("   failed, text_size %% 2 == %d (!= 0)!\n", modp(text_size, 2));
+    return;
   }
-  char output[text_size/2];
-  
+
+  /* Start looping! Take characters two at a time */
   for (i = 0; i < text_size; i += 2)
   {
-    cur_set[0] = *(text + i);
-    cur_set[1] = *(text + i + 1);
-    
+    ch1 = *(text + i);
+    ch2 = *(text + i + 1);
+
+    if (!NUMBER_CH(ch1) || !NUMBER_CH(ch2))
+    {
+      printf("  failed, non number char at %i or %i + 1 (%c %c)\n",
+                 i, i, ch1, ch2);
+      return;
+    }   
+
+    n = (NUMCHARNUM(ch1) * 10) + NUMCHARNUM(ch2);
+
     for (h = 0; h < 26; h++)
     {
-      if ((strncmp(cur_set, polybius_grid_25_char[h], 2)) == 0)
+      if (polybius_grid_25_int[h] == n)
       {
         /* Match */
-        output[output_count] = NUMCHAR(h);
-        output_count++;
+        *(text + ptext_done) = NUMCHAR(h);
+        ptext_done++;
         break;
       }
     }
   }
-  
-  printf("\n\n%*s\n\n", output_count, output);
-  return 0;
+
+  /* Update the sizes and null terminators */
+  *(text + ptext_done) = 0;
+  *new_size = ptext_done;
+
+  /* Results */
+  printf("   succeeded:\n\n");
+  printf("%*s\n\n", *new_size, text);
 }

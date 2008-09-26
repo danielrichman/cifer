@@ -49,16 +49,13 @@ int score_text_dict_fast(char *text, int size)
     test_end = *(dict_pointer_end + prefix);
 
     /* Find the smallest possibility */
-    match_size = 1;
+    match_size = WORD_BUF_SIZE;
 
     for (j = test_start; j < test_end; j += jlen_buf + 1) /* Remember \0 */
     {
+      /* In theory, the \0 terminators should take care of all size checks */
       jlen_buf = strlen(j);
-      if ((i + jlen_buf) <= size && (match_size == 1 || jlen_buf < match_size)
-                    /* && strncmp(j, text + i, jlen_buf) == 0 */)
-      {
-        match_size = jlen_buf;
-      }
+      if (strcmp(j, text + i) == 0)    match_size = jlen_buf;
     }
 
     if (match_size != 1)
@@ -167,6 +164,7 @@ void load_dict(void)
         }
 
         memcpy(dict_insert, buf, buf_size);
+        *(dict_insert + buf_size) = 0;
 
         dict_insert += buf_size + 1;
         i += buf_size + 1;

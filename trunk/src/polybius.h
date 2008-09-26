@@ -17,4 +17,5 @@
 */
 
 /* Decrypt polybius cipher */
-int polybius_dec(char *text, int text_size);
+void polybius_dec(char *text, int text_size, int *new_size);
+
