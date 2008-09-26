@@ -215,7 +215,7 @@ int print_file(char *tofile, int tofile_size, char *filename, int filename_size,
   int size;
   
   printf("Printing output to %*s... \n", filename_size, filename);
-  printf("                 "); /* Make it look nice */
+  printf("                  "); /* Make it look nice */
   
   printf("%*s\n", header_size, header);
   printf("                  ");
