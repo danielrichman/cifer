@@ -34,7 +34,7 @@ dd_options = conv=lcase
 opt_lvl = 2
 
 dict_name = dict
-dict_file = /usr/share/dict/*
+dict_file = /usr/share/dict/*-english
 
 bin_norm_name      = cifer
 bin_debug_name     = cifer-debug
@@ -43,9 +43,12 @@ bin_opt_debug_name = cifer-opt-debug
 bin_all_name       = $(bin_norm_name) $(bin_debug_name) $(bin_opt_name) \
                      $(bin_opt_debug_name)
 
+cflags_norm  = 
 cflags_debug = -pg -g
 cflags_opt   = -O$(opt_lvl)
 cflags_opt_debug = $(cflags_opt) -pg -g
+
+gprof_files = gmon.out
 
 objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/main.o src/utility.o src/vigenere.o \
@@ -62,16 +65,16 @@ cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
 common_headers = src/stdinc.h  src/macros.h  src/settings.h
 
 $(bin_norm_name) : $(objects) $(dict_name)
-	$(CC) $(CFLAGS) -o $(bin_norm_name) $(objects)
+	$(CC) $(CFLAGS) $(cflags_norm) -o $@ $(objects)
 
 $(bin_debug_name) : $(dict_name) $(cfiles)
-	$(CC) $(CFLAGS) $(cflags_debug) -o $(bin_debug_name) $(cfiles)
+	$(CC) $(CFLAGS) $(cflags_debug) -o $@ $(cfiles)
 
 $(bin_opt_name) : $(dict_name) $(cfiles)
-	$(CC) $(CFLAGS) $(cflags_opt) -o $(bin_opt_name) $(cfiles)
+	$(CC) $(CFLAGS) $(cflags_opt) -o $@ $(cfiles)
 
 $(bin_opt_debug_name) : $(dict_name) $(cfiles)
-	$(CC) $(CFLAGS) $(cflags_opt_debug) -o $(bin_opt_debug_name) $(cfiles)
+	$(CC) $(CFLAGS) $(cflags_opt_debug) -o $@ $(cfiles)
 
 src/arg.o                    : src/arg.h                    $(common-headers)
 src/action.o                 : src/action.h                 $(common-headers)
@@ -92,14 +95,17 @@ src/urandom_access.o         : src/urandom_access.h         $(common-headers)
 src/vigenere.o               : src/vigenere.h               $(common-headers)
 
 $(dict_name) :
-	$(cat) $(dict_file) | $(iconv) $(iconv_options) | \
-	$(sed) $(sed_options) | $(dd) $(dd_options) | \
-	$(sorter) | $(uniq) > $(dict_name)
+	$(cat) $(dict_file) | \
+        $(iconv) $(iconv_options) | \
+	$(sed) $(sed_options) | \
+        $(dd) $(dd_options) | \
+	$(sorter) | $(uniq) \
+        > $@
 
 .PHONY : clean clean-objects
 
 clean :
-	$(rm) $(bin_all_name) $(dict_name) $(objects) gmon.out
+	$(rm) $(bin_all_name) $(dict_name) $(objects) $(gprof_files)
 
 clean-objects :
 	$(rm) $(objects)
