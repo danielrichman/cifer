@@ -48,17 +48,18 @@ int score_text_dict_fast(char *text, int size)
     test_start = *(dict_pointer + prefix);
     test_end = *(dict_pointer_end + prefix);
 
-    /* Find the smallest possibility */
+    /* Find the smallest possibility (so start high) */
     match_size = WORD_BUF_SIZE;
 
     for (j = test_start; j < test_end; j += jlen_buf + 1) /* Remember \0 */
     {
-      /* In theory, the \0 terminators should take care of all size checks */
+      /* In theory, the \0 terminators should take care of all size checks,
+       * we use strncmp to limit to checking the correct size of text. */
       jlen_buf = strlen(j);
-      if (strcmp(j, text + i) == 0)    match_size = jlen_buf;
+      if (strncmp(j, text + i, jlen_buf) == 0)    match_size = jlen_buf;
     }
 
-    if (match_size != 1)
+    if (match_size != WORD_BUF_SIZE)
     {
       score += match_size;
     }
