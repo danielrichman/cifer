@@ -8,9 +8,9 @@ Ciphers we need to crack (cross them off):
 [X] Caesar
 [X] Vigenere
 [X] Affine
-[ ] Keyword
+[X] Keyword
 [X] Bacon
-[ ] Polybius Square
+[X] Polybius Square
 [ ] Playfair
 [ ] Double Playfair
 [ ] Autokey
