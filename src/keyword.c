@@ -25,6 +25,10 @@ void keyword_bruteforce(char *text, int text_size)
   char *j, *e, *best, *text_tmp, statusbuf[75];
   int len, score, best_score, temp_table[26];
   int p, lastp, l, lastl, lastplen;
+  
+  fd_set stdset;
+  FD_ZERO(&stdset);
+  FD_SET(0, &stdset);
 
   printf("keyword_bruteforce: Trying to find Keyword Cipher from the dict.\n");
 
@@ -70,6 +74,10 @@ void keyword_bruteforce(char *text, int text_size)
 
         /* Write out the now trimmed string (with the suffix blah...) \n */
         printf("%s...)", statusbuf);
+        
+        select(1, &stdset, NULL, NULL, NULL);
+        if (FD_ISSET(0, &stdset))
+          break;
       }
 
       printf("\n");
