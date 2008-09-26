@@ -73,8 +73,8 @@ int input_open(char *filename)
                          intext_size + 1, intext_num_size + 1);
  
   /* Set the final null byte */
-  *(intext     + intext_size    ) = 0;
-  *(intext_num + intext_num_size) = 0;
+  *(intext              + intext_size    ) = 0;
+  *(intext_num          + intext_num_size) = 0;
  
   /* Read the file into intext */
   ch = 0;
@@ -115,6 +115,9 @@ int input_open(char *filename)
   
   intext_original_size     = intext_size;
   intext_num_original_size = intext_num_size;
+
+  *(intext_original     + intext_original_size    ) = 0;
+  *(intext_num_original + intext_num_original_size) = 0;
   
   printf("Copied intext_* to intext_*_original (memcpy)\n");
  
@@ -133,10 +136,18 @@ void input_flip_case()
 
 void input_restore()
 {
-  printf("Restored intext from intext_original, size (old/new): %i/%i\n",
-              intext_size, intext_original_size);
+  printf("Restored intext* from intext_original*, sizes: %i/%i, %i/%i\n",
+                     intext_size, intext_original_size, 
+                     intext_num_size, intext_num_original_size);
+
   intext_size = intext_original_size;
-  memcpy(intext, intext_original, intext_original_size);
+  intext_num_size = intext_num_original_size;
+
+  memcpy(intext,     intext_original,     intext_original_size);
+  memcpy(intext_num, intext_num_original, intext_num_original_size);
+
+  *(intext              + intext_size    ) = 0;
+  *(intext_num          + intext_num_size) = 0;
 }
 
 int input_file_size_alpha(FILE *infile)

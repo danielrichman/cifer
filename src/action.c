@@ -173,7 +173,7 @@ void action_do()
   if (arg_bacon)
   {
     printf("Bacon cipher decrypt requested... doing... \n");
-    bacon_dec(intext, intext_size);
+    bacon_dec(intext, intext_size, &intext_size);
     
     if (arg_output != NULL)
       print_file(intext, intext_size, arg_output, strlen(arg_output),
@@ -186,7 +186,7 @@ void action_do()
   if (arg_pb) /* Polybius. Needs alphanumeric input */
   {
     printf("Polybius cipher decrypt requested... doing... \n");
-    polybius_dec(intext_num, intext_num_size);
+    polybius_dec(intext_num, intext_num_size, &intext_num_size);
     
     if (arg_output != NULL)
       print_file(intext_num, intext_num_size, arg_output, strlen(arg_output),

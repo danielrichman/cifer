@@ -32,12 +32,15 @@ void keyword_bruteforce(char *text, int text_size)
   e = *(dict_pointer + (26 * 26));  /* The end of the dictionary */
 
   /* Setup text_temp */
-  text_tmp = malloc(text_size);
+  text_tmp = malloc(text_size + 1);
   if (text_tmp == NULL)
   {
     printf("Malloc for text_tmp in keyword_brutefoce fail\n");
     return;
   }
+
+  /* Null termination */
+  *(text_tmp + text_size) = 0;
 
   /* Prepare */
   best = 0;
