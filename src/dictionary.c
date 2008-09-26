@@ -26,14 +26,17 @@ char *dict;
 char **dict_pointer;
 char **dict_pointer_end;
 
+/* The Garbage Jump is experimental */
 int score_text_dict_fast(char *text, int size)
 {
-  int i, jlen_buf, prefix, match_size, score;
+  int i, jlen_buf, prefix, match_size, score, garbage_jump;
   char *test_start, *test_end, *j;
   char ch1, ch2;
 
+  /* Prepare */
   match_size = 1;
   score = 0;
+  garbage_jump = GARBAGE_JUMP_START;
 
   /* If it gets to size - MIN_WORD_SIZE we won't find the last bit anyway 
    * because it's limited by MIN_WORD_SIZE */
@@ -56,12 +59,25 @@ int score_text_dict_fast(char *text, int size)
       /* In theory, the \0 terminators should take care of all size checks,
        * we use strncmp to limit to checking the correct size of text. */
       jlen_buf = strlen(j);
-      if (strncmp(j, text + i, jlen_buf) == 0)    match_size = jlen_buf;
+
+      if (jlen_buf < match_size && strncmp(j, text + i, jlen_buf) == 0)
+        match_size = jlen_buf;
     }
 
     if (match_size != WORD_BUF_SIZE)
     {
       score += match_size;
+
+      if (match_size > GARBAGE_JUMP_RESET_CUTOFF)
+      {
+        garbage_jump = GARBAGE_JUMP_START;
+      }
+    }
+    else
+    {
+      /* For the loop incrementing... */
+      GARBAGE_JUMP_INCREMENT;
+      match_size = garbage_jump;
     }
   }
 
