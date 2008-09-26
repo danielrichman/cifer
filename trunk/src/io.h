@@ -52,4 +52,4 @@ void input_flip_case();
 /* Writes *tofile, yes - you guessed it, to filename ;) */
 /* Returns 0 if OK, negative if failed (see PRINT_FILE_ERR_*) above */
 int print_file(char *tofile, int tofile_size, char *filename, 
-                int filename_size, char *mode);
+                int filename_size, char *mode, char *header, int header_size);

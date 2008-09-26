@@ -25,7 +25,7 @@ void action_do()
   digram *digrams;
   trigram *trigrams;
   char *text_tmp;
-
+  
   printf("Doing requested action(s)...\n");
  
   if (arg_input) /* Have we got any input files? */
@@ -40,6 +40,17 @@ void action_do()
     {
       printf("Input text shift by %d requested... doing...\n", arg_is_1);
       shift_text(intext, intext_size, modn(arg_is_1, 26));
+      shift_text(intext_num, intext_num_size, modn(arg_is_1, 26));
+      
+      if (arg_output != NULL)
+      {
+        print_file(intext, intext_size, arg_output, strlen(arg_output),
+                   "a", "# intext, shifted",
+                   sizeof("# intext, shifted"));
+        print_file(intext_num, intext_num_size, arg_output, strlen(arg_output),
+                   "a", "# intext_num, shifted",
+                   sizeof("# intext_num, shifted"));
+      }
     }
   }
  
@@ -137,6 +148,12 @@ void action_do()
   {
     printf("Vigenere cipher crack requested... doing...\n");
     crack_vigenere(intext, intext_size);
+    
+    if (arg_output != NULL)
+      print_file(intext, intext_size, arg_output, strlen(arg_output),
+                 "a", "# intext, post-vigenere-crack",
+                 sizeof("# intext, post-vigenere-crack"));
+    
     input_restore();
   }
 
@@ -144,6 +161,12 @@ void action_do()
   {
     printf("Affine cipher crack requested... doing... \n");
     crack_affine(intext, intext_size);
+    
+    if (arg_output != NULL)
+      print_file(intext, intext_size, arg_output, strlen(arg_output),
+                 "a", "# intext, post-affine-crack",
+                 sizeof("# intext, post-affine-crack"));
+    
     input_restore();
   }
   
@@ -151,6 +174,12 @@ void action_do()
   {
     printf("Bacon cipher decrypt requested... doing... \n");
     bacon_dec(intext, intext_size);
+    
+    if (arg_output != NULL)
+      print_file(intext, intext_size, arg_output, strlen(arg_output),
+                 "a", "# intext, post-bacon-decrypt",
+                 sizeof("# intext, post-bacon-decrypt"));
+    
     input_restore();
   }
   
@@ -158,6 +187,12 @@ void action_do()
   {
     printf("Polybius cipher decrypt requested... doing... \n");
     polybius_dec(intext_num, intext_num_size);
+    
+    if (arg_output != NULL)
+      print_file(intext_num, intext_num_size, arg_output, strlen(arg_output),
+                 "a", "# intext_num, post-polybius-decrypt",
+                 sizeof("# intext_num, post-polybius-decrypt"));
+    
     input_restore();
   }
 
@@ -165,6 +200,12 @@ void action_do()
   {
     printf("Ugly bruteforce of keyword cipher requested... doing...\n");
     keyword_bruteforce(intext, intext_size);
+    
+    if (arg_output != NULL)
+      print_file(intext, intext_size, arg_output, strlen(arg_output),
+                 "a", "# intext, post-keyword-bruteforce",
+                 sizeof("# intext, post-keyword-brutefoce"));
+    
     input_restore();
   }
 
@@ -173,6 +214,12 @@ void action_do()
     printf("Keyword cipher decode mode requested... doing... \n");
     keyword_decode_print(intext, intext_size, 
                         arg_keyd_string, strlen(arg_keyd_string));
+    
+    if (arg_output != NULL)
+      print_file(intext, intext_size, arg_output, strlen(arg_output),
+                 "a", "# intext, post-keyword-decode",
+                 sizeof("# intext, post-keyword-decode"));
+    
     input_restore();
   }
 
@@ -220,9 +267,5 @@ void action_do()
     }
   }
   
-  if (arg_output != NULL)
-  {
-  }
-
   printf("Finished doing requested actions.\n");
 }

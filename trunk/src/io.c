@@ -104,6 +104,10 @@ int input_open(char *filename)
   }
   printf("read into intext_num, ");
   printf("done.\n");
+  
+  printf("Closing infile... ");
+  fclose(infile);
+  printf("done.\n");
  
   /* Backup the ctext */
   memcpy(intext_original,     intext,     intext_size    );
@@ -194,13 +198,13 @@ void shift_text(char *intext, int intext_size, int shift)
 }
 
 int print_file(char *tofile, int tofile_size, char *filename, int filename_size,
-                char *mode)
+                char *mode, char *header, int header_size)
 {
   FILE *fp;
   int size;
   
   
-  printf("Printing output to %s... ", tofile);
+  printf("Printing output to %*s... ", filename_size, filename);
   
   if ((fp = fopen(filename, mode)) == NULL)
   {
@@ -208,13 +212,17 @@ int print_file(char *tofile, int tofile_size, char *filename, int filename_size,
     return PRINT_FILE_ERR_FOPEN;
   }
   
-  if ((size = fprintf(fp, "%s", tofile)) < 0)
+  if ((size = fprintf(fp, "%s\n\n%s\n\n", header, tofile)) < 0)
   {
     printf("failed, fprintf() error!\n");
     return PRINT_FILE_ERR_FPRINTF;
   }
   
   printf("printed %d/%d byte(s), done\n", size, tofile_size);
+  
+  printf("fclose()'ing output file %s... ", filename);
+  fclose(fp);
+  printf("done.\n");
   
   return 0;
 }
