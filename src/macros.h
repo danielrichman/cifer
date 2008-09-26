@@ -38,5 +38,7 @@
 #define CHARNUM(ch)            (ALPHAL_CH(ch) || ALPHAH_CH(ch) ? \
                                    ALPHA_TOLOWER(ch) - 97 : -1)
 #define NUMCHAR(i)             (i + 97)
+
 #define NUMCHARNUM(ch)         (NUMBER_CH(ch) ? ch - 48 : -1)
+#define NUMNUMCHAR(i)          (i + 48)
 
