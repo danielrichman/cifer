@@ -203,8 +203,11 @@ int print_file(char *tofile, int tofile_size, char *filename, int filename_size,
   FILE *fp;
   int size;
   
+  printf("Printing output to %*s... \n", filename_size, filename);
+  printf("                 "); /* Make it look nice */
   
-  printf("Printing output to %*s... ", filename_size, filename);
+  printf("%*s\n", header_size, header);
+  printf("                  ");
   
   if ((fp = fopen(filename, mode)) == NULL)
   {
@@ -218,7 +221,8 @@ int print_file(char *tofile, int tofile_size, char *filename, int filename_size,
     return PRINT_FILE_ERR_FPRINTF;
   }
   
-  printf("printed %d/%d byte(s), done\n", size, tofile_size);
+  printf("printed %d/%d byte(s)\n", size, tofile_size);
+  printf("                  ");
   
   printf("fclose()'ing output file %s... ", filename);
   fclose(fp);
