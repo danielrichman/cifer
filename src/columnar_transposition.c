@@ -51,6 +51,7 @@ void columnar_transposition_bruteforce(char *text, int text_size,
 
   /* Prepare */
   best_score = -1;
+  best_size = 0;
 
   /* Print a header */
   printf("Columnar Transposition Bruteforce, starting %i => %i\n", 

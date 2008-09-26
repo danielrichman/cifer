@@ -44,6 +44,7 @@ void keyword_bruteforce(char *text, int text_size)
   best_score = 0;
   lastp = -1;
   lastl = -1;
+  lastplen = 0;
 
   for (j = dict; j < e; j += len + 1)
   {

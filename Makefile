@@ -22,11 +22,19 @@ CFLAGS=-Wall
 
 rm = rm -rf
 cat = cat
+iconv = iconv
+iconv_options = --from-code ISO_8859-1 --to-code ASCII//TRANSLIT 
+sed = sed
+sed_options = s/[^a-zA-Z]//g
+sorter = sort
+uniq = uniq
+dd = dd
+dd_options = conv=lcase
 
 opt_lvl = 2
 
 dict_name = dict
-dict_file = /usr/share/dict/british-english
+dict_file = /usr/share/dict/*
 
 bin_norm_name      = cifer
 bin_debug_name     = cifer-debug
@@ -35,9 +43,9 @@ bin_opt_debug_name = cifer-opt-debug
 bin_all_name       = $(bin_norm_name) $(bin_debug_name) $(bin_opt_name) \
                      $(bin_opt_debug_name)
 
-cflags_debug = -pg
+cflags_debug = -pg -g
 cflags_opt   = -O$(opt_lvl)
-cflags_opt_debug = $(cflags_opt) -pg
+cflags_opt_debug = $(cflags_opt) -pg -g
 
 objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/main.o src/utility.o src/vigenere.o \
@@ -84,12 +92,14 @@ src/urandom_access.o         : src/urandom_access.h         $(common-headers)
 src/vigenere.o               : src/vigenere.h               $(common-headers)
 
 $(dict_name) :
-	$(cat) $(dict_file) | sort > $(dict_name)
+	$(cat) $(dict_file) | $(iconv) $(iconv_options) | \
+	$(sed) $(sed_options) | $(dd) $(dd_options) | \
+	$(sorter) | $(uniq) > $(dict_name)
 
 .PHONY : clean clean-objects
 
 clean :
-	$(rm) $(bin_all_name) $(dict_name) $(objects)
+	$(rm) $(bin_all_name) $(dict_name) $(objects) gmon.out
 
 clean-objects :
 	$(rm) $(objects)
