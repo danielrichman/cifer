@@ -219,6 +219,10 @@ void action_do()
       free(text_tmp);
     }
   }
+  
+  if (arg_output != NULL)
+  {
+  }
 
   printf("Finished doing requested actions.\n");
 }

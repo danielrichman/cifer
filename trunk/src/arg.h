@@ -17,6 +17,7 @@
 */
 
 extern char *arg_input;
+extern char *arg_output;
 extern int arg_freq;
 extern int arg_pct;
 extern int arg_vig;

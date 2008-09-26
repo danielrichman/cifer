@@ -19,6 +19,7 @@
 #include "stdinc.h"
 
 char *arg_input = NULL;    /* !NULL = load this file as input */
+char *arg_output = NULL;     /* if (!NULL) output ptext to this file */
 int arg_freq    = 0;         /* Do frequency analysis */
 int arg_pct     = 0;         /* Print char->number table */
 int arg_vig     = 0;         /* Do a vigenere crack */
@@ -77,6 +78,21 @@ int arg_parse(int argc, char **argv)
       arg_input = argv[i + 1];
       i++; /* We skip the next argument; it is a filename */
 
+    }
+    
+    /* Output file */
+    else if (((strcmp(argv[i], "-o")) == 0) ||
+             ((strcmp(argv[i], "--output") == 0)))
+    {
+      if (i + 1 >= argc)
+      {
+        printf("arg_bad (not enough args)\n");
+        return -1;
+      }
+
+      printf("arg_output %s, ", argv[i+1]);
+      arg_output = argv[i + 1];
+      i++; /* We skip the next argument; it is a filename */
     }
     
     /* Shift input */
