@@ -31,7 +31,7 @@ Features that are needed
     "The AutoPWN mode"
 [ ] Epic win phrases when it cracks a cipher, eg. "Yum yum, that was an epic 
     fail of a cipher" or "Totally freaking owned"
-[ ] Printing of the process used to arrive at the cipher, eg. Cipher methods 
+[X] Printing of the process used to arrive at the cipher, eg. Cipher methods 
     used, keywords, the lot.
 [X] Implement proper command line parsing using flags (-*) so we can tell the
     program exactly what we need to do.
