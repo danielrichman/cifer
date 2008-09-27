@@ -26,9 +26,14 @@ void keyword_bruteforce(char *text, int text_size)
   int len, score, best_score, temp_table[26];
   int p, lastp, l, lastl, lastplen;
   
+  /* Select() stuff */
   fd_set stdset;
   FD_ZERO(&stdset);
-  FD_SET(0, &stdset);
+  FD_SET(0, &stdset); /* 0 is stdin */
+  struct timeval seltime;
+  /* Zero these values for a non-blocking check */
+  seltime.tv_sec  = 0;
+  seltime.tv_usec = 0;
 
   printf("keyword_bruteforce: Trying to find Keyword Cipher from the dict.\n");
 
@@ -52,6 +57,10 @@ void keyword_bruteforce(char *text, int text_size)
   lastp = -1;
   lastl = -1;
   lastplen = 0;
+  
+  printf("Press enter at any time to stop the brute force and use the last \
+  best keyword.\n");
+
 
   for (j = dict; j < e; j += len + 1)
   {
@@ -75,7 +84,7 @@ void keyword_bruteforce(char *text, int text_size)
         /* Write out the now trimmed string (with the suffix blah...) \n */
         printf("%s...)", statusbuf);
         
-        select(1, &stdset, NULL, NULL, NULL);
+        select(1, &stdset, NULL, NULL, &seltime);
         if (FD_ISSET(0, &stdset))
           break;
       }
