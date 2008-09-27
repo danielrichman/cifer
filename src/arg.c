@@ -57,7 +57,8 @@ int arg_parse(int argc, char **argv)
   for (i = 1; i < argc; i++)
   {
     /* Do frequency analysis */
-    if (((strcmp(argv[i], "-f")) == 0) || ((strcmp(argv[i], "--freq") == 0)))
+    if (((strcasecmp(argv[i], "-f")) == 0) || 
+        ((strcasecmp(argv[i], "--freq") == 0)))
     {
       arg_freq = 1;
       printf("arg_freq, ");
@@ -65,8 +66,8 @@ int arg_parse(int argc, char **argv)
     }
     
     /* Input file */
-    else if (((strcmp(argv[i], "-i")) == 0) || 
-             ((strcmp(argv[i], "--input") == 0)))
+    else if (((strcasecmp(argv[i], "-i")) == 0) || 
+             ((strcasecmp(argv[i], "--input") == 0)))
     {
       if (i + 1 >= argc)
       {
@@ -81,8 +82,8 @@ int arg_parse(int argc, char **argv)
     }
     
     /* Output file */
-    else if (((strcmp(argv[i], "-o")) == 0) ||
-             ((strcmp(argv[i], "--output") == 0)))
+    else if (((strcasecmp(argv[i], "-o")) == 0) ||
+             ((strcasecmp(argv[i], "--output") == 0)))
     {
       if (i + 1 >= argc)
       {
@@ -96,8 +97,8 @@ int arg_parse(int argc, char **argv)
     }
     
     /* Shift input */
-    else if (((strcmp(argv[i], "-is")) == 0) || 
-        ((strcmp(argv[i], "--input-shift") == 0)))
+    else if (((strcasecmp(argv[i], "-is")) == 0) || 
+        ((strcasecmp(argv[i], "--input-shift") == 0)))
     {
       if (i + 1 >= argc)
       {
@@ -113,56 +114,56 @@ int arg_parse(int argc, char **argv)
     }
     
     /* Print a table of mappings from chars to numbers */
-    else if (((strcmp(argv[i], "-pct")) == 0) ||
-        ((strcmp(argv[i], "--print-char-table") == 0)))
+    else if (((strcasecmp(argv[i], "-pct")) == 0) ||
+        ((strcasecmp(argv[i], "--print-char-table") == 0)))
     {
       arg_pct = 1;
       printf("arg_pct, ");
 
     }
     
-    else if ((strcmp(argv[i], "-bac")) == 0 ||
-       ((strcmp(argv[i], "--bacon") == 0)))
+    else if ((strcasecmp(argv[i], "-bac")) == 0 ||
+       ((strcasecmp(argv[i], "--bacon") == 0)))
     {
       arg_bacon = 1;
       printf("arg_bacon, ");
 
     }
     
-    else if ((strcmp(argv[i], "-vig")) == 0 ||
-       ((strcmp(argv[i], "--vigenere") == 0)))
+    else if ((strcasecmp(argv[i], "-vig")) == 0 ||
+       ((strcasecmp(argv[i], "--vigenere") == 0)))
     {
       arg_vig = 1;
       printf("arg_vig, ");
 
     }
 
-    else if ((strcmp(argv[i], "-aff")) == 0 ||
-       ((strcmp(argv[i], "--affine") == 0)))
+    else if ((strcasecmp(argv[i], "-aff")) == 0 ||
+       ((strcasecmp(argv[i], "--affine") == 0)))
     {
       arg_aff = 1;
       printf("arg_aff, ");
 
     }
     
-    else if ((strcmp(argv[i], "-pb")) == 0 ||
-       ((strcmp(argv[i], "--polybius") == 0)))
+    else if ((strcasecmp(argv[i], "-pb")) == 0 ||
+       ((strcasecmp(argv[i], "--polybius") == 0)))
     {
       arg_pb = 1;
       printf("arg_pb, ");
 
     }
 
-    else if ((strcmp(argv[i], "-keyb")) == 0 ||
-       ((strcmp(argv[i], "--keyword-bruteforce") == 0)))
+    else if ((strcasecmp(argv[i], "-keyb")) == 0 ||
+       ((strcasecmp(argv[i], "--keyword-bruteforce") == 0)))
     {
       arg_keyb = 1;
       printf("arg_keyb, ");
 
     }
 
-    else if ((strcmp(argv[i], "-keyd")) == 0 ||
-       ((strcmp(argv[i], "--keyword-decode") == 0)))
+    else if ((strcasecmp(argv[i], "-keyd")) == 0 ||
+       ((strcasecmp(argv[i], "--keyword-decode") == 0)))
     {
       if (i + 1 >= argc)
       {
@@ -177,8 +178,8 @@ int arg_parse(int argc, char **argv)
 
     }
 
-    else if ((strcmp(argv[i], "-ctrans")) == 0 ||
-       ((strcmp(argv[i], "--columnar_transposition") == 0)))
+    else if ((strcasecmp(argv[i], "-ctrans")) == 0 ||
+       ((strcasecmp(argv[i], "--columnar_transposition") == 0)))
     {
       if (i + 2 >= argc)
       {
@@ -189,20 +190,20 @@ int arg_parse(int argc, char **argv)
       arg_ctrans = 1;
 
 
-      if ((strcmp(argv[i + 1], "c2c")) == 0 ||
-          (strcmp(argv[i + 1], "col2col")) == 0)
+      if ((strcasecmp(argv[i + 1], "c2c")) == 0 ||
+          (strcasecmp(argv[i + 1], "col2col")) == 0)
       {
         arg_ctrans_type = &columnar_transposition_col2col;
         printf("arg_ctrans col2col: ");
       }
-      else if ((strcmp(argv[i + 1], "r2c")) == 0 ||
-               (strcmp(argv[i + 1], "row2col")) == 0)
+      else if ((strcasecmp(argv[i + 1], "r2c")) == 0 ||
+               (strcasecmp(argv[i + 1], "row2col")) == 0)
       {
         arg_ctrans_type = &columnar_transposition_row2col;
         printf("arg_ctrans row2col: ");
       }
-      else if ((strcmp(argv[i + 1], "c2r")) == 0 ||
-               (strcmp(argv[i + 1], "col2row")) == 0)
+      else if ((strcasecmp(argv[i + 1], "c2r")) == 0 ||
+               (strcasecmp(argv[i + 1], "col2row")) == 0)
       {
         arg_ctrans_type = &columnar_transposition_col2row;
         printf("arg_ctrans col2row: ");
@@ -213,20 +214,20 @@ int arg_parse(int argc, char **argv)
         return -1;
       }
 
-      if ((strcmp(argv[i + 2], "b")) == 0 ||
-          (strcmp(argv[i + 2], "bruteforce")) == 0)
+      if ((strcasecmp(argv[i + 2], "b")) == 0 ||
+          (strcasecmp(argv[i + 2], "bruteforce")) == 0)
       {
         arg_ctrans_mode = 0;
         printf("bruteforce mode, ");
       }
-      else if ((strcmp(argv[i + 2], "d")) == 0 ||
-               (strcmp(argv[i + 2], "decode")) == 0)
+      else if ((strcasecmp(argv[i + 2], "d")) == 0 ||
+               (strcasecmp(argv[i + 2], "decode")) == 0)
       {
         arg_ctrans_mode = 1;
         printf("decode mode: ");
       }
-      else if ((strcmp(argv[i + 2], "f")) == 0 ||
-               (strcmp(argv[i + 2], "flipdecode")) == 0)
+      else if ((strcasecmp(argv[i + 2], "f")) == 0 ||
+               (strcasecmp(argv[i + 2], "flipdecode")) == 0)
       {
         arg_ctrans_mode = 2;
         printf("flipdecode mode: ");
@@ -290,7 +291,7 @@ int arg_parse(int argc, char **argv)
       }
     }
 
-    else if ((strcmp(argv[i], "-gcd")) == 0)
+    else if ((strcasecmp(argv[i], "-gcd")) == 0)
     {
       if (i + 2 >= argc)
       {
@@ -306,7 +307,7 @@ int arg_parse(int argc, char **argv)
 
     }    
 
-    else if ((strcmp(argv[i], "-mmi")) == 0)
+    else if ((strcasecmp(argv[i], "-mmi")) == 0)
     {
       if (i + 2 >= argc)
       {
@@ -323,8 +324,8 @@ int arg_parse(int argc, char **argv)
     }
  
    
-    else if (((strcmp(argv[i], "-pt")) == 0) || 
-        ((strcmp(argv[i], "--print-trigram-freq")) == 0))
+    else if (((strcasecmp(argv[i], "-pt")) == 0) || 
+        ((strcasecmp(argv[i], "--print-trigram-freq")) == 0))
     {
       if (i + 1 >= argc)
       {
@@ -339,8 +340,8 @@ int arg_parse(int argc, char **argv)
 
     }
 
-    else if (((strcmp(argv[i], "-pd")) == 0) ||
-        ((strcmp(argv[i], "--print-digram-freq")) == 0))
+    else if (((strcasecmp(argv[i], "-pd")) == 0) ||
+        ((strcasecmp(argv[i], "--print-digram-freq")) == 0))
     {
       if (i + 1 >= argc)
       {
@@ -355,8 +356,8 @@ int arg_parse(int argc, char **argv)
 
     }
     
-    else if (((strcmp(argv[i], "-fd")) == 0) || 
-        ((strcmp(argv[i], "--frequency-guesses")) == 0))
+    else if (((strcasecmp(argv[i], "-fd")) == 0) || 
+        ((strcasecmp(argv[i], "--frequency-guesses")) == 0))
     {
       arg_fd = 1;
       printf("arg_fd, ");
