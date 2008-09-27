@@ -58,7 +58,7 @@ void columnar_transposition_bruteforce(char *text, int text_size,
                                                   key_min, key_max);
 
   /* Start teh cracking! */
-  for (key_size = key_min; key_size < key_max; key_size++)
+  for (key_size = key_min; key_size <= key_max; key_size++)
   {
     /* Calcualte the factorial */
     factorial = 1;
@@ -91,8 +91,12 @@ void columnar_transposition_bruteforce(char *text, int text_size,
       /* Strip any numbers for scoring ='( (TODO: Fix this, score text doesn't
        * support numbers) */
       for (j = 0; j < text_size; j++) 
-        if (NUMBER_CH(*(text_tmp + j))) *(text_tmp + j) = 
-          CHARNUM(NUMCHARNUM(*(text_tmp + k)));
+      {
+        if ( NUMBER_CH(*(text_tmp + j)) )
+        {
+          *(text_tmp + j) = 'x';
+        }
+      }
 
       /* Score it */
       score = score_text_dict_fast(text_tmp, text_size);
@@ -112,9 +116,11 @@ void columnar_transposition_bruteforce(char *text, int text_size,
     printf("\n");
   }
 
-  /* Results */
+  /* Do it for real and save the result */
   (*routine)(text, text_tmp, text_size, key_best, best_size);
+  memcpy(text, text_tmp, text_size);
 
+  /* Results */
   printf("Columnar Transposition Bruteforce: best_score %i; key size %i\n",
                                       best_score, best_size);
 

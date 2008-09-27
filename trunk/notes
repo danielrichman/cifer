@@ -28,6 +28,7 @@ Features that are needed
 [X] Bigrams and Trigrams frequency data
 [ ] Detection and guessing of cipher, eg- Delta IC tells us that the letters are
     not totally malformed and just need a caesar/vigenere crack? etc.
+    "The AutoPWN mode"
 [ ] Epic win phrases when it cracks a cipher, eg. "Yum yum, that was an epic 
     fail of a cipher" or "Totally freaking owned"
 [ ] Printing of the process used to arrive at the cipher, eg. Cipher methods 

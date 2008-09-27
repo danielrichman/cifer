@@ -60,7 +60,7 @@ int score_text_dict_fast(char *text, int size)
        * we use strncmp to limit to checking the correct size of text. */
       jlen_buf = strlen(j);
 
-      if (jlen_buf < match_size && strncmp(j, text + i, jlen_buf) == 0)
+      if (jlen_buf < match_size && strncasecmp(j, text + i, jlen_buf) == 0)
         match_size = jlen_buf;
     }
 
