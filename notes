@@ -4,6 +4,9 @@ http://books.google.co.uk/books?id=dx8zM-VeKI8C
 "Teacher pack" from the website, gives clear, concise techniques:
 http://www.cipher.maths.soton.ac.uk/TeachersPack.pdf
 
+Hill Cipher Matrix post:
+http://ardsrk.blogspot.com/2006/04/hill-cipher-deciphered.html
+
 Ciphers we need to crack (cross them off):
 [X] Caesar
 [X] Vigenere
@@ -11,6 +14,8 @@ Ciphers we need to crack (cross them off):
 [X] Keyword
 [X] Bacon
 [X] Polybius Square
+[X] Columnar Transposition
+[ ] Rail Fence
 [ ] Playfair
 [ ] Double Playfair
 [ ] Autokey
