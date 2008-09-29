@@ -156,6 +156,19 @@ void action_do()
     
     input_restore();
   }
+  
+  if (arg_rf_bf) /* Railfence bruteforce */
+  {
+    printf("Railfence bruteforce requested... doing...\n");
+    rf_bf(intext, intext_size, arg_rf_bf_mr);
+
+    if (arg_output != NULL)
+      print_file(intext, intext_size, arg_output, strlen(arg_output),
+                 "a", "# intext, post-railfence-brute",
+                 sizeof("# intext, post-railfence-brute"));
+
+    input_restore();
+  }
 
   if (arg_aff) /* Crack Affine */
   {

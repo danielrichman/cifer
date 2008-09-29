@@ -16,43 +16,34 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STDINC_CIPHERCRACK
-#define STDINC_CIPHERCRACK 1
+#include "stdinc.h"
 
-#include <stdio.h>
-
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <sys/file.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <sys/select.h>
-
-#include "settings.h"
-#include "macros.h"
-
-#include "rf.h"
-#include "polybius.h"
-#include "urandom_access.h"
-#include "dictionary.h"
-#include "frequency_data.h"
-#include "frequency_analysis.h"
-#include "interface.h"
-#include "vigenere.h"
-#include "affine.h"
-#include "columnar_transposition.h"
-#include "keyword.h"
-#include "ciphers.h"
-#include "utility.h"
-#include "arg.h"
-#include "io.h"
-#include "action.h"
-#include "bacon.h"
-
-#endif
-
+void rf_bf(char *intext, int intext_size, int maxrails)
+{
+  int i, j;
+  int currail;
+  int currailbuf_count = 0;
+  char currailbuf[intext_size];
+  char otext[intext_size];
+  
+  printf("\n\n");
+  
+  for (currail = 1; currail < maxrails; currail++)
+  {
+    for (j = 0; j < intext_size;)
+    {
+      currailbuf[currailbuf_count] = *(intext + j);
+      currailbuf_count++;
+      
+      printf("%c", currailbuf[currailbuf_count]);
+      
+      if ((j + 2*currail) > intext_size) break;
+      j += 2*currail;
+    }
+    
+    currailbuf_count = 0;
+    printf("\n\n");
+  }
+  
+  printf("\n\n");
+}
