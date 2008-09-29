@@ -20,7 +20,7 @@
 
 void rf_bf(char *intext, int intext_size, int maxrails)
 {
-  int /*i,*/ j;
+  int j;
   int currail;
   int currailbuf_count = 0;
   char currailbuf[intext_size];
@@ -46,4 +46,25 @@ void rf_bf(char *intext, int intext_size, int maxrails)
   }
   
   printf("\n\n");
+}
+
+int *rf_get_spaces(int rail)
+{
+  int i;
+  
+  int *spaces = malloc(rail);
+  memset(spaces, 0, rail);
+  
+  if (rail % 2 == 0) /* If even */
+  {
+    *(spaces + rail/2) = rail; /* The first middle */
+    *(spaces + rail/2 + 1) = rail; /* The second middle */
+    
+    /* Extremities */
+    *(spaces)        = (rail - 1) * 2; /* First */
+    *(spaces + rail) = (rail - 1) * 2; /* Last */
+  }
+  else /* Is odd */
+  {
+  }
 }

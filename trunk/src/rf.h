@@ -17,3 +17,5 @@
 */
 
 void rf_bf(char *intext, int intext_size, int maxrails);
+
+int *rf_get_spaces(int rail);
