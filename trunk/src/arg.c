@@ -47,6 +47,8 @@ int arg_is      = 0;         /* Shift the intext by arg_shift_1 */
 int arg_is_1    = 0;
 int arg_bacon   = 0;         /* Do bacon cipher decrypt */
 int arg_pb      = 0;         /* Do polybius square decrypt */
+int arg_rf_bf   = 0;         /* Do railfence bruteforce */
+int arg_rf_bf_mr= 0;            /* Maxrails */
 
 int arg_parse(int argc, char **argv)
 {
@@ -128,6 +130,21 @@ int arg_parse(int argc, char **argv)
       arg_bacon = 1;
       printf("arg_bacon, ");
 
+    }
+    
+    else if ((strcasecmp(argv[i], "-rfb")) == 0 ||
+       ((strcasecmp(argv[i], "--rail-fence-brute") == 0)))
+    {
+      if (i + 1 >= argc)
+      {
+        printf("arg_bad (not enough args)\n");
+        return -1;
+      }
+
+      arg_rf_bf = 1;
+      arg_rf_bf_mr = atoi(argv[i + 1]);
+      printf("arg_rf_bf %d, ", arg_rf_bf_mr);
+      i++;
     }
     
     else if ((strcasecmp(argv[i], "-vig")) == 0 ||

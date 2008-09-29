@@ -54,13 +54,13 @@ objects = src/arg.o src/ciphers.o src/dictionary.o src/frequency_data.o \
           src/interface.o src/main.o src/utility.o src/vigenere.o \
           src/action.o src/affine.o src/keyword.o src/columnar_transposition.o \
           src/frequency_analysis.o src/urandom_access.o src/bacon.o src/io.o \
-          src/polybius.o
+          src/polybius.o src/rf.o
 
 cfiles = src/arg.c src/ciphers.c src/dictionary.c src/frequency_data.c \
          src/interface.c src/main.c src/utility.c src/vigenere.c \
          src/action.c src/affine.c src/keyword.c src/columnar_transposition.c \
          src/frequency_analysis.c src/urandom_access.c src/bacon.c src/io.c \
-         src/polybius.c
+         src/polybius.c src/rf.c
 
 common_headers = src/stdinc.h  src/macros.h  src/settings.h
 
@@ -90,6 +90,7 @@ src/interface.o              : src/interface.h              $(common-headers)
 src/io.o                     : src/io.h                     $(common-headers)
 src/main.o                   :                              $(common-headers)
 src/polybius.o               : src/polybius.h               $(common-headers)
+src/rf.o                     : src/rf.h                     $(common-headers)
 src/utility.o                : src/utility.h src/utility.i  $(common-headers) 
 src/urandom_access.o         : src/urandom_access.h         $(common-headers)
 src/vigenere.o               : src/vigenere.h               $(common-headers)
