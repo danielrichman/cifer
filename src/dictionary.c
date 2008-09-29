@@ -26,17 +26,162 @@ char *dict;
 char **dict_pointer;
 char **dict_pointer_end;
 
-/* The Garbage Jump is experimental */
+void score_text_pro_start(int text_size, score_text_pro_state *state)
+{
+  if (text_size < 2)
+  {
+    printf("score_text_pro will not work with text_size < 2; failing.\n");
+    state->text_size = 0;
+    return;
+  }
+
+  /* Pre malloc all the space needed */
+  state->text_size = text_size;
+  state->frequency_graph_tolerance = text_size / 10;
+  state->frequency_graph          = malloc( sizeof(int) * 26 );
+  state->identity_frequency_graph = malloc( sizeof(int) * 26 );
+  state->digrams_temp  = malloc( sizeof(digram)  * 26 * 26 );
+  state->trigrams_temp = malloc( sizeof(trigram) * 26 * 26 * 26 );
+
+  if (state->frequency_graph == NULL ||
+      state->identity_frequency_graph == NULL ||
+      state->digrams_temp == NULL ||
+      state->trigrams_temp == NULL)
+
+  {
+    printf("score_text_pro_start: failed to malloc enough space to *state\n");
+    exit(1);
+  }
+
+  /* Setup id. frequency graph */
+  create_identity_frequency_graph(state->identity_frequency_graph, text_size);
+}
+
+void score_text_pro_cleanup(score_text_pro_state *state)
+{
+  free(state->digrams_temp);
+  free(state->trigrams_temp);
+  free(state->identity_frequency_graph);
+}
+
+int score_text_pro(char *text, score_text_pro_state *state)
+{
+  int i, j, k, h, fg_diff;
+  trigram temp_the;
+  /* This routine is made to quickly discard garbage but generate a better
+   * score for real matches */
+
+  if (state->text_size == 0) return 0;
+
+  /* Reset the variables */
+  fg_diff = 0;
+  for (i = 0; i < 26; i++)   state->frequency_graph[i] = 0;
+
+  /* This will have been sorted, so it all must be reset */
+  h = 0;
+  for (i = 0; i < 26; i++) for (j = 0; j < 26; j++)
+  {
+    state->digrams_temp[h].digram_ch1 = i;
+    state->digrams_temp[h].digram_ch2 = j;
+    state->digrams_temp[h].digram_value = 0;
+    h++;
+  }
+
+  /* Same */
+  h = 0;
+  for (i = 0; i < 26; i++) for (j = 0; j < 26; j++) for (k = 0; k < 26; k++)
+  {
+    state->trigrams_temp[h].trigram_ch1 = i;
+    state->trigrams_temp[h].trigram_ch2 = j;
+    state->trigrams_temp[h].trigram_ch3 = k;
+    state->trigrams_temp[h].trigram_value = 0;
+    h++;
+  }
+
+  /* This loop will search through, matching all single letters above
+   * [0] and [1] (because trigams say so) and all digrams except [1]; 
+   * which must be counted afterwards */
+
+  /* Combine the Frequency analysis, digram + trigram loops into one */
+  h = state->text_size - 2;  /* For Trigrams */
+  for (i = 0; i < h; i++)
+  {
+    j =  CHARNUM(*(text + i + 2));
+    h = (CHARNUM(*(text + i + 1)) * 26 ) + j;
+    k = (CHARNUM(*(text + i))     * 676) + h;
+    state->trigrams_temp[k].trigram_value ++;
+    state->digrams_temp[h].digram_value   ++;
+    state->frequency_graph[j]             ++;
+  }
+
+  i = CHARNUM(*text);
+  j = CHARNUM(*(text + 1));
+  h = (i * 26) + j;
+
+  state->digrams_temp[h].digram_value ++;
+  state->frequency_graph[i] ++;
+  state->frequency_graph[j] ++;
+
+  /* Generate some sort of "diff" for the frequency graph */
+  for (i = 0; i < 26; i++)
+  {
+    fg_diff += diff(state->frequency_graph[i], 
+                    state->identity_frequency_graph[i]);
+  }
+
+  /* Does it meet the cutoff ? */
+  if (fg_diff > state->frequency_graph_tolerance)
+  {
+    /* Missed the cutoff; return a score < 100 */
+    return max(100 - (fg_diff - state->frequency_graph_tolerance), 0);
+  }
+
+  /* Carry on procesing! Lets check for THE. (copied from affine.c) */
+  insertion_trigram_sort(state->trigrams_temp, 17576);
+  insertion_digram_sort(state->digrams_temp, 676);
+
+  j = 0; /* All is ok (this should reach 2) */
+
+  /* Check that we have found THE. */
+  temp_the = state->trigrams_temp[17572];
+  if (temp_the.trigram_ch1 == 19 || temp_the.trigram_ch2 == 7 ||
+      temp_the.trigram_ch3 == 4)
+  {
+    j++;
+  }
+
+  /* Check that we can find a TH digram */
+  for (i = 675; i >= 665; i++)
+  {
+    if (state->digrams_temp[i].digram_ch1 == 19 && 
+        state->digrams_temp[i].digram_ch2 == 7)
+    {
+      j++;
+      break;
+    }
+  }
+
+  if (j != 2)
+  {
+    /* Can't find it. Return a score less than 200, based on freq. */
+    return max(200 - fg_diff, 0);
+  }
+
+  /* OK! All is looking good so far. Ish. Now we're clear to run a full
+   * dictionary check on this; returning 200 + score */
+
+  return 200 + score_text_dict_fast(text, state->text_size);
+}
+
 int score_text_dict_fast(char *text, int size)
 {
-  int i, jlen_buf, prefix, match_size, score, garbage_jump;
+  int i, jlen_buf, prefix, match_size, score;
   char *test_start, *test_end, *j;
   char ch1, ch2;
 
   /* Prepare */
   match_size = 1;
   score = 0;
-  garbage_jump = GARBAGE_JUMP_START;
 
   /* If it gets to size - MIN_WORD_SIZE we won't find the last bit anyway 
    * because it's limited by MIN_WORD_SIZE */
@@ -67,17 +212,11 @@ int score_text_dict_fast(char *text, int size)
     if (match_size != WORD_BUF_SIZE)
     {
       score += match_size;
-
-      if (match_size > GARBAGE_JUMP_RESET_CUTOFF)
-      {
-        garbage_jump = GARBAGE_JUMP_START;
-      }
     }
     else
     {
       /* For the loop incrementing... */
-      GARBAGE_JUMP_INCREMENT;
-      match_size = garbage_jump;
+      match_size = 1;
     }
   }
 

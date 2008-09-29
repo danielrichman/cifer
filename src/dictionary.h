@@ -19,6 +19,19 @@
 void load_dict(void);
 int score_text_dict_fast(char *text, int size);
 
+typedef struct {
+  int text_size;
+  int frequency_graph_tolerance;
+  int *frequency_graph;
+  int *identity_frequency_graph;
+  digram *digrams_temp;
+  trigram *trigrams_temp;
+} score_text_pro_state;
+
+void score_text_pro_start(int text_size, score_text_pro_state *state);
+void score_text_pro_cleanup(score_text_pro_state *state);
+int score_text_pro(char *text, score_text_pro_state *state);
+
 extern char *dict;
 extern char **dict_pointer;
 extern char **dict_pointer_end;

@@ -36,23 +36,25 @@
 #include "settings.h"
 #include "macros.h"
 
-#include "rf.h"
-#include "polybius.h"
 #include "urandom_access.h"
-#include "dictionary.h"
 #include "frequency_data.h"
 #include "frequency_analysis.h"
+#include "dictionary.h"
 #include "interface.h"
+
 #include "vigenere.h"
 #include "affine.h"
 #include "columnar_transposition.h"
 #include "keyword.h"
 #include "ciphers.h"
+#include "rf.h"
+#include "polybius.h"
+#include "bacon.h"
+
 #include "utility.h"
 #include "arg.h"
 #include "io.h"
 #include "action.h"
-#include "bacon.h"
 
 #endif
 
