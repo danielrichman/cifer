@@ -27,9 +27,6 @@
 #define DICTIONARY "./dict"
 #define WORD_BUF_SIZE  30      /* Slightly more than `cat dict | wc -L` */
 #define MIN_WORD_SIZE  2
-#define GARBAGE_JUMP_START         1
-#define GARBAGE_JUMP_INCREMENT     (garbage_jump += 1)
-#define GARBAGE_JUMP_RESET_CUTOFF  5
 
 #define OPTIMAL_DELTA_IC 1.73
 

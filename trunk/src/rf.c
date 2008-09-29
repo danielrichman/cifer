@@ -20,11 +20,11 @@
 
 void rf_bf(char *intext, int intext_size, int maxrails)
 {
-  int i, j;
+  int /*i,*/ j;
   int currail;
   int currailbuf_count = 0;
   char currailbuf[intext_size];
-  char otext[intext_size];
+  //char otext[intext_size];
   
   printf("\n\n");
   
