@@ -20,51 +20,86 @@
 
 void rf_bf(char *intext, int intext_size, int maxrails)
 {
-  int j;
-  int currail;
-  int currailbuf_count = 0;
-  char currailbuf[intext_size];
-  //char otext[intext_size];
-  
-  printf("\n\n");
-  
-  for (currail = 1; currail < maxrails; currail++)
-  {
-    for (j = 0; j < intext_size;)
-    {
-      currailbuf[currailbuf_count] = *(intext + j);
-      currailbuf_count++;
-      
-      printf("%c", currailbuf[currailbuf_count]);
-      
-      if ((j + 2*currail) > intext_size) break;
-      j += 2*currail;
-    }
-    
-    currailbuf_count = 0;
-    printf("\n\n");
-  }
-  
-  printf("\n\n");
 }
 
 int *rf_get_spaces(int rail)
 {
   int i;
+  int next;
   
   int *spaces = malloc(rail);
   memset(spaces, 0, rail);
   
+  int fmiddle;
+  
   if (rail % 2 == 0) /* If even */
   {
-    *(spaces + rail/2) = rail; /* The first middle */
-    *(spaces + rail/2 + 1) = rail; /* The second middle */
+    fmiddle = rail/2;
     
-    /* Extremities */
-    *(spaces)        = (rail - 1) * 2; /* First */
-    *(spaces + rail) = (rail - 1) * 2; /* Last */
+    for (i = 0; i <= rail; i++)
+    {
+      if (i == (rail - 1) * 2)
+      {
+        *(spaces) = i; /* First */
+        *(spaces + rail) = i; /* Last */
+        
+        next = rail - 2;
+      }
+      else
+      if (i == fmiddle) *(spaces + fmiddle) = rail; /* First middle */
+      else
+      if (i == fmiddle + 1)
+      {
+        *(spaces + i) = rail; /* Last middle */
+        next = rail + 2;
+      }
+      else
+      if (i < fmiddle) /* We're in the first half, ie. decreasing values */
+      {
+        *(spaces + i) = next;
+        next -= 2;
+      }
+      else
+      if (i > fmiddle + 1) /* We're in the second half, ie. increasing values */
+      {
+        *(spaces + i) = next;
+        next += 2;
+      }
+    }
   }
   else /* Is odd */
   {
+    fmiddle = (rail + 1)/2;
+    
+    for (i = 0; i <= rail; i++)
+    {
+      if (i == (rail - 1) * 2)
+      {
+        *(spaces) = i; /* First */
+        *(spaces + rail) = i; /* Last */
+
+        next = rail - 2;
+      }
+      else
+      if (i == fmiddle)
+      {
+        *(spaces + i) = rail; /* Middle */
+        next = rail + 2;
+      }
+      else
+      if (i < fmiddle) /* We're in the first half, ie. decreasing values */
+      {
+        *(spaces + i) = next;
+        next -= 2;
+      }
+      else
+      if (i > fmiddle) /* We're in the second half, ie. increasing values */
+      {
+        *(spaces + i) = next;
+        next += 2;
+      }
+    }
   }
+  
+  return spaces;
 }
