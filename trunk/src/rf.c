@@ -27,7 +27,7 @@ int *rf_get_spaces(int rail)
   int i;
   int next;
   
-  int *spaces = malloc(rail);
+  int *spaces = malloc(sizeof(int) * rail);
   memset(spaces, 0, rail);
   
   int fmiddle;
