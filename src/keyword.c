@@ -26,12 +26,14 @@ void keyword_bruteforce(char *text, int text_size)
   char *j, *e, *best, *text_tmp, statusbuf[75];
   int len, score, best_score, temp_table[26];
   int p, lastp, l, lastl, lastplen;
-  
+  struct timeval seltime;
+  fd_set stdset, stdset_temp;
+  score_text_pro_state pro_state;
+
   /* Select() stuff */
-  fd_set stdset;
   FD_ZERO(&stdset);
   FD_SET(0, &stdset); /* 0 is stdin */
-  struct timeval seltime;
+
   /* Zero these values for a non-blocking check */
   seltime.tv_sec  = 0;
   seltime.tv_usec = 0;
@@ -49,6 +51,9 @@ void keyword_bruteforce(char *text, int text_size)
     return;
   }
 
+  /* Setup Dictionary_pro */
+  score_text_pro_start(text_size, &pro_state);
+
   /* Null termination */
   *(text_tmp + text_size) = 0;
 
@@ -59,9 +64,8 @@ void keyword_bruteforce(char *text, int text_size)
   lastl = -1;
   lastplen = 0;
   
-  printf("Press enter at any time to stop the brute force and use the last \
-  best keyword.\n");
-
+  printf("Press enter at any time to stop the brute force and use the last ");
+  printf("best keyword.\n");
 
   for (j = dict; j < e; j += len + 1)
   {
@@ -85,8 +89,9 @@ void keyword_bruteforce(char *text, int text_size)
         /* Write out the now trimmed string (with the suffix blah...) \n */
         printf("%s...)", statusbuf);
         
-        select(1, &stdset, NULL, NULL, &seltime);
-        if (FD_ISSET(0, &stdset))
+        stdset_temp = stdset;
+        select(1, &stdset_temp, NULL, NULL, &seltime);
+        if (FD_ISSET(0, &stdset_temp))
           break;
       }
 
@@ -107,7 +112,7 @@ void keyword_bruteforce(char *text, int text_size)
     keyword_table(j, len, temp_table);
     keyword_table_flip(temp_table);
     keyword_decode(text, text_tmp, text_size, temp_table);
-    score = score_text_dict_fast(text_tmp, text_size);
+    score = score_text_pro(text_tmp, &pro_state);
 
     if (score > best_score)
     {
@@ -121,6 +126,7 @@ void keyword_bruteforce(char *text, int text_size)
 
   /* Free up */
   free(text_tmp);
+  score_text_pro_cleanup(&pro_state);
 
   /* Now retrieve best */
   keyword_table(best, strlen(best), temp_table);
