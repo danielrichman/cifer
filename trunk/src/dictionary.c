@@ -37,7 +37,7 @@ void score_text_pro_start(int text_size, score_text_pro_state *state)
 
   /* Pre malloc all the space needed */
   state->text_size = text_size;
-  state->frequency_graph_tolerance = text_size / 10;
+  state->frequency_graph_tolerance = 200;
   state->frequency_graph          = malloc( sizeof(int) * 26 );
   state->identity_frequency_graph = malloc( sizeof(int) * 26 );
   state->digrams_temp  = malloc( sizeof(digram)  * 26 * 26 );
@@ -66,7 +66,7 @@ void score_text_pro_cleanup(score_text_pro_state *state)
 
 int score_text_pro(char *text, score_text_pro_state *state)
 {
-  int i, j, k, h, fg_diff;
+  int i, j, k, h, l, fg_diff;
   trigram temp_the;
   /* This routine is made to quickly discard garbage but generate a better
    * score for real matches */
@@ -103,8 +103,8 @@ int score_text_pro(char *text, score_text_pro_state *state)
    * which must be counted afterwards */
 
   /* Combine the Frequency analysis, digram + trigram loops into one */
-  h = state->text_size - 2;  /* For Trigrams */
-  for (i = 0; i < h; i++)
+  l = state->text_size - 2;  /* For Trigrams */
+  for (i = 0; i < l; i++)
   {
     j =  CHARNUM(*(text + i + 2));
     h = (CHARNUM(*(text + i + 1)) * 26 ) + j;
@@ -127,13 +127,20 @@ int score_text_pro(char *text, score_text_pro_state *state)
   {
     fg_diff += diff(state->frequency_graph[i], 
                     state->identity_frequency_graph[i]);
+
+    printf("%c: %3i, %3i, %3i\n", NUMCHAR(i), state->frequency_graph[i],
+                                       state->identity_frequency_graph[i], 
+                    diff(state->frequency_graph[i],
+                         state->identity_frequency_graph[i]));
   }
+
+  printf("fg_diff: %i\n", fg_diff);
 
   /* Does it meet the cutoff ? */
   if (fg_diff > state->frequency_graph_tolerance)
   {
     /* Missed the cutoff; return a score < 100 */
-    return max(100 - (fg_diff - state->frequency_graph_tolerance), 0);
+    return max(100 - (fg_diff - state->frequency_graph_tolerance), 1);
   }
 
   /* Carry on procesing! Lets check for THE. (copied from affine.c) */
@@ -151,7 +158,7 @@ int score_text_pro(char *text, score_text_pro_state *state)
   }
 
   /* Check that we can find a TH digram */
-  for (i = 675; i >= 665; i++)
+  for (i = 675; i >= 665; i--)
   {
     if (state->digrams_temp[i].digram_ch1 == 19 && 
         state->digrams_temp[i].digram_ch2 == 7)
@@ -161,10 +168,12 @@ int score_text_pro(char *text, score_text_pro_state *state)
     }
   }
 
+  printf("j: %i\n", j);
+
   if (j != 2)
   {
     /* Can't find it. Return a score less than 200, based on freq. */
-    return max(200 - fg_diff, 0);
+    return max(200 - fg_diff, 1);
   }
 
   /* OK! All is looking good so far. Ish. Now we're clear to run a full
