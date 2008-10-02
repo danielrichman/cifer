@@ -28,22 +28,22 @@ int *rf_get_spaces(int rail)
   int next;
   
   int *spaces = malloc(sizeof(int) * rail);
-  memset(spaces, 0, rail);
+  memset(spaces, 0, sizeof(int) * rail);
   
   int fmiddle;
   
   if (rail % 2 == 0) /* If even */
   {
-    fmiddle = rail/2;
+    fmiddle = (rail/2) - 1;
     
-    for (i = 0; i <= rail; i++)
+    for (i = 0; i < rail; i++)
     {
-      if (i == (rail - 1) * 2)
+      if (i == 0)
       {
-        *(spaces) = i; /* First */
-        *(spaces + rail) = i; /* Last */
+        *(spaces) = (rail - 1) * 2; /* First */
+        *(spaces + rail - 1) = *(spaces); /* Last */
         
-        next = rail - 2;
+        next = *(spaces) - 2;
       }
       else
       if (i == fmiddle) *(spaces + fmiddle) = rail; /* First middle */
@@ -69,16 +69,16 @@ int *rf_get_spaces(int rail)
   }
   else /* Is odd */
   {
-    fmiddle = (rail + 1)/2;
+    fmiddle = ((rail + 1)/2) - 1;
     
-    for (i = 0; i <= rail; i++)
+    for (i = 0; i < rail; i++)
     {
-      if (i == (rail - 1) * 2)
+      if (i == 0)
       {
-        *(spaces) = i; /* First */
-        *(spaces + rail) = i; /* Last */
+        *(spaces) = (rail - 1) * 2; /* First */
+        *(spaces + rail) = *(spaces); /* Last */
 
-        next = rail - 2;
+        next = *(spaces) - 2;
       }
       else
       if (i == fmiddle)
