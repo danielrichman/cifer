@@ -126,6 +126,9 @@ void keyword_bruteforce(char *text, int text_size)
 
   /* Free up */
   free(text_tmp);
+
+  /* Some Pro_check finish, stats and cleanup */
+  score_text_pro_print_stats("keyword bruteforce", &pro_state);
   score_text_pro_cleanup(&pro_state);
 
   /* Now retrieve best */
@@ -170,6 +173,44 @@ void keyword_table(char *keyword, int keyword_length, int *table)
       {
         used_letters[j] = 1;
         table[i] = j;
+        break;   /* Break the J loop only. */
+      }
+    }
+  }
+}
+
+void keyword_table_preflipped(char *keyword, int keyword_length, int *table)
+{
+  int i, j, t;
+  int used_letters[26];
+
+  /* Setup. */
+  for (i = 0; i < 26; i++) used_letters[i] = 0;
+  t = 0;
+
+  /* Copy the keyword in, removing duplicate letters */
+  for (i = 0; i < keyword_length; i++)
+  {
+    j = CHARNUM(*(keyword + i));
+    if (!used_letters[j])
+    {
+      table[j] = t;
+      t++;
+
+      used_letters[j] = 1;
+    }
+  }
+
+  /* Fill the remainder of the table. */
+  for (i = t; i < 26; i++)
+  {
+    /* Find an unused letter */
+    for (j = 0; j < 26; j++)
+    {
+      if (!used_letters[j])
+      {
+        used_letters[j] = 1;
+        table[j] = i;
         break;   /* Break the J loop only. */
       }
     }

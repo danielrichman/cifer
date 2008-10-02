@@ -22,6 +22,9 @@ int score_text_dict_fast(char *text, int size);
 typedef struct {
   int text_size;
   int frequency_graph_tolerance;
+  int num_checked;
+  int num_checked_freq_ok;
+  int num_checked_the_ok;
   int *frequency_graph;
   int *identity_frequency_graph;
   digram *digrams_temp;
@@ -30,6 +33,7 @@ typedef struct {
 
 void score_text_pro_start(int text_size, score_text_pro_state *state);
 void score_text_pro_cleanup(score_text_pro_state *state);
+void score_text_pro_print_stats(char *englishname, score_text_pro_state *state);
 int score_text_pro(char *text, score_text_pro_state *state);
 
 extern char *dict;
