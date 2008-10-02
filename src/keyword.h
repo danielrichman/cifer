@@ -18,6 +18,7 @@
 
 void keyword_bruteforce(char *text, int text_size);
 void keyword_table(char *keyword, int keyword_length, int *table);
+void keyword_table_preflipped(char *keyword, int keyword_length, int *table);
 void keyword_table_flip(int *table);
 void keyword_decode(char *text, char *outtext, int text_size, int *table);
 void keyword_table_copy(int *dest, int *source);

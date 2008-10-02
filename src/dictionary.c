@@ -37,7 +37,7 @@ void score_text_pro_start(int text_size, score_text_pro_state *state)
 
   /* Pre malloc all the space needed */
   state->text_size = text_size;
-  state->frequency_graph_tolerance = 200;
+  state->frequency_graph_tolerance = text_size / 2;
   state->frequency_graph          = malloc( sizeof(int) * 26 );
   state->identity_frequency_graph = malloc( sizeof(int) * 26 );
   state->digrams_temp  = malloc( sizeof(digram)  * 26 * 26 );
@@ -55,23 +55,42 @@ void score_text_pro_start(int text_size, score_text_pro_state *state)
 
   /* Setup id. frequency graph */
   create_identity_frequency_graph(state->identity_frequency_graph, text_size);
+
+  /* Setup the counters */
+  state->num_checked = 0;
+  state->num_checked_freq_ok = 0;
+  state->num_checked_the_ok = 0;
 }
 
 void score_text_pro_cleanup(score_text_pro_state *state)
 {
   free(state->digrams_temp);
   free(state->trigrams_temp);
+  free(state->frequency_graph);
   free(state->identity_frequency_graph);
+}
+
+void score_text_pro_print_stats(char *englishname, score_text_pro_state *state)
+{
+  printf("Score text pro '%s' stats:\n", englishname);
+  printf("  Number of Texts checked:                             %i\n", 
+                                 state->num_checked);
+  printf("  Number of Texts checked with ok frequency_graph:     %i\n", 
+                                 state->num_checked_freq_ok);
+  printf("  Number of Texts checked with ok 'THE' location:      %i\n\n", 
+                                 state->num_checked_the_ok);
 }
 
 int score_text_pro(char *text, score_text_pro_state *state)
 {
   int i, j, k, h, l, fg_diff;
   trigram temp_the;
+
   /* This routine is made to quickly discard garbage but generate a better
    * score for real matches */
 
   if (state->text_size == 0) return 0;
+  state->num_checked ++;
 
   /* Reset the variables */
   fg_diff = 0;
@@ -143,18 +162,20 @@ int score_text_pro(char *text, score_text_pro_state *state)
     return max(100 - (fg_diff - state->frequency_graph_tolerance), 1);
   }
 
+  state->num_checked_freq_ok ++;
+
   /* Carry on procesing! Lets check for THE. (copied from affine.c) */
   insertion_trigram_sort(state->trigrams_temp, 17576);
   insertion_digram_sort(state->digrams_temp, 676);
 
-  j = 0; /* All is ok (this should reach 2) */
+  j = 0; /* All is ok (this should reach 3) */
 
   /* Check that we have found THE. */
-  temp_the = state->trigrams_temp[17572];
+  temp_the = state->trigrams_temp[17575];
   if (temp_the.trigram_ch1 == 19 || temp_the.trigram_ch2 == 7 ||
       temp_the.trigram_ch3 == 4)
   {
-    j++;
+    j += 1;
   }
 
   /* Check that we can find a TH digram */
@@ -163,18 +184,20 @@ int score_text_pro(char *text, score_text_pro_state *state)
     if (state->digrams_temp[i].digram_ch1 == 19 && 
         state->digrams_temp[i].digram_ch2 == 7)
     {
-      j++;
+      j += 2;
       break;
     }
   }
 
   printf("j: %i\n", j);
 
-  if (j != 2)
+  if (j != 3)
   {
     /* Can't find it. Return a score less than 200, based on freq. */
     return max(200 - fg_diff, 1);
   }
+
+  state->num_checked_the_ok ++;
 
   /* OK! All is looking good so far. Ish. Now we're clear to run a full
    * dictionary check on this; returning 200 + score */

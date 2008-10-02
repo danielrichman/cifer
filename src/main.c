@@ -30,12 +30,15 @@ int main(int argc, char **argv)
   }
   
   action_do();
+  load_dict();
 
   printf("\n\nBeefburger keyword score test debug on intext:...\n\n");
-  keyword_table("beefburger", 10, table);
+  keyword_table_preflipped("beefburger", 10, table);
   keyword_decode(intext, intext, intext_size, table);
+  printf("%s\n\n", intext);
   score_text_pro_start(intext_size, &pro_state);
   printf("score: %i\n", score_text_pro(intext, &pro_state));
+  score_text_pro_print_stats("main_test", &pro_state);
   score_text_pro_cleanup(&pro_state);
 
   return 0;
