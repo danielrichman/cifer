@@ -73,12 +73,12 @@ void score_text_pro_cleanup(score_text_pro_state *state)
 void score_text_pro_print_stats(char *englishname, score_text_pro_state *state)
 {
   printf("Score text pro '%s' stats:\n", englishname);
-  printf("  Number of Texts checked:                             %i\n", 
-                                 state->num_checked);
-  printf("  Number of Texts checked with ok frequency_graph:     %i\n", 
-                                 state->num_checked_freq_ok);
-  printf("  Number of Texts checked with ok 'THE' location:      %i\n\n", 
-                                 state->num_checked_the_ok);
+  printf("  Number of Texts checked:                           %i\n", 
+                  state->num_checked);
+  printf("  Number of Texts checked with ok frequency_graph:   %i (tol. %i)\n", 
+                  state->num_checked_freq_ok, state->frequency_graph_tolerance);
+  printf("  Number of Texts checked with ok 'THE' location:    %i\n\n", 
+                  state->num_checked_the_ok);
 }
 
 int score_text_pro(char *text, score_text_pro_state *state)
@@ -146,14 +146,7 @@ int score_text_pro(char *text, score_text_pro_state *state)
   {
     fg_diff += diff(state->frequency_graph[i], 
                     state->identity_frequency_graph[i]);
-
-    printf("%c: %3i, %3i, %3i\n", NUMCHAR(i), state->frequency_graph[i],
-                                       state->identity_frequency_graph[i], 
-                    diff(state->frequency_graph[i],
-                         state->identity_frequency_graph[i]));
   }
-
-  printf("fg_diff: %i\n", fg_diff);
 
   /* Does it meet the cutoff ? */
   if (fg_diff > state->frequency_graph_tolerance)
@@ -188,8 +181,6 @@ int score_text_pro(char *text, score_text_pro_state *state)
       break;
     }
   }
-
-  printf("j: %i\n", j);
 
   if (j != 3)
   {
