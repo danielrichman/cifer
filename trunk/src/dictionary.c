@@ -37,7 +37,7 @@ void score_text_pro_start(int text_size, score_text_pro_state *state)
 
   /* Pre malloc all the space needed */
   state->text_size = text_size;
-  state->frequency_graph_tolerance = text_size / 2;
+  state->frequency_graph_tolerance = text_size / 4;
   state->frequency_graph          = malloc( sizeof(int) * 26 );
   state->identity_frequency_graph = malloc( sizeof(int) * 26 );
   state->digrams_temp  = malloc( sizeof(digram)  * 26 * 26 );
