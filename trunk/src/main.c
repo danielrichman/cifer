@@ -28,8 +28,5 @@ int main(int argc, char **argv)
   
   action_do();
   
-  int i; for (i=0;i<6;i++)
-    printf("i:%d -> %d\n", i, rf_get_spaces(5)[i]);
-
   return 0;
 } 

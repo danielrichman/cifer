@@ -18,88 +18,47 @@
 
 #include "stdinc.h"
 
-void rf_bf(char *intext, int intext_size, int maxrails)
+void rf_bf(char *intext, int intext_size, int minrails, int maxrails)
 {
+  int i, j, *spaces_temp;
+
+  /* Setup reusable target space */
+  spaces_temp = malloc( sizeof(int) * maxrails );
+
+  for (i = minrails; i <= maxrails; i++)
+  {
+    rf_get_spaces(i, spaces_temp);
+    printf("Rail %2i: %i", i, spaces_temp[0]);
+    for (j = 1; j < i; j++) printf(", %i", spaces_temp[j]);
+    printf("\n");
+  }
 }
 
-int *rf_get_spaces(int rail)
+void rf_get_spaces(int rail, int *target)
 {
-  int i;
-  int next;
-  
-  int *spaces = malloc(sizeof(int) * rail);
-  memset(spaces, 0, sizeof(int) * rail);
-  
-  int fmiddle;
-  
-  if (rail % 2 == 0) /* If even */
-  {
-    fmiddle = (rail/2) - 1;
-    
-    for (i = 0; i < rail; i++)
-    {
-      if (i == 0)
-      {
-        *(spaces) = (rail - 1) * 2; /* First */
-        *(spaces + rail - 1) = *(spaces); /* Last */
-        
-        next = *(spaces) - 2;
-      }
-      else
-      if (i == fmiddle) *(spaces + fmiddle) = rail; /* First middle */
-      else
-      if (i == fmiddle + 1)
-      {
-        *(spaces + i) = rail; /* Last middle */
-        next = rail + 2;
-      }
-      else
-      if (i < fmiddle) /* We're in the first half, ie. decreasing values */
-      {
-        *(spaces + i) = next;
-        next -= 2;
-      }
-      else
-      if (i > fmiddle + 1) /* We're in the second half, ie. increasing values */
-      {
-        *(spaces + i) = next;
-        next += 2;
-      }
-    }
-  }
-  else /* Is odd */
-  {
-    fmiddle = ((rail + 1)/2) - 1;
-    
-    for (i = 0; i < rail; i++)
-    {
-      if (i == 0)
-      {
-        *(spaces) = (rail - 1) * 2; /* First */
-        *(spaces + rail) = *(spaces); /* Last */
+  int i, next, middle1, middle2;
 
-        next = *(spaces) - 2;
-      }
-      else
-      if (i == fmiddle)
-      {
-        *(spaces + i) = rail; /* Middle */
-        next = rail + 2;
-      }
-      else
-      if (i < fmiddle) /* We're in the first half, ie. decreasing values */
-      {
-        *(spaces + i) = next;
-        next -= 2;
-      }
-      else
-      if (i > fmiddle) /* We're in the second half, ie. increasing values */
-      {
-        *(spaces + i) = next;
-        next += 2;
-      }
-    }
+  if (modp(rail, 2) == 0)  /* Even */
+  {
+    middle1 = rail / 2;
+    middle2 = middle1;
   }
-  
-  return spaces;
+  else
+  {
+    middle1 = (rail - 1) / 2;
+    middle2 = (rail + 1) / 2;
+  }
+
+  next = rail * 2;
+  printf("rf_get_spaces (%i): middle 1 and 2: %i %i\n", rail, middle1, middle2);
+
+  for (i = 0; i < rail; i++)
+  {
+    if (i < middle1)  next -= 2;
+    if (i > middle2)  next += 2;
+
+    target[i] = next;
+    printf("   -> debug, setting %i to new next %i\n", i, next);
+  }
 }
+
