@@ -57,7 +57,7 @@ void rf_bf(char *intext, int intext_size, int minrails, int maxrails)
     chcount[i][j] = repeats[i] * 2;
 }
 
-void rf_get_spaces(int rail, int **target)
+void rf_get_spaces(int rail, int target[][2])
 {
   int i, next, middle1, middle2;
 
@@ -81,11 +81,13 @@ void rf_get_spaces(int rail, int **target)
 
     target[i][0] = next;
     
-    if ((next - rail) < 0)
-    {
+    if ((next - rail) < 0) /* Odd rails, middle line */
       target[i][1] = target[i][0];
-    }
+    
+    else if ((next - rail) == 0) /* Even rails, middle1/2 */
+      target[i][1] = target[i][0] - 2;
+    
     else if (next == rail) /* First or last */
-      target[i][1] = target[i][0];;
+      target[i][1] = target[i][0];
   }
 }
