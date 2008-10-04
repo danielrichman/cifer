@@ -28,5 +28,7 @@ int main(int argc, char **argv)
   
   action_do();
   
+  rf_bf(NULL, 0, 0, 10);
+  
   return 0;
 } 
