@@ -17,4 +17,4 @@
 */
 
 void rf_bf(char *intext, int intext_size, int minrails, int maxrails);
-void rf_get_spaces(int rail, int *target);
+void rf_get_spaces(int rail, int target[][2]);

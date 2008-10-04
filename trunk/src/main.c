@@ -28,7 +28,15 @@ int main(int argc, char **argv)
   
   action_do();
   
-  rf_bf(NULL, 0, 0, 10);
+  int i;
+  int spaces[8][2];
+  rf_get_spaces(8, spaces);
+  for (i = 0; i < 8; i++)
+  {
+    printf("%d rails, spaces1 = %d, spaces2 = %d\n", i, spaces[i][0],
+                                                        spaces[i][1]);
+  }
+  //rf_bf(NULL, 0, 0, 10);
   
   return 0;
 } 
