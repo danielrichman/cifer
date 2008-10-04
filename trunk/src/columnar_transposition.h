@@ -29,3 +29,5 @@ void columnar_transposition_row2col(char *text, char *outtext,
 void columnar_transposition_flip_key(int *key, int key_size);
 void columnar_transposition_bruteforce(char *text, int text_size,
           int key_min, int key_max, columnar_transposition_function routine);
+
+void columnar_transposition_keyinfo(int *key, int key_size);

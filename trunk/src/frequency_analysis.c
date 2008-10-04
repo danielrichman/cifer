@@ -42,7 +42,7 @@ void random_frequency_match(int *frequency_graph,
   }
 
   /* Sort. */
-  insertion_randfreq_sort(scores, 26 * 26);
+  insertion_sort_rand_freq(scores, 26 * 26);
 
   /* Zero the table */
   for (i = 0; i < 26; i++) table[i] = -1;

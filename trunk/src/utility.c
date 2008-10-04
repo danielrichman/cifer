@@ -40,13 +40,42 @@
  *   }
  * }                                                                */
 
-#define INSERTION_DEFINE(nm, ty, sval) void nm(ty *a, int asize) { \
+#define INSERTION_DEFINE(ty, sval) void insertion_sort_ ## ty \
+                                            (ty *a, int asize) { \
     int i, j, k; ty d; k = asize; for (i = 0; i < k; i++) { \
     d = a[i]; j = i - 1; while (j >= 0 && a[j].sval > d.sval) { \
     a[j + 1] = a[j]; j = j - 1; } a[j + 1] = d; } }
+#define GET_DEFINE(nm, ty, sval, svalty, comp) ty nm ## _ ## ty  \
+                                            (ty *a, int asize) { \
+    int i, best_key; svalty best; best = a[0].sval; best_key = 0; \
+    for (i = 1; i < asize; i++) \
+    if (a[i].sval comp best) { best = a[i].sval; best_key = i; } \
+    return a[best_key]; }
+#define GET_KEY_DEFINE(nm, ty, sval, svalty, comp) int nm ## _ ## ty ## _key  \
+                                            (ty *a, int asize) { \
+    int i, best_key; svalty best; best = a[0].sval; best_key = 0; \
+    for (i = 1; i < asize; i++) \
+    if (a[i].sval comp best) { best = a[i].sval; best_key = i; } \
+    return best_key; }
 
 #include "utility.i"
+
+#undef GET_KEY_DEFINE
+#undef GET_DEFINE
 #undef INSERTION_DEFINE
+
+/* And this one is the same for this function: 
+ * vigenere_colum_ic max_columnic(vigenere_column_ic a[], int asize)
+ * {
+ *   int i, best, best_key;
+ *
+ *   best = a[0];
+ *   for (i = 1; i < asize; i++) if (a[i].column_ic_diff > best)
+ *   { best = a[i].column_ic_diff; best_key = i; }
+ *
+ *   return a[best_key];
+ * }
+ * And min_ is just the opposite comparison */
 
 /* a = number; b = modular */
 int modular_multiplicative_inverse(int a, int mbase)

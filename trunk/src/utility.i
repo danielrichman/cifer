@@ -16,8 +16,14 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-INSERTION_DEFINE(insertion_columnic_sort, vigenere_column_ic, column_ic_diff)
-INSERTION_DEFINE(insertion_digram_sort,   digram,             digram_value)
-INSERTION_DEFINE(insertion_trigram_sort,  trigram,            trigram_value)
-INSERTION_DEFINE(insertion_randfreq_sort, rand_freq,          diff)
+INSERTION_DEFINE(vigenere_column_ic, column_ic_diff)
+INSERTION_DEFINE(digram,             digram_value)
+INSERTION_DEFINE(trigram,            trigram_value)
+INSERTION_DEFINE(rand_freq,          diff)
+
+GET_DEFINE(best, digram,  digram_value, int, >)
+GET_DEFINE(best, trigram, trigram_value, int, >)
+
+GET_KEY_DEFINE(best, digram,  digram_value, int, >)
+GET_KEY_DEFINE(best, trigram, trigram_value, int, >)
 

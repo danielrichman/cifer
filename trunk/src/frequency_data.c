@@ -78,8 +78,15 @@ void count_digrams(char *text, int input_size, digram *tgt, int tgt_size)
     digrams[l].digram_value ++;
   }
 
+  /* No point sorting if we only want one */
+  if (tgt_size == 1)
+  {
+    tgt[0] = best_digram(digrams, 26 * 26);
+    return;
+  }
+
   /* Sort */
-  insertion_digram_sort(digrams, 26 * 26);
+  insertion_sort_digram(digrams, 26 * 26);
 
   /* Grab the top few */
   j = min(tgt_size, 26 * 26);
@@ -124,8 +131,15 @@ void count_trigrams(char *text, int input_size, trigram *tgt, int tgt_size)
     trigrams[m].trigram_value ++;
   }
 
+  /* Better this way */
+  if (tgt_size == 1)
+  {
+    tgt[0] = best_trigram(trigrams, 26 * 26 * 26);
+    return;
+  }
+
   /* Sort */
-  insertion_trigram_sort(trigrams, 26 * 26 * 26);
+  insertion_sort_trigram(trigrams, 26 * 26 * 26);
 
   /* Grab the top few */
   j = min(tgt_size, 26 * 26 * 26);

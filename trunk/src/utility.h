@@ -16,8 +16,17 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define INSERTION_DEFINE(nm, ty, sval) void nm(ty *a, int asize);
+#define INSERTION_DEFINE(ty, sval) void insertion_sort_ ## ty \
+                                            (ty *a, int asize);
+#define GET_DEFINE(nm, ty, sval, svalty, comp) ty nm ## _ ## ty  \
+                                            (ty *a, int asize);
+#define GET_KEY_DEFINE(nm, ty, sval, svalty, comp) int nm ## _ ## ty ## _key  \
+                                            (ty *a, int asize);
+
 #include "utility.i"
+
+#undef GET_KEY_DEFINE
+#undef GET_DEFINE
 #undef INSERTION_DEFINE
 
 #define IS_COPRIME(a, b)         (gcd((a), (b)) == 1 ? 1 : 0)
