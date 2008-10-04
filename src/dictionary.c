@@ -37,7 +37,7 @@ void score_text_pro_start(int text_size, score_text_pro_state *state)
 
   /* Pre malloc all the space needed */
   state->text_size = text_size;
-  state->frequency_graph_tolerance = text_size / 4;
+  state->frequency_graph_tolerance = text_size / 3;
   state->frequency_graph          = malloc( sizeof(int) * 26 );
   state->identity_frequency_graph = malloc( sizeof(int) * 26 );
   state->digrams_temp  = malloc( sizeof(digram)  * 26 * 26 );
@@ -83,7 +83,8 @@ void score_text_pro_print_stats(char *englishname, score_text_pro_state *state)
 
 int score_text_pro(char *text, score_text_pro_state *state)
 {
-  int i, j, k, h, l, fg_diff;
+  int i, j, k, h, l, fg_diff, temp_th_num;
+  digram temp_th;
   trigram temp_the;
 
   /* This routine is made to quickly discard garbage but generate a better
@@ -158,13 +159,11 @@ int score_text_pro(char *text, score_text_pro_state *state)
   state->num_checked_freq_ok ++;
 
   /* Carry on procesing! Lets check for THE. (copied from affine.c) */
-  insertion_trigram_sort(state->trigrams_temp, 17576);
-  insertion_digram_sort(state->digrams_temp, 676);
+  temp_the = best_trigram(state->trigrams_temp, 17576);
 
   j = 0; /* All is ok (this should reach 3) */
 
   /* Check that we have found THE. */
-  temp_the = state->trigrams_temp[17575];
   if (temp_the.trigram_ch1 == 19 || temp_the.trigram_ch2 == 7 ||
       temp_the.trigram_ch3 == 4)
   {
@@ -172,14 +171,21 @@ int score_text_pro(char *text, score_text_pro_state *state)
   }
 
   /* Check that we can find a TH digram */
-  for (i = 675; i >= 665; i--)
+  for (i = 0; i < 10; i++)
   {
-    if (state->digrams_temp[i].digram_ch1 == 19 && 
-        state->digrams_temp[i].digram_ch2 == 7)
+    /* Get a good digram (the best, actually) */
+    temp_th_num = best_digram_key(state->digrams_temp, 676);
+    temp_th = state->digrams_temp[temp_th_num];
+
+    if (temp_th.digram_ch1 == 19 && 
+        temp_th.digram_ch2 == 7)
     {
       j += 2;
       break;
     }
+
+    /* Fail? Remove that digram by setting it to 0, then get the next best */
+    state->digrams_temp[temp_th_num].digram_value = 0;
   }
 
   if (j != 3)

@@ -22,7 +22,7 @@
 /* Todo: Make the max keylen dynamically increase using the auto-detect stuff */
 
 #define CTRANS_MIN_KEYLEN 4
-#define CTRANS_MAX_KEYLEN 9
+#define CTRANS_MAX_KEYLEN 6
 
 #define DICTIONARY "./dict"
 #define WORD_BUF_SIZE  30      /* Slightly more than `cat dict | wc -L` */

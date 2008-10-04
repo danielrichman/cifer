@@ -28,7 +28,9 @@ void columnar_transposition_bruteforce(char *text, int text_size,
 {
   int key_size, i, j, k, h, factorial, score, best_score, best_size;
   int *key, *key_best;
-  char *text_tmp;
+  char *text_tmp, *text_nonumbers;
+  char ch;
+  score_text_pro_state pro_state;
 
   /* Allocate to the maximum size, that's means we only have to alloc once */
   key = malloc(sizeof(int) * key_max);
@@ -42,16 +44,32 @@ void columnar_transposition_bruteforce(char *text, int text_size,
 
   /* Create our temporary space */
   text_tmp = malloc(text_size + 1);
-  if (text_tmp == NULL)
+  text_nonumbers = malloc(text_size + 1);
+  if (text_tmp == NULL || text_nonumbers == NULL)
   {
-    printf("c.trans._bruteforce malloc(%i) text_temp fail\n", text_size + 1);
+    printf("c.trans._bruteforce malloc(%i) text_* fail\n", text_size + 1);
     exit(1);
   }
   *(text_tmp + intext_size) = 0;
+  *(text_nonumbers + intext_size) = 0;
+
+  /* Strip any numbers for scoring ='( */
+  for (j = 0; j < text_size; j++)
+  {
+    ch = *(text + j);
+
+    if ( ALPHAL_CH(ch) || ALPHAH_CH(ch) )
+      *(text_nonumbers + j) = ch;
+    else
+      *(text_nonumbers + j) = 'x';
+  }
 
   /* Prepare */
   best_score = -1;
   best_size = 0;
+
+  /* Go Pro! */
+  score_text_pro_start(text_size, &pro_state);
 
   /* Print a header */
   printf("Columnar Transposition Bruteforce, starting %i => %i\n", 
@@ -86,20 +104,10 @@ void columnar_transposition_bruteforce(char *text, int text_size,
       }
 
       /* Try it */
-      (*routine)(text, text_tmp, text_size, key, key_size);
-
-      /* Strip any numbers for scoring ='( (TODO: Fix this, score text doesn't
-       * support numbers) */
-      for (j = 0; j < text_size; j++) 
-      {
-        if ( NUMBER_CH(*(text_tmp + j)) )
-        {
-          *(text_tmp + j) = 'x';
-        }
-      }
+      (*routine)(text_nonumbers, text_tmp, text_size, key, key_size);
 
       /* Score it */
-      score = score_text_dict_fast(text_tmp, text_size);
+      score = score_text_pro(text_tmp, &pro_state);
 
       if (score > best_score)
       {
@@ -116,7 +124,10 @@ void columnar_transposition_bruteforce(char *text, int text_size,
     printf("\n");
   }
 
-  /* Do it for real and save the result */
+  /* Print _pro stats */
+  score_text_pro_print_stats("columnar-transposition", &pro_state);
+
+  /* Do it for real and save the result (doing for real WITH numbers) */
   (*routine)(text, text_tmp, text_size, key_best, best_size);
   memcpy(text, text_tmp, text_size);
 
@@ -124,15 +135,7 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   printf("Columnar Transposition Bruteforce: best_score %i; key size %i\n",
                                       best_score, best_size);
 
-  printf("Reverse/decode key (used to crack):");
-  for (i = 0; i < best_size; i++) printf("%i|", key_best[i]);
-  printf("\n"); 
-
-  columnar_transposition_flip_key(key_best, best_size);
-
-  printf("Forward key (used for initial encode):");
-  for (i = 0; i < best_size; i++) printf("%i|", key_best[i]);
-  printf("\n\n");
+  columnar_transposition_keyinfo(key_best, best_size);
 
   printf("%*s\n\n", text_size, text);
 
@@ -140,6 +143,25 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   free(key);
   free(key_best);
   free(text_tmp);
+  free(text_nonumbers);
+  score_text_pro_cleanup(&pro_state);
+}
+
+void columnar_transposition_keyinfo(int *key, int key_size)
+{
+  int i;
+
+  printf("Reverse/decode key (used to crack): ");
+  for (i = 0; i < key_size; i++) printf("%i|", key[i]);
+  printf("\n");
+
+  columnar_transposition_flip_key(key, key_size);
+
+  printf("Forward key (used for initial encode): ");
+  for (i = 0; i < key_size; i++) printf("%i|", key[i]);
+  printf("\n\n");
+
+  columnar_transposition_flip_key(key, key_size);
 }
 
 /* Reads off into columns KEY_SIZE, reorders as per key, reads off

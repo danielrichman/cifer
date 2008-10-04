@@ -262,19 +262,7 @@ void action_do()
                                    arg_ctrans_key_size);
 
       printf("Columnar Transposition Decode:\n");
-
-      printf("Reverse/decode key (used to crack):");
-      for (i = 0; i < arg_ctrans_key_size; i++) 
-            printf("%i|", arg_ctrans_key[i]);
-      printf("\n");
-
-      columnar_transposition_flip_key(arg_ctrans_key, arg_ctrans_key_size);
-
-      printf("Forward key (used for initial encode):");
-      for (i = 0; i < arg_ctrans_key_size; i++) 
-            printf("%i|", arg_ctrans_key[i]);
-      printf("\n\n");
-
+      columnar_transposition_keyinfo(arg_ctrans_key, arg_ctrans_key_size);
       printf("%*s\n\n", intext_num_size, text_tmp);
 
       free(text_tmp);

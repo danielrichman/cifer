@@ -55,7 +55,8 @@ void crack_vigenere(char *text, int text_size)
   }
 
   /* Sort it */
-  insertion_columnic_sort(column_ic, VIGENERE_MAX_KEYLEN - VIGENERE_MIN_KEYLEN);
+  insertion_sort_vigenere_column_ic(column_ic, 
+                 VIGENERE_MAX_KEYLEN - VIGENERE_MIN_KEYLEN);
 
   /* Prepare to decode... */
   h = column_ic[0].column_size;
