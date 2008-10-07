@@ -17,6 +17,7 @@ Ciphers we need to crack (cross them off):
 [X] Polybius Square          Taken to pieces.
 [X] Columnar Transposition   Speedy
 [ ] Rail Fence               (DRebellion shotgun Sun, 28 Sep 2008 :P)
+[ ] Morse Code
 [ ] Playfair
 [ ] Double Playfair
 [ ] Autokey                  (Daniel Richman wants this one :D )
@@ -40,3 +41,9 @@ Features that are needed
     used, keywords, the lot.
 [X] Implement proper command line parsing using flags (-*) so we can tell the
     program exactly what we need to do.
+[ ] Arg.c and Action.c are a mess, need to be more... dynamic
+[ ] Better handling of input and output, perhaps a function defines what types of 
+    chars it takes and input will preprocess them ready
+[ ] Dictionary _fast and _pro need to take non-alpha chars and discard them;
+    perhaps some sort of system for specifing if the input will have such dirties
+    in it and then enabling the slightly-insignificantly slower bits? Mebe? no.
