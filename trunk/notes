@@ -8,25 +8,25 @@ Hill Cipher Matrix post:
 http://ardsrk.blogspot.com/2006/04/hill-cipher-deciphered.html
 
 Ciphers we need to crack (cross them off):
-[X] Caesar
-[X] Vigenere
-[X] Affine
-[X] Keyword
-[X] Bacon
-[X] Polybius Square
-[X] Columnar Transposition
-[ ] Rail Fence (DRebellion shotgun Sun, 28 Sep 2008 21:21:42 +0100 :P)
+[X] Caesar                   0.01
+[X] Vigenere                 Milliseconds
+[X] Affine                   Creamed
+[X] Multiplicative           (Just use --affine)
+[X] Keyword                  OWNED
+[X] Bacon                    Smushed.
+[X] Polybius Square          Taken to pieces.
+[X] Columnar Transposition   Speedy
+[ ] Rail Fence               (DRebellion shotgun Sun, 28 Sep 2008 :P)
 [ ] Playfair
 [ ] Double Playfair
-[ ] Autokey
+[ ] Autokey                  (Daniel Richman wants this one :D )
 [ ] Alberti
 [ ] ADFGVX
 [ ] Solitaire
 [ ] Hill
 [ ] Book
 [ ] Enigma
-[ ] Fialka         (Is this really needed? I doubt that it will be used again)
-[X] Multiplicative (Just use --affine)
+[ ] Fialka                   (Is this really needed?)
 
 Features that are needed
 [X] Reimplement fast dictionary searching (Assigned to DR)
