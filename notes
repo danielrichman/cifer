@@ -15,7 +15,7 @@ Ciphers we need to crack (cross them off):
 [X] Keyword                  OWNED
 [X] Bacon                    Smushed.
 [X] Polybius Square          Taken to pieces.
-[X] Columnar Transposition   Speedy
+[X] Columnar Transposition   Speedy (!) - see below
 [ ] Rail Fence               (DRebellion shotgun Sun, 28 Sep 2008 :P)
 [ ] Morse Code
 [ ] Playfair
@@ -30,7 +30,9 @@ Ciphers we need to crack (cross them off):
 [ ] Fialka                   (Is this really needed?)
 
 Features that are needed
-[X] Reimplement fast dictionary searching (Assigned to DR)
+[X] Reimplement fast dictionary searching (Assigned to DR): _pro
+[ ] Columnar Transposition: perhaps some intelligent guessing or 
+    gen alg for faster winnness?
 [X] Bigrams and Trigrams frequency data
 [ ] Detection and guessing of cipher, eg- Delta IC tells us that the letters are
     not totally malformed and just need a caesar/vigenere crack? etc.
