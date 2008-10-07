@@ -26,7 +26,8 @@
 void columnar_transposition_bruteforce(char *text, int text_size,
           int key_min, int key_max, columnar_transposition_function routine)
 {
-  int key_size, i, j, k, h, factorial, score, best_score, best_size;
+  int key_size, i, j, k, h, factorial, np, npi, score, best_score, best_size;
+  int temp_text_size;
   int *key, *key_best;
   char *text_tmp, *text_nonumbers;
   char ch;
@@ -42,19 +43,22 @@ void columnar_transposition_bruteforce(char *text, int text_size,
     exit(1);
   }
 
-  /* Create our temporary space */
+  /* Clip the size of the temporary text to make it quicker */
+  temp_text_size = min(300, text_size);
+
+  /* Create our temporary space - we still need text_tmp at full size */
   text_tmp = malloc(text_size + 1);
-  text_nonumbers = malloc(text_size + 1);
+  text_nonumbers = malloc(temp_text_size + 1);
   if (text_tmp == NULL || text_nonumbers == NULL)
   {
     printf("c.trans._bruteforce malloc(%i) text_* fail\n", text_size + 1);
     exit(1);
   }
-  *(text_tmp + intext_size) = 0;
-  *(text_nonumbers + intext_size) = 0;
+  *(text_tmp + temp_text_size) = 0;
+  *(text_nonumbers + temp_text_size) = 0;
 
   /* Strip any numbers for scoring ='( */
-  for (j = 0; j < text_size; j++)
+  for (j = 0; j < temp_text_size; j++)
   {
     ch = *(text + j);
 
@@ -69,11 +73,12 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   best_size = 0;
 
   /* Go Pro! */
-  score_text_pro_start(text_size, &pro_state);
+  score_text_pro_start(temp_text_size, &pro_state);
 
   /* Print a header */
-  printf("Columnar Transposition Bruteforce, starting %i => %i\n", 
-                                                  key_min, key_max);
+  printf("Columnar Transposition Bruteforce: %i => %i, using %i chars\n", 
+                                             key_min, key_max, temp_text_size);
+  printf(" ->  key_size - factorial | loops/bar: progress...\n");
 
   /* Start teh cracking! */
   for (key_size = key_min; key_size <= key_max; key_size++)
@@ -82,8 +87,12 @@ void columnar_transposition_bruteforce(char *text, int text_size,
     factorial = 1;
     for (i = 2; i <= key_size; i++)  factorial *= i;
 
+    /* Sub-progress indicator setup */
+    npi = max(factorial / 30, 1);  /* How many loops equals a new bar? */
+    np  = npi;             /* The running "next loop for bar" precache */
+
     /* Progress indicator */
-    printf(" -> %3i - %8i", key_size, factorial); 
+    printf(" -> %3i - %8i | %7i: ", key_size, factorial, npi); 
     fflush(stdout);
 
     for (i = 1; i <= factorial; i++)
@@ -104,7 +113,7 @@ void columnar_transposition_bruteforce(char *text, int text_size,
       }
 
       /* Try it */
-      (*routine)(text_nonumbers, text_tmp, text_size, key, key_size);
+      (*routine)(text_nonumbers, text_tmp, temp_text_size, key, key_size);
 
       /* Score it */
       score = score_text_pro(text_tmp, &pro_state);
@@ -115,10 +124,18 @@ void columnar_transposition_bruteforce(char *text, int text_size,
         best_size = key_size;
         for (j = 0; j < key_size; j++) key_best[j] = key[j];
       }
+
+      /* Subprocess Indicator */
+      if (i == np)
+      {
+        np += npi;
+        printf("|");
+        fflush(stdout);
+      }
     }
 
-    printf(": best score %4i, from length %i; key: ", 
-                   best_score, best_size); 
+    printf("\n -> %3i - %8i: best score %4i, from length %i; key: ", 
+                  key_size, factorial, best_score, best_size); 
     printf("%i", key_best[0]);
     for (i = 1; i < best_size; i++) printf("|%i", key_best[i]);
     printf("\n");
@@ -130,6 +147,10 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   /* Do it for real and save the result (doing for real WITH numbers) */
   (*routine)(text, text_tmp, text_size, key_best, best_size);
   memcpy(text, text_tmp, text_size);
+
+  /* Be sure about null pointers */
+  *(text_tmp + text_size) = 0;
+  *(text + text_size) = 0;
 
   /* Results */
   printf("Columnar Transposition Bruteforce: best_score %i; key size %i\n",
