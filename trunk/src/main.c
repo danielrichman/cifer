@@ -29,7 +29,7 @@ int main(int argc, char **argv)
   action_do();
   
   int i;
-  int spaces[8][2];
+  int spaces[8][8][2];
   rf_get_spaces(8, spaces);
   for (i = 0; i < 8; i++)
   {
