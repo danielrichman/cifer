@@ -53,19 +53,10 @@ int input_open(char *filename)
                                                      intext_num_size);
 
   /* Allocate space */
-  intext              = malloc(intext_size     + 1);
-  intext_original     = malloc(intext_size     + 1);
-  intext_num          = malloc(intext_num_size + 1);
-  intext_num_original = malloc(intext_num_size + 1);
-
-  /* malloc() enough space for the file */
-  if (intext == NULL || intext_original == NULL || intext_num == NULL ||
-      intext_num_original == NULL)
-  {
-    printf("intext_* failed, malloc(%i) returned NULL!\n", 
-                       intext_size + 1);
-    return INPUT_ERR_MALLOC;
-  }
+  intext              = malloc_good(intext_size     + 1);
+  intext_original     = malloc_good(intext_size     + 1);
+  intext_num          = malloc_good(intext_num_size + 1);
+  intext_num_original = malloc_good(intext_num_size + 1);
 
   /* Makes it look nicer =) */
   printf("                            ");
@@ -82,7 +73,7 @@ int input_open(char *filename)
     /* intext is alpha upper/lower only */
   for (i = 0; i < intext_size; ch = fgetc(infile))
   {
-    if (ALPHAL_CH(ch) || ALPHAH_CH(ch))
+    if (ALPHA_CH(ch))
     {
       *(intext + i) = ch;  /* Preserve case */
       i++;
@@ -96,7 +87,7 @@ int input_open(char *filename)
     /* intext_num is alphanumeric only */
   for (i = 0; i < intext_num_size; ch = fgetc(infile))
   {
-    if (ALPHAL_CH(ch) || ALPHAH_CH(ch) || NUMBER_CH(ch))
+    if (ALPHANUMERIC_CH(ch))
     {
       *(intext_num + i) = ch;  /* Preserve case */
       i++;
@@ -161,7 +152,7 @@ int input_file_size_alpha(FILE *infile)
   {
     ch = fgetc(infile);
     
-    if (ALPHAL_CH(ch) || ALPHAH_CH(ch))
+    if (ALPHA_CH(ch))
     {
       size++;
     }
@@ -183,7 +174,7 @@ int input_file_size_alphanum(FILE *infile)
   {
     ch = fgetc(infile);
 
-    if (ALPHAL_CH(ch) || ALPHAH_CH(ch) || NUMBER_CH(ch))
+    if (ALPHANUMERIC_CH(ch))
     {
       size++;
     }

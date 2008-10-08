@@ -29,44 +29,19 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   int key_size, i, j, k, h, factorial, np, npi, score, best_score, best_size;
   int temp_text_size;
   int *key, *key_best;
-  char *text_tmp, *text_nonumbers;
-  char ch;
+  char *text_tmp;
   score_text_pro_state pro_state;
 
   /* Allocate to the maximum size, that's means we only have to alloc once */
-  key = malloc(sizeof(int) * key_max);
-  key_best = malloc(sizeof(int) * key_max);
-  if (key == NULL || key_best == NULL)
-  {
-    printf("c.trans._bruteforce malloc(%i * %i) key/key_best = fail\n",
-                                                sizeof(int), key_max);
-    exit(1);
-  }
+  key      = malloc_good(sizeof(int) * key_max);
+  key_best = malloc_good(sizeof(int) * key_max);
 
   /* Clip the size of the temporary text to make it quicker */
   temp_text_size = min(300, text_size);
 
   /* Create our temporary space - we still need text_tmp at full size */
-  text_tmp = malloc(text_size + 1);
-  text_nonumbers = malloc(temp_text_size + 1);
-  if (text_tmp == NULL || text_nonumbers == NULL)
-  {
-    printf("c.trans._bruteforce malloc(%i) text_* fail\n", text_size + 1);
-    exit(1);
-  }
+  text_tmp       = malloc_good(text_size + 1);
   *(text_tmp + temp_text_size) = 0;
-  *(text_nonumbers + temp_text_size) = 0;
-
-  /* Strip any numbers for scoring ='( */
-  for (j = 0; j < temp_text_size; j++)
-  {
-    ch = *(text + j);
-
-    if ( ALPHAL_CH(ch) || ALPHAH_CH(ch) )
-      *(text_nonumbers + j) = ch;
-    else
-      *(text_nonumbers + j) = 'x';
-  }
 
   /* Prepare */
   best_score = -1;
@@ -113,7 +88,7 @@ void columnar_transposition_bruteforce(char *text, int text_size,
       }
 
       /* Try it */
-      (*routine)(text_nonumbers, text_tmp, temp_text_size, key, key_size);
+      (*routine)(text, text_tmp, temp_text_size, key, key_size);
 
       /* Score it */
       score = score_text_pro(text_tmp, &pro_state);
@@ -164,7 +139,6 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   free(key);
   free(key_best);
   free(text_tmp);
-  free(text_nonumbers);
   score_text_pro_cleanup(&pro_state);
 }
 
@@ -268,13 +242,7 @@ void columnar_transposition_flip_key(int *key, int key_size)
 {
   int i, *temp;  /* Dynamic size */
 
-  temp = malloc( sizeof(int) * key_size );
-  if (temp == NULL)
-  {
-    printf("columnar_transposition_flip_key: malloc(%i) temp failed.\n",
-                                  key_size);
-    exit(1);
-  }
+  temp = malloc_good( sizeof(int) * key_size );
 
   /* copy into temp, then flip */
   for (i = 0; i < key_size; i++) temp[i] = key[i];

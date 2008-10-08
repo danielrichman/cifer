@@ -51,3 +51,8 @@ Features that are needed
 [ ] Dictionary _fast and _pro need to take non-alpha chars and discard them;
     perhaps some sort of system for specifing if the input will have such dirties
     in it and then enabling the slightly-insignificantly slower bits? Mebe? no.
+[ ] Support for numbers etc. in all functions. Transposition functions are 
+    already there and _pro and _fast (dictioary) should support them. 
+    However, count_(trigrams|digrams|freq) need support for non-alpha chars 
+    aswell as delta_ic
+

@@ -18,6 +18,21 @@
 
 #include "stdinc.h"
 
+void *malloc_good(size_t size)
+{
+  void *r;
+
+  r = malloc(size);
+  if (r == NULL)
+  {
+    printf("\n\nmalloc_good: Unable to malloc(%i), auto-exiting\n\n",
+                                                                  size);
+    exit(1);
+  }
+
+  return r;
+}
+
 /* The following macro is a condensed version of this code 
  * void insertion_columnic_sort(vigenere_column_ic a[], int asize)
  * {

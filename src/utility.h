@@ -33,4 +33,5 @@
 
 int modular_multiplicative_inverse(int a, int b);
 int gcd(int a, int b);
+void *malloc_good(size_t size);
 

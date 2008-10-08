@@ -35,23 +35,13 @@ void score_text_pro_start(int text_size, score_text_pro_state *state)
     return;
   }
 
-  /* Pre malloc all the space needed */
+  /* Pre malloc_good all the space needed */
   state->text_size = text_size;
   state->frequency_graph_tolerance = text_size / 3;
-  state->frequency_graph          = malloc( sizeof(int) * 26 );
-  state->identity_frequency_graph = malloc( sizeof(int) * 26 );
-  state->digrams_temp  = malloc( sizeof(digram)  * 26 * 26 );
-  state->trigrams_temp = malloc( sizeof(trigram) * 26 * 26 * 26 );
-
-  if (state->frequency_graph == NULL ||
-      state->identity_frequency_graph == NULL ||
-      state->digrams_temp == NULL ||
-      state->trigrams_temp == NULL)
-
-  {
-    printf("score_text_pro_start: failed to malloc enough space to *state\n");
-    exit(1);
-  }
+  state->frequency_graph          = malloc_good( sizeof(int) * 26 );
+  state->identity_frequency_graph = malloc_good( sizeof(int) * 26 );
+  state->digrams_temp  = malloc_good( sizeof(digram)  * 26 * 26 );
+  state->trigrams_temp = malloc_good( sizeof(trigram) * 26 * 26 * 26 );
 
   /* Setup id. frequency graph */
   create_identity_frequency_graph(state->identity_frequency_graph, text_size);
@@ -127,20 +117,30 @@ int score_text_pro(char *text, score_text_pro_state *state)
   for (i = 0; i < l; i++)
   {
     j =  CHARNUM(*(text + i + 2));
-    h = (CHARNUM(*(text + i + 1)) * 26 ) + j;
-    k = (CHARNUM(*(text + i))     * 676) + h;
-    state->trigrams_temp[k].trigram_value ++;
-    state->digrams_temp[h].digram_value   ++;
-    state->frequency_graph[j]             ++;
+    h =  CHARNUM(*(text + i + 1));
+    k =  CHARNUM(*(text + i));
+
+    if (j != -1 && h != -1 && k != -1)    
+    {
+      h = (h * 26)  + j;
+      k = (k * 676) + h;
+      state->trigrams_temp[k].trigram_value ++;
+      state->digrams_temp[h].digram_value   ++;
+      state->frequency_graph[j]             ++;
+    }
   }
 
   i = CHARNUM(*text);
   j = CHARNUM(*(text + 1));
-  h = (i * 26) + j;
 
-  state->digrams_temp[h].digram_value ++;
-  state->frequency_graph[i] ++;
-  state->frequency_graph[j] ++;
+  if (i != -1 && j != -1)
+  {
+    h = (i * 26) + j;
+
+    state->digrams_temp[h].digram_value ++;
+    state->frequency_graph[i] ++;
+    state->frequency_graph[j] ++;
+  }
 
   /* Generate some sort of "diff" for the frequency graph */
   for (i = 0; i < 26; i++)
@@ -220,32 +220,35 @@ int score_text_dict_fast(char *text, int size)
     ch1 = *(text + i);
     ch2 = *(text + i + 1);
 
-    prefix = (CHARNUM( ch1 ) * 26) + CHARNUM( ch2 );
-
-    test_start = *(dict_pointer + prefix);
-    test_end = *(dict_pointer_end + prefix);
-
-    /* Find the smallest possibility (so start high) */
-    match_size = WORD_BUF_SIZE;
-
-    for (j = test_start; j < test_end; j += jlen_buf + 1) /* Remember \0 */
+    if (ALPHA_CH(ch1) && ALPHA_CH(ch2))
     {
-      /* In theory, the \0 terminators should take care of all size checks,
-       * we use strncmp to limit to checking the correct size of text. */
-      jlen_buf = strlen(j);
+      prefix = (CHARNUM( ch1 ) * 26) + CHARNUM( ch2 );
 
-      if (jlen_buf < match_size && strncasecmp(j, text + i, jlen_buf) == 0)
-        match_size = jlen_buf;
-    }
+      test_start = *(dict_pointer + prefix);
+      test_end = *(dict_pointer_end + prefix);
 
-    if (match_size != WORD_BUF_SIZE)
-    {
-      score += match_size;
-    }
-    else
-    {
-      /* For the loop incrementing... */
-      match_size = 1;
+      /* Find the smallest possibility (so start high) */
+      match_size = WORD_BUF_SIZE;
+
+      for (j = test_start; j < test_end; j += jlen_buf + 1) /* Remember \0 */
+      {
+        /* In theory, the \0 terminators should take care of all size checks,
+         * we use strncmp to limit to checking the correct size of text. */
+        jlen_buf = strlen(j);
+
+        if (jlen_buf < match_size && strncasecmp(j, text + i, jlen_buf) == 0)
+          match_size = jlen_buf;
+      }
+
+      if (match_size != WORD_BUF_SIZE)
+      {
+        score += match_size;
+      }
+      else
+      {
+        /* For the loop incrementing... */
+        match_size = 1;
+      }
     }
   }
 
@@ -284,7 +287,7 @@ void load_dict(void)
   while (feof(dictf) == 0)
   {
     ch = getc(dictf);
-    if (ALPHAL_CH(ch) || ALPHAH_CH(ch))
+    if (ALPHA_CH(ch))
     {
       buf_size++;
 
@@ -306,9 +309,9 @@ void load_dict(void)
 
   rewind(dictf);
 
-  dict             = malloc( filesize + 1 );
-  dict_pointer     = malloc( sizeof(char *) * ((26 * 26) + 1) );
-  dict_pointer_end = malloc( sizeof(char *) * ((26 * 26) + 1) );
+  dict             = malloc_good( filesize + 1 );
+  dict_pointer     = malloc_good( sizeof(char *) * ((26 * 26) + 1) );
+  dict_pointer_end = malloc_good( sizeof(char *) * ((26 * 26) + 1) );
 
   if (dict == NULL || dict_pointer == NULL || dict_pointer_end == NULL)
   {
@@ -330,7 +333,7 @@ void load_dict(void)
   {
     ch = getc(dictf);
 
-    if (ALPHAL_CH(ch) || ALPHAH_CH(ch))
+    if (ALPHA_CH(ch))
     {
       buf[buf_size] = ch;
       buf_size++;

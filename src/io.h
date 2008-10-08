@@ -18,7 +18,6 @@
 
 #define INPUT_ERR_FOPEN     -1
 #define INPUT_ERR_ZERO_SIZE -2
-#define INPUT_ERR_MALLOC    -3
 
 #define PRINT_FILE_ERR_FOPEN   -1
 #define PRINT_FILE_ERR_FPRINTF -2
@@ -33,7 +32,8 @@ extern int intext_num_size;
  *                                   INPUT_ERR_FOPEN if fopen failed,
  *                                   INPUT_ERR_ZERO_SIZE if the input file is
  *                                                       0 bytes long
- *                                   INPUT_ERR_MALLOC if malloc failed */
+ * If Malloc fails, malloc_good will exit the app */
+
 int input_open(char *filename);
 
 /* Counts the size of infile. Returns the size (in bytes) */
