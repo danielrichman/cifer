@@ -225,4 +225,12 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   printf("ptext_best (saved to intext): \n\n");
   printf("%*s\n\n", text_size, text);
 
+  /* Free up */
+  for (i = 0; i < numloops; i++) free( *(chcount + i) );
+  free(chcount);
+  free(wl);
+  free(repeats);
+  free(repeats_rem);
+  free(ptext);
+  free(ptext_best);
 }
