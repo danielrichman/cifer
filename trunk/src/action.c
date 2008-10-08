@@ -107,39 +107,25 @@ void action_do()
   if (arg_pd) /* Print digram counts */
   {
     arg_pd_1 = max(min(arg_pd_1, 26 * 26), 1); /* Enforce minimum and maximum */
-    digrams = malloc( sizeof(digram) * arg_pd_1 );
+    digrams = malloc_good( sizeof(digram) * arg_pd_1 );
 
     printf("Printing top %i digram counts\n", arg_pd_1);
-    if (digrams == NULL)
-    {
-      printf("Digrams Malloc fail.\n");
-    }
-    else
-    {
-      count_digrams(intext, intext_size, digrams, arg_pd_1);
-      print_digrams(digrams, arg_pd_1);
+    count_digrams(intext, intext_size, digrams, arg_pd_1);
+    print_digrams(digrams, arg_pd_1);
 
-      free(digrams);
-    }
+    free(digrams);
   }
 
   if (arg_pt) /* Print trigram counts */
   {
     arg_pt_1 = max(min(arg_pt_1, 26 * 26 * 26), 1);
-    trigrams = malloc( sizeof(trigram) * arg_pt_1 );
+    trigrams = malloc_good( sizeof(trigram) * arg_pt_1 );
 
     printf("Printing top %i trigram counts\n", arg_pt_1);
-    if (trigrams == NULL)
-    {  
-      printf("Trigrams Malloc fail.\n");
-    }
-    else
-    {
-      count_trigrams(intext, intext_size, trigrams, arg_pt_1);
-      print_trigrams(trigrams, arg_pt_1);
+    count_trigrams(intext, intext_size, trigrams, arg_pt_1);
+    print_trigrams(trigrams, arg_pt_1);
 
-      free(trigrams);
-    }
+    free(trigrams);
   }
 
   /* Ciphers */
@@ -249,13 +235,7 @@ void action_do()
       if (arg_ctrans_mode == 2) 
         columnar_transposition_flip_key(arg_ctrans_key, arg_ctrans_key_size);
 
-      text_tmp = malloc(intext_num_size + 1);
-      if (text_tmp == NULL)
-      {
-        printf("action_do: allocate %i for text_temp (ctrans decode) failed.\n",
-                     intext_num_size + 1);
-      }
-
+      text_tmp = malloc_good(intext_num_size + 1);
       *(text_tmp + intext_num_size) = 0;
 
       (*arg_ctrans_type)(intext_num, text_tmp, intext_num_size, arg_ctrans_key,

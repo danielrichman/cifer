@@ -271,14 +271,7 @@ int arg_parse(int argc, char **argv)
           return -1;
         }
 
-        arg_ctrans_key = malloc( sizeof(int) * arg_ctrans_key_size );
-
-        if (arg_ctrans_key == NULL)
-        {
-          printf("\n Failed to allocate (sizeof_int:%i * key_size:%i) = %i\n",
-          sizeof(int), arg_ctrans_key_size, sizeof(int) * arg_ctrans_key_size);
-          exit(1);
-        }
+        arg_ctrans_key = malloc_good( sizeof(int) * arg_ctrans_key_size );
 
         for (j = 0; j < arg_ctrans_key_size; j++)
         {

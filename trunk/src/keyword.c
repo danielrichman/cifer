@@ -44,12 +44,7 @@ void keyword_bruteforce(char *text, int text_size)
   e = *(dict_pointer + (26 * 26));  /* The end of the dictionary */
 
   /* Setup text_temp */
-  text_tmp = malloc(text_size + 1);
-  if (text_tmp == NULL)
-  {
-    printf("Malloc for text_tmp in keyword_brutefoce fail\n");
-    return;
-  }
+  text_tmp = malloc_good(text_size + 1);
 
   /* Setup Dictionary_pro */
   score_text_pro_start(text_size, &pro_state);
@@ -238,7 +233,7 @@ int keyword_check(char *keyword, int key_size)
   /* Check the keyword is ok! */
   for (i = 0; i < key_size; i++)
   {
-    if (!ALPHAL_CH(*(keyword + i)) && !ALPHAH_CH(*(keyword + i)))
+    if (!ALPHA_CH(*(keyword + i)))
     {
       return 0;
     }

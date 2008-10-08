@@ -60,14 +60,7 @@ void crack_vigenere(char *text, int text_size)
 
   /* Prepare to decode... */
   h = column_ic[0].column_size;
-  shift = malloc( sizeof(int) * h );
-
-  if (shift == NULL)
-  {
-    printf("shift = malloc( sizeof(int) * %i ) [%i bytes] failed.\n", 
-                                          h, sizeof(int) * h);
-    exit(1);
-  }
+  shift = malloc_good( sizeof(int) * h );
 
   /* The best match should now be in [0], so freq. analyse the columns */
   for (i = 0; i < h; i++)

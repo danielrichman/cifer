@@ -26,17 +26,17 @@
 #define ALPHAL_CH(ch)          (ch >= 97 && ch <= 122)
 #define ALPHAH_CH(ch)          (ch >= 65 && ch <= 90)
 #define NUMBER_CH(ch)          (ch >= 48 && ch <= 57)
-#define ALPHANUMERIC_CH(ch)    (ALPHAL_CH(ch) || ALPHAH_CH(ch) || NUMBER_CH(ch))
+#define ALPHA_CH(ch)           (ALPHAL_CH(ch) || ALPHAH_CH(ch))
+#define ALPHANUMERIC_CH(ch)    (ALPHA_CH(ch)  || NUMBER_CH(ch))
 #define SPACE_CH(ch)           (ch == 32)
 
 #define ALPHA_TOUPPER(ch)      (ALPHAL_CH(ch) ? ch - 32 : ch)
 #define ALPHA_TOLOWER(ch)      (ALPHAH_CH(ch) ? ch + 32 : ch)
-#define ALPHA_FLIP_CASE(ch)    (ALPHAL_CH(ch) ? ALPHA_TOUPPER(ch) : \
-                                (ALPHAH_CH(ch) ? ALPHA_TOLOWER(ch) : ch))
+#define ALPHA_FLIP_CASE(ch)    ( ALPHAL_CH(ch) ? ch - 32 :     \
+                                (ALPHAH_CH(ch) ? ch + 32 : ch) )
 
 #define IS_NEWLINE(ch)         (ch == 10)
-#define CHARNUM(ch)            (ALPHAL_CH(ch) || ALPHAH_CH(ch) ? \
-                                   ALPHA_TOLOWER(ch) - 97 : -1)
+#define CHARNUM(ch)            (ALPHA_CH(ch) ? ALPHA_TOLOWER(ch) - 97 : -1)
 #define NUMCHAR(i)             (i + 97)
 
 #define NUMCHARNUM(ch)         (NUMBER_CH(ch) ? ch - 48 : -1)
