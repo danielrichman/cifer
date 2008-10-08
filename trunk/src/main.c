@@ -27,7 +27,8 @@ int main(int argc, char **argv)
   }
   
   action_do();
-  rf_bf(intext, intext_size, 2, 10);
+  
+  affine_bf(intext, intext_size);
   
   return 0;
 } 
