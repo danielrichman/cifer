@@ -24,6 +24,7 @@ int arg_freq    = 0;         /* Do frequency analysis */
 int arg_pct     = 0;         /* Print char->number table */
 int arg_vig     = 0;         /* Do a vigenere crack */
 int arg_aff     = 0;         /* Do an affine crack */
+int arg_aff_bf  = 0;         /* Do affine brute force */
 int arg_keyb    = 0;         /* Do a Keyword bruteforce */
 int arg_keyd    = 0;         /* Do a keyword decode */
 char *arg_keyd_string = NULL; 
@@ -160,6 +161,14 @@ int arg_parse(int argc, char **argv)
     {
       arg_aff = 1;
       printf("arg_aff, ");
+
+    }
+    
+    else if ((strcasecmp(argv[i], "-affb")) == 0 ||
+       ((strcasecmp(argv[i], "--affine-brute-force") == 0)))
+    {
+      arg_aff_bf = 1;
+      printf("arg_bf, ");
 
     }
     
