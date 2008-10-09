@@ -39,7 +39,7 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   chcount     = malloc_good( sizeof(int *) * numloops );
 
   for (i = 0; i < numloops; i++)
-    *(chcount + i) = malloc_good( sizeof(int) * maxrails );
+    *(chcount + i) = malloc_good( sizeof(int) * (i + minrails) );
 
   ptext       = malloc_good( text_size + 1 );
   ptext_best  = malloc_good( text_size + 1 );
@@ -61,7 +61,14 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   /* Wavelength, for each rails */
   for (i = 0; i < numloops; i++)
     *(wl + i) = (minrails + i - 1) * 2;
-  
+
+  /* Check that its not a too big max_rail */
+  if (*(wl + numloops - 1) > text_size)
+  {
+    printf("Max Rail (%i) wavelength %i is bigger than text size %i!\n",
+                maxrails - 1, *(wl + numloops - 1), text_size);
+  }
+
   /* How many times the wave repeats, and the amount of the wave left over,
      for each rails */
   for (i = 0; i < numloops; i++)
@@ -78,22 +85,21 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
     l = k * 2;
 
     /* The first and last line of each wave in rails has 1 ptext char */
-    *(*(chcount + i))                = k;   /* First */
-    *(*(chcount + i) + minrails + i) = k;   /* Last */
+    *(*(chcount + i))                    = k;   /* First */
+    *(*(chcount + i) + minrails + i - 1) = k;   /* Last */
 
     /* The others have 2 ptext chars */
-    for (j = 1; j < (maxrails - 1); j++)
+    for (j = 1; j < (minrails + i - 1); j++)
       *(*(chcount + i) + j) = l;
 
     /* Handle that remainder! */
-    k = 0;
     l = *(repeats_rem + i);
-    for (j = 0; j < l; j++)
+    for (k = 0; k < l; k++)
     {
       /* This increments k until it goes past i (rails) and then makes it
        * go back down; (k - i) = num gone past rail, i - (k - i) = going
        * back up the pattern; simplify to 2i - k */
-      m = (k > (minrails + i) ? (((minrails + i) * 2) - k) : k);
+      m = (k >= (minrails + i) ? (((minrails + i - 1) * 2) - k) : k);
       (*(*(chcount + i) + m))++;
     }
   }
@@ -122,7 +128,7 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
       {
         /* Work out when the next one ends */
         k++;
-        j = *(*(chcount + currails - minrails) + k);
+        j = i + *(*(chcount + currails - minrails) + k);
 
         /* Find out the two alternating spaces for this rail and setup 
          * the target start (l). */
@@ -148,6 +154,9 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
 
       /* Place that ptext char where it belongs! */
       *(ptext + l) = *(text + i);
+      if (l > text_size) 
+        printf("ptext-bust | rail: %i/%i, j: %i, i: %i, l: %i, s: %i\n", 
+                                          k, currails,  j, i, l, text_size);
 
       /* Setup the next increment: if its spaces2 or none - set it to spaces1; 
        * else make it spaces2 */
@@ -231,6 +240,6 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   free(wl);
   free(repeats);
   free(repeats_rem);
-  free(ptext);
+  //free(ptext);
   free(ptext_best);
 }
