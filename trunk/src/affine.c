@@ -171,7 +171,7 @@ int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
   }
 }
 
-char *affine_bf(char *ctext, int ctext_size)
+void affine_bf(char *ctext, int ctext_size)
 {
   int i; /* Counters */
   int j = 0; /* Switches: j is whether we are due to do some stuff */
@@ -193,62 +193,61 @@ char *affine_bf(char *ctext, int ctext_size)
   score_text_pro_state pro_state;
   score_text_pro_start(ctext_size, &pro_state);
   
-  char *text = malloc(sizeof(char) * ctext_size + 1);
-  memcpy(text, ctext, ctext_size);
-  *(text + ctext_size + 1) = '\0';
-  
-  char *text_best = malloc(sizeof(char) * ctext_size + 1);
-  *(text_best + ctext_size + 1) = '\0';
+  char *text      = malloc_good(sizeof(char) * ctext_size + 1);
+  char *text_best = malloc_good(sizeof(char) * ctext_size + 1);
+
+  *(text_best + ctext_size) = '\0';
   
   printf("Starting affine brute force, press enter to stop...\n");
   
-  for (a = 0; ; a++, j++) for (b = 0; b < 26; b++)
+  for (a = 0; 1; a++)
   {
-    mmi = modular_multiplicative_inverse(a, 26);
-    
-    for (i = 0; i < ctext_size; i++)
+    for (b = 0; b < 26; b++, j++)
     {
-      /* Subtract b, multiply by the inverse and mod */
-      *(text + i) = NUMCHAR( modn((CHARNUM(*(text + i)) - b) * mmi, 26) );
-    }
+      mmi = modular_multiplicative_inverse(a, 26);
     
-    score = score_text_pro(text, &pro_state);
-    if (score > score_best)
-    {
-      score_best = score;
-      a_best = a;
-      b_best = b;
-      memcpy(text_best, ctext, ctext_size);
-    } 
+      for (i = 0; i < ctext_size; i++)
+      {
+        /* Subtract b, multiply by the inverse and mod */
+        *(text + i) = NUMCHAR( modn((CHARNUM(*(ctext + i)) - b) * mmi, 26) );
+      }
     
-    if (j) /* Do stuff interval */
-    {
-      printf("Curent: %dx + %d\n", a, b);
-      printf("Best match (%dx + %d): %50s\n", a_best, b_best, text);
+      score = score_text_pro(text, &pro_state);
+      if (score > score_best)
+      {
+        score_best = score;
+        a_best = a;
+        b_best = b;
+        memcpy(text_best, text, ctext_size);
+      } 
+    
+      if (j > 1000) /* Do stuff interval */
+      {
+        printf("Curent: %dx + %d\n", a, b);
+        printf("Best match (%dx + %d): %.50s\n", a_best, b_best, text);
       
-      set_stdin_tmp = set_stdin;
-      select(1, &set_stdin_tmp, NULL, NULL, &seltime);
-      if (FD_ISSET(0, &set_stdin_tmp))
-        break;
+        set_stdin_tmp = set_stdin;
+        select(1, &set_stdin_tmp, NULL, NULL, &seltime);
+        if (FD_ISSET(0, &set_stdin_tmp))
+          break;
       
-      j = 0;
+        j = 0;
+      }
     }
+
+    if (b != 26)  /* If the loop was broken */
+      break;       /* Break the parent */
   }
   printf("Received user interrupt...\n\n");
   
   score_text_pro_print_stats("Affine bruteforce", &pro_state);
   printf("Best match (%dx + %d): \n\n", a_best, b_best);
   
-  mmi = modular_multiplicative_inverse(a_best, 26);
-  for (i = 0; i < ctext_size; i++)
-  {
-    /* Subtract b, multiply by the inverse and mod */
-    *(text + i) = NUMCHAR( modn((CHARNUM(*(text + i)) - b_best) * mmi, 26) );
-  }
-  
+  memcpy(ctext, text_best, ctext_size);
   printf("%s\n\n", text);
   
   score_text_pro_cleanup(&pro_state);
   
-  return text;
+  free(text);
+  free(text_best);
 }
