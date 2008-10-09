@@ -174,7 +174,6 @@ int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
 void affine_bf(char *text, int text_size)
 {
   int i; /* Counters */
-  int j = 0; /* Switches: j is whether we are due to do some stuff */
   int a, b; /* ax + b */
   int a_best = 0, b_best = 0;
   int mmi; /* modular multiplicative inverse */
@@ -193,25 +192,28 @@ void affine_bf(char *text, int text_size)
   score_text_pro_state pro_state;
   score_text_pro_start(text_size, &pro_state);
   
-  char *text_tmp      = malloc_good(sizeof(char) * text_size + 1);
+  char *text_tmp  = malloc_good(sizeof(char) * text_size + 1);
   char *text_best = malloc_good(sizeof(char) * text_size + 1);
 
   *(text_best + text_size) = '\0';
   
   printf("Starting affine brute force, press enter to stop...\n");
   
+  /* Timing */
+  time_t t1 = time(NULL);
+  
   for (a = 0; ; a++)
   {
     if (IS_COPRIME(a, 26))
     {
-      for (b = 0; b < 26; b++, j++)
+      for (b = 0; b < 26; b++)
       {
         mmi = modular_multiplicative_inverse(a, 26);
       
         for (i = 0; i < text_size; i++)
         {
           /* Subtract b, multiply by the inverse and mod */
-          *(text_tmp + i) = NUMCHAR( modn((CHARNUM(*(text + i)) - b) * mmi, 26) );
+          *(text_tmp + i) = NUMCHAR(modn((CHARNUM(*(text + i)) - b) * mmi, 26));
         }
     
         score = score_text_pro(text_tmp, &pro_state);
@@ -223,7 +225,7 @@ void affine_bf(char *text, int text_size)
           memcpy(text_best, text_tmp, text_size);
         } 
       
-        if (j > 1000) /* Do stuff interval */
+        if ((time(NULL) - AFFINE_WAIT) > (int) t1) /* Do stuff interval */
         {
           printf("Curent: %dx + %d\n", a, b);
           printf("Best match (%dx + %d): %.50s\n", a_best, b_best, text_best);
@@ -232,8 +234,8 @@ void affine_bf(char *text, int text_size)
           select(1, &set_stdin_tmp, NULL, NULL, &seltime);
           if (FD_ISSET(0, &set_stdin_tmp))
             break;
-        
-          j = 0;
+          
+          time(&t1);
         }
       }
   

@@ -30,3 +30,4 @@
 
 #define OPTIMAL_DELTA_IC 1.73
 
+#define AFFINE_WAIT 1 /* How long affine waits before doing utility routines */
