@@ -1,7 +1,7 @@
 -- Alphabet
 abcdefghijklmnopqrstuvxyz
 
--- Strip all vowles / convert to numbers 0a 1e 2i 3o 4u
+-- Strip all vowels / convert to numbers 0a 1e 2i 3o 4u
 bcdfghjklmnpqrstvxyz
 zyxvtsrqpnmlkjhgfdcb
 
