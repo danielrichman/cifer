@@ -28,6 +28,7 @@ int main(int argc, char **argv)
   
   action_do();
   
+  load_dict();
   affine_bf(intext, intext_size);
   
   return 0;
