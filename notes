@@ -55,4 +55,5 @@ Features that are needed
     already there and _pro and _fast (dictioary) should support them. 
     However, count_(trigrams|digrams|freq) need support for non-alpha chars 
     aswell as delta_ic
-
+[ ] Support for alphabet deformation, different alphabets and also vowel 
+    destruction; see ncc 08-3b
