@@ -32,6 +32,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <sys/select.h>
+#include <time.h>
 
 #include "settings.h"
 #include "macros.h"
