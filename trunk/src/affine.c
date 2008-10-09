@@ -203,6 +203,7 @@ void affine_bf(char *ctext, int ctext_size)
   for (a = 0; ; a++)
   {
     if (IS_COPRIME(a, 26))
+    {
       for (b = 0; b < 26; b++, j++)
       {
         mmi = modular_multiplicative_inverse(a, 26);
@@ -238,6 +239,7 @@ void affine_bf(char *ctext, int ctext_size)
   
       if (b != 26)  /* If the loop was broken */
         break;       /* Break the parent */
+    }
   }
   printf("Received user interrupt...\n\n");
   
