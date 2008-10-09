@@ -200,43 +200,44 @@ void affine_bf(char *ctext, int ctext_size)
   
   printf("Starting affine brute force, press enter to stop...\n");
   
-  for (a = 0; 1; a++)
+  for (a = 0; ; a++)
   {
-    for (b = 0; b < 26; b++, j++)
-    {
-      mmi = modular_multiplicative_inverse(a, 26);
-    
-      for (i = 0; i < ctext_size; i++)
+    if (IS_COPRIME(a, 26))
+      for (b = 0; b < 26; b++, j++)
       {
-        /* Subtract b, multiply by the inverse and mod */
-        *(text + i) = NUMCHAR( modn((CHARNUM(*(ctext + i)) - b) * mmi, 26) );
-      }
-    
-      score = score_text_pro(text, &pro_state);
-      if (score > score_best)
-      {
-        score_best = score;
-        a_best = a;
-        b_best = b;
-        memcpy(text_best, text, ctext_size);
-      } 
-    
-      if (j > 1000) /* Do stuff interval */
-      {
-        printf("Curent: %dx + %d\n", a, b);
-        printf("Best match (%dx + %d): %.50s\n", a_best, b_best, text_best);
+        mmi = modular_multiplicative_inverse(a, 26);
       
-        set_stdin_tmp = set_stdin;
-        select(1, &set_stdin_tmp, NULL, NULL, &seltime);
-        if (FD_ISSET(0, &set_stdin_tmp))
-          break;
+        for (i = 0; i < ctext_size; i++)
+        {
+          /* Subtract b, multiply by the inverse and mod */
+          *(text + i) = NUMCHAR( modn((CHARNUM(*(ctext + i)) - b) * mmi, 26) );
+        }
+    
+        score = score_text_pro(text, &pro_state);
+        if (score > score_best)
+        {
+          score_best = score;
+          a_best = a;
+          b_best = b;
+          memcpy(text_best, text, ctext_size);
+        } 
       
-        j = 0;
+        if (j > 1000) /* Do stuff interval */
+        {
+          printf("Curent: %dx + %d\n", a, b);
+          printf("Best match (%dx + %d): %.50s\n", a_best, b_best, text_best);
+        
+          set_stdin_tmp = set_stdin;
+          select(1, &set_stdin_tmp, NULL, NULL, &seltime);
+          if (FD_ISSET(0, &set_stdin_tmp))
+            break;
+        
+          j = 0;
+        }
       }
-    }
-
-    if (b != 26)  /* If the loop was broken */
-      break;       /* Break the parent */
+  
+      if (b != 26)  /* If the loop was broken */
+        break;       /* Break the parent */
   }
   printf("Received user interrupt...\n\n");
   
