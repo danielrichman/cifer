@@ -190,8 +190,8 @@ void affine_bf(char *text, int text_size)
   seltime.tv_usec = 0;
   
   score_best = -1;
-  score_text_tmp_pro_state pro_state;
-  score_text_tmp_pro_start(text_size, &pro_state);
+  score_text_pro_state pro_state;
+  score_text_pro_start(text_size, &pro_state);
   
   char *text_tmp      = malloc_good(sizeof(char) * text_size + 1);
   char *text_best = malloc_good(sizeof(char) * text_size + 1);
@@ -214,7 +214,7 @@ void affine_bf(char *text, int text_size)
           *(text_tmp + i) = NUMCHAR( modn((CHARNUM(*(text + i)) - b) * mmi, 26) );
         }
     
-        score = score_text_tmp_pro(text_tmp, &pro_state);
+        score = score_text_pro(text_tmp, &pro_state);
         if (score > score_best)
         {
           score_best = score;
@@ -247,13 +247,13 @@ void affine_bf(char *text, int text_size)
   memcpy(text, text_best, text_size);
   
   /* Some info */
-  score_text_tmp_pro_print_stats("Affine bruteforce", &pro_state);
+  score_text_pro_print_stats("Affine bruteforce", &pro_state);
   printf("Best match (%dx + %d): \n\n", a_best, b_best);
   
   printf("%s\n\n", text_best);
   
   /* Clean up */
-  score_text_tmp_pro_cleanup(&pro_state);
+  score_text_pro_cleanup(&pro_state);
   free(text_tmp);
   free(text_best);
 }
