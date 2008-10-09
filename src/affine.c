@@ -247,7 +247,7 @@ void affine_bf(char *ctext, int ctext_size)
   printf("Best match (%dx + %d): \n\n", a_best, b_best);
   
   memcpy(ctext, text_best, ctext_size);
-  printf("%s\n\n", text);
+  printf("%s\n\n", ctext);
   
   score_text_pro_cleanup(&pro_state);
   
