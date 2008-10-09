@@ -224,7 +224,7 @@ void affine_bf(char *ctext, int ctext_size)
       if (j > 1000) /* Do stuff interval */
       {
         printf("Curent: %dx + %d\n", a, b);
-        printf("Best match (%dx + %d): %.50s\n", a_best, b_best, text);
+        printf("Best match (%dx + %d): %.50s\n", a_best, b_best, text_best);
       
         set_stdin_tmp = set_stdin;
         select(1, &set_stdin_tmp, NULL, NULL, &seltime);
