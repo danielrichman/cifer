@@ -23,4 +23,4 @@ void crack_affine(char *text, int text_size);
 int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b);
 
 /* Affine brute force */
-char *affine_bf(char *ctext, int ctext_size);
+void affine_bf(char *ctext, int ctext_size);
