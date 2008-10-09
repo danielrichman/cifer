@@ -18,9 +18,6 @@
 
 #include "stdinc.h"
 
-/* TODO: Figure out how we can _reliably_ break from the main loop at the
- *       user's request */
-
 void keyword_bruteforce(char *text, int text_size)
 {
   char *j, *e, *best, *text_tmp, statusbuf[75];

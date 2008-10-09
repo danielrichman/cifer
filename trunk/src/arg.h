@@ -22,6 +22,7 @@ extern int arg_freq;
 extern int arg_pct;
 extern int arg_vig;
 extern int arg_aff;
+extern int arg_aff_bf;
 extern int arg_gama;
 extern int arg_keyb;
 extern int arg_keyd;

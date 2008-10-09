@@ -55,7 +55,7 @@ void action_do()
   }
  
   /* Will the dictionary be needed? */
-  if (arg_keyb || (arg_ctrans && arg_ctrans_mode == 0))
+  if (arg_aff_bf || arg_keyb || (arg_ctrans && arg_ctrans_mode == 0))
   {
     load_dict();
   }
@@ -166,6 +166,19 @@ void action_do()
       print_file(intext, intext_size, arg_output, strlen(arg_output),
                  "a", "# intext, post-affine-crack",
                  sizeof("# intext, post-affine-crack"));
+    
+    input_restore();
+  }
+  
+  if (arg_aff_bf) /* Brute force affine */
+  {
+    printf("Affine cipher brute force requested... doing... \n");
+    affine_bf(intext, intext_size);
+    
+    if (arg_output != NULL)
+      print_file(intext, intext_size, arg_output, strlen(arg_output),
+                 "a", "# intext, post-affine-brute-force",
+                 sizeof("# intext, post-affine-brute-force"));
     
     input_restore();
   }
