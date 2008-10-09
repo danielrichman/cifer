@@ -29,7 +29,7 @@ int main(int argc, char **argv)
   action_do();
   
   load_dict();
-  affine_bf(intext, intext_size);
+  rf_bf(intext, intext_size, 3, 11);
   
   return 0;
 } 
