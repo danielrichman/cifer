@@ -47,8 +47,9 @@ extern int arg_is;
 extern int arg_is_1;
 extern int arg_bacon;
 extern int arg_pb;
-extern int arg_rf_bf;
-extern int arg_rf_bf_mr;
+extern int arg_rfbf;
+extern int arg_rfbfmin;
+extern int arg_rfbfmax;
 
 /* Parse cmd-line args into variables. Returns 0 if OK, -1 if error */
 int arg_parse(int argc, char **argv);
