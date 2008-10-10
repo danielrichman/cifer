@@ -48,8 +48,9 @@ int arg_is      = 0;         /* Shift the intext by arg_shift_1 */
 int arg_is_1    = 0;
 int arg_bacon   = 0;         /* Do bacon cipher decrypt */
 int arg_pb      = 0;         /* Do polybius square decrypt */
-int arg_rf_bf   = 0;         /* Do railfence bruteforce */
-int arg_rf_bf_mr= 0;            /* Maxrails */
+int arg_rfbf    = 0;         /* Do railfence bruteforce */
+int arg_rfbfmin = 0;            /* Minrails */
+int arg_rfbfmax = 0;            /* Maxrails */
 
 int arg_parse(int argc, char **argv)
 {
@@ -136,16 +137,24 @@ int arg_parse(int argc, char **argv)
     else if ((strcasecmp(argv[i], "-rfb")) == 0 ||
        ((strcasecmp(argv[i], "--rail-fence-brute") == 0)))
     {
-      if (i + 1 >= argc)
+      if (i + 2 >= argc)
       {
         printf("arg_bad (not enough args)\n");
         return -1;
       }
 
-      arg_rf_bf = 1;
-      arg_rf_bf_mr = atoi(argv[i + 1]);
-      printf("arg_rf_bf %d, ", arg_rf_bf_mr);
-      i++;
+      arg_rfbf = 1;
+      arg_rfbfmin = atoi(argv[i + 1]);
+      arg_rfbfmax = atoi(argv[i + 2]);
+
+      if (arg_rfbfmin < 2 || arg_rfbfmax - arg_rfbfmin < 1)
+      {
+        printf("arg_bad: rfbf range bad %d->%d\n", arg_rfbfmin, arg_rfbfmax);
+        return -1;
+      }
+
+      printf("arg_rfbf %d->%d, ", arg_rfbfmin, arg_rfbfmax);
+      i += 2;
     }
     
     else if ((strcasecmp(argv[i], "-vig")) == 0 ||

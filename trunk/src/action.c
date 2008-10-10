@@ -55,7 +55,8 @@ void action_do()
   }
  
   /* Will the dictionary be needed? */
-  if (arg_aff_bf || arg_keyb || (arg_ctrans && arg_ctrans_mode == 0))
+  if (arg_aff_bf || arg_keyb || arg_rfbf || 
+           (arg_ctrans && arg_ctrans_mode == 0))
   {
     load_dict();
   }
@@ -143,11 +144,10 @@ void action_do()
     input_restore();
   }
   
-  if (arg_rf_bf) /* Railfence bruteforce */
+  if (arg_rfbf) /* Railfence bruteforce */
   {
     printf("Railfence bruteforce requested... doing...\n");
- /* TODO implement min rail as well */
- //   rf_bf(intext, intext_size, arg_rf_bf_mr);
+    rf_bf(intext, intext_size, arg_rfbfmin, arg_rfbfmax);
 
     if (arg_output != NULL)
       print_file(intext, intext_size, arg_output, strlen(arg_output),
