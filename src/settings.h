@@ -17,9 +17,7 @@
 */
 
 #define VIGENERE_MIN_KEYLEN 1
-#define VIGENERE_MAX_KEYLEN 12                /* Fixed */
-// #define VIGENERE_MAX_KEYLEN text_size      /* Size of ctext */
-/* Todo: Make the max keylen dynamically increase using the auto-detect stuff */
+#define VIGENERE_MAX_KEYLEN 100               /* Fixed */
 
 #define CTRANS_MIN_KEYLEN 4
 #define CTRANS_MAX_KEYLEN 9

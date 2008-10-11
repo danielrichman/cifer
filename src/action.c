@@ -143,7 +143,28 @@ void action_do()
     
     input_restore();
   }
-  
+ 
+  if (arg_manual_shift)
+  {
+    printf("Manual Shift requested; doing a vigenere style decode...\n");
+    printf("Encode key (decoded with subtract mode): %i", 
+                                             *arg_manual_shift_key);
+    for (i = 1; i < arg_manual_shift_size; i++)
+        printf(", %i", arg_manual_shift_key[i]);
+    printf("\n\n");
+
+    caesar_cipher_dec(intext, intext_size, 
+              arg_manual_shift_key, arg_manual_shift_size);
+    printf("%*s\n\n", intext_size, intext);
+
+    if (arg_output != NULL)
+      print_file(intext, intext_size, arg_output, strlen(arg_output),
+                 "a", "# intext, manual shift decode (vigenere style)",
+                 sizeof("# intext, manual shift decode (vigenere style)"));
+
+    input_restore();
+  }
+ 
   if (arg_rfbf) /* Railfence bruteforce */
   {
     printf("Railfence bruteforce requested... doing...\n");
