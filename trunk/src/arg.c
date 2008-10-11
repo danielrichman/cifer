@@ -33,6 +33,9 @@ columnar_transposition_function arg_ctrans_type;
 int arg_ctrans_mode = 0;     /* bruteforce, de/en code, flip+de/en code */
 int *arg_ctrans_key;         /* If decode, this points to a key array */
 int arg_ctrans_key_size = 0;
+int arg_manual_shift = 0;
+int arg_manual_shift_size = 0;
+int *arg_manual_shift_key = 0;
 int arg_gcd     = 0;         /* Do a GCD Calculation */
 int arg_gcd_1   = 0;
 int arg_gcd_2   = 0;
@@ -317,6 +320,48 @@ int arg_parse(int argc, char **argv)
       {
         i += 2;
       }
+    }
+
+    else if (((strcasecmp(argv[i], "-ms")) == 0) ||
+             ((strcasecmp(argv[i], "--manual-shift")) == 0))
+    {
+      if (i + 1 >= argc)
+      {
+        printf("arg_bad (not enough args)\n");
+        return -1;
+      }
+
+      arg_manual_shift = 1;
+      arg_manual_shift_size = atoi(argv[i + 1]);
+
+      if (arg_manual_shift_size < 1)
+      {
+        printf("arg_bad (bad shift size)\n");
+        return -1;
+      }
+
+      if (i + 1 + arg_manual_shift_size >= argc)
+      {
+        printf("arg_bad (not enough args)\n");
+        return -1;
+      }
+
+      arg_manual_shift_key = malloc_good( sizeof(int) * arg_manual_shift_size );
+
+      for (j = 0; j < arg_manual_shift_size; j++)
+      {
+        if (strlen(argv[i + 2 + j]) == 1 && ALPHA_CH(*(argv[i + 2 + j])))
+        {
+          arg_manual_shift_key[j] = CHARNUM(*(argv[i + 2 + j]));
+        }
+        else
+        {
+          arg_manual_shift_key[j] = atoi(argv[i + 2 + j]);
+        }
+      }
+
+      printf("arg_manual_shift, ");
+      i += 1 + arg_manual_shift_size;
     }
 
     else if ((strcasecmp(argv[i], "-gcd")) == 0)
