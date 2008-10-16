@@ -205,11 +205,14 @@ int print_file(char *tofile, int tofile_size, char *filename, int filename_size,
   FILE *fp;
   int size;
   
-  printf("Printing output to %*s... \n", filename_size, filename);
-  printf("                  "); /* Make it look nice */
+  if (filename_size > 0)
+    printf("Printing output to %*s... \n", filename_size, filename);
+  else                   printf("Printing output to %s... \n", filename);
+                         printf("                  "); /* Make it look nice */
   
-  printf("%*s\n", header_size, header);
-  printf("                  ");
+  if (header_size > 0) printf("%*s\n", header_size, header);
+  else                 printf("%s\n", header);
+                       printf("                  ");
   
   if ((fp = fopen(filename, mode)) == NULL)
   {
@@ -217,13 +220,25 @@ int print_file(char *tofile, int tofile_size, char *filename, int filename_size,
     return PRINT_FILE_ERR_FOPEN;
   }
   
-  if ((size = fprintf(fp, "%s\n\n%s\n\n", header, tofile)) < 0)
+  if (header_size > 0 || filename_size > 0)
   {
-    printf("failed, fprintf() error!\n");
-    return PRINT_FILE_ERR_FPRINTF;
+    if ((size = fprintf(fp, "%*s\n\n%*s\n\n", header_size, header, tofile_size,
+                                              tofile)) < 0)
+    {
+      printf("failed, fprintf() error!\n");
+      return PRINT_FILE_ERR_FPRINTF;
+    }
+  }
+  else
+  {
+    if ((size = fprintf(fp, "%s\n\n%s\n\n", header, tofile)) < 0)
+    {
+      printf("failed, fprintf() error!\n");
+      return PRINT_FILE_ERR_FPRINTF;
+    }
   }
   
-  printf("printed %d/%d byte(s)\n", size, tofile_size);
+  printf("printed %d byte(s)\n", size);
   printf("                  ");
   
   printf("fclose()'ing output file %s... ", filename);
