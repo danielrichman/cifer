@@ -29,11 +29,14 @@
 #define ALPHA_CH(ch)           (ALPHAL_CH(ch) || ALPHAH_CH(ch))
 #define ALPHANUMERIC_CH(ch)    (ALPHA_CH(ch)  || NUMBER_CH(ch))
 #define SPACE_CH(ch)           (ch == 32)
+#define XSPACE_CH(ch)          (ch < 32 || ch == 127)
 
 #define ALPHA_TOUPPER(ch)      (ALPHAL_CH(ch) ? ch - 32 : ch)
 #define ALPHA_TOLOWER(ch)      (ALPHAH_CH(ch) ? ch + 32 : ch)
 #define ALPHA_FLIP_CASE(ch)    ( ALPHAL_CH(ch) ? ch - 32 :     \
                                 (ALPHAH_CH(ch) ? ch + 32 : ch) )
+#define ALPHA_CASEBACON(ch)    (ALPHAH_CH(ch) ? 'A' :   \
+                                ALPHAL_CH(ch) ? 'B' : ch)
 
 #define IS_NEWLINE(ch)         (ch == 10)
 #define CHARNUM(ch)            (ALPHA_CH(ch) ? ALPHA_TOLOWER(ch) - 97 : -1)

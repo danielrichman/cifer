@@ -33,6 +33,21 @@ void *malloc_good(size_t size)
   return r;
 }
 
+void *realloc_good(void *ptr, size_t size)
+{
+  void *r;
+
+  r = realloc(ptr, size);
+  if (r == NULL)
+  {
+    printf("\n\nrealloc_good: Unable to realloc(%i), auto-exiting\n\n",
+                                                                  size);
+    exit(1);
+  }
+
+  return r;
+}
+
 /* The following macro is a condensed version of this code 
  * void insertion_columnic_sort(vigenere_column_ic a[], int asize)
  * {

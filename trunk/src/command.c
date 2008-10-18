@@ -16,20 +16,13 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define VIGENERE_MIN_KEYLEN    1
-#define VIGENERE_MAX_KEYLEN    100               /* Fixed */
+int cfsh_parse(char *line, cfsh_execinfo *execinfo)
+{
+  /* Parse string line into argc and argv */
+}
 
-#define CTRANS_MIN_KEYLEN      4
-#define CTRANS_MAX_KEYLEN      9
-
-#define DICTIONARY             "./dict"
-#define WORD_BUF_SIZE          28    /* Slightly more than `cat dict | wc -L` */
-#define MIN_WORD_SIZE          2
-
-#define OPTIMAL_DELTA_IC       1.73  /* Static data on English */ 
-
-#define AFFINE_WAIT            1     /* How long affine waits before \
-                                      * doing utility routines */
-
-#define DEFAULT_BUFFER_SIZE    10000 /* 10k */
+int cfsh_get_func(char *name, cfsh_command *command)
+{
+  /* Turn a name into a function */
+}
 
