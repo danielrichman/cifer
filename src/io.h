@@ -16,40 +16,43 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define INPUT_ERR_FOPEN     -1
-#define INPUT_ERR_ZERO_SIZE -2
+#define CFSH_IO_MODE_AUTO        0  /* Create the file if it doesnt exist */
+#define CFSH_IO_MODE_OVERWRITE   1  /* Overwrite or create */
+#define CFSH_IO_MODE_APPEND      2  /* Append or create */
 
-#define PRINT_FILE_ERR_FOPEN   -1
-#define PRINT_FILE_ERR_FPRINTF -2
+#define BUFFER_FILTER_NONE       4    /* No filter applied yet */
+#define BUFFER_FILTER_ALPHA      5    /* Alpha only, case preserved */
+#define BUFFER_FILTER_ALPHANUM   6    /* Alphanumeric only */
+#define BUFFER_FILTER_LALPHA     7    /* Alpha only, All lower */
+#define BUFFER_FILTER_UALPHA     8    /* Alpha only, All upper */
+#define BUFFER_FILTER_FLIPCASE   9    /* Flip Case */
+#define BUFFER_FILTER_CASEBACON  10   /* Changes case to ab */
+#define BUFFER_FILTER_NUM        11   /* Numbers only */
+#define BUFFER_FILTER_ESP        12   /* All but spaces & xsp chars */
+#define BUFFER_FILTER_ENL        13   /* All but xsp chars (see macros) */
 
-extern char *intext;
-extern char *intext_num;
- 
-extern int intext_size;
-extern int intext_num_size;
+extern char **cfsh_buffers;
+extern int *cfsh_buffer_filters;
+extern int *cfsh_buffer_sizes;
+extern int cfsh_num_buffers;
 
-/* Open our input source(s). Returns 0 if all OK,
- *                                   INPUT_ERR_FOPEN if fopen failed,
- *                                   INPUT_ERR_ZERO_SIZE if the input file is
- *                                                       0 bytes long
- * If Malloc fails, malloc_good will exit the app */
+void buffers_init();
+void create_buffers(int num);
+void size_buffer_array(int num)
 
-int input_open(char *filename);
+int file2buffer(char *name, int buffer_id);
+int buffer2file(char *name, int buffer_id, int mode);
 
-/* Counts the size of infile. Returns the size (in bytes) */
-int input_file_size_alpha(FILE *infile);
-int input_file_size_alphanum(FILE *infile);
+void initbuffer(int buffer_id);
+void destroybuffer(int buffer_id);
+void resisebuffer(int buffer_id, int newsize);
+void copybuffer(int buffer_id_1, int buffer_id_2);
+void filterbuffer(int buffer_id, int mode);
+void clearbuffer(int buffer_id);
 
-/* Shifts intext by 'shift' amount */
-void shift_text(char *intext, int intext_size, int shift);
-
-/* Restores to the original - without using fopen :) */
-void input_restore();
-
-/* Fairly self-explanatry */
-void input_flip_case();
-
-/* Writes *tofile, yes - you guessed it, to filename ;) */
-/* Returns 0 if OK, negative if failed (see PRINT_FILE_ERR_*) above */
-int print_file(char *tofile, int tofile_size, char *filename, 
-                int filename_size, char *mode, char *header, int header_size);
+#define get_buffer(i)        (*(cfsh_buffer + i))
+#define get_buffer_filter(i) (*(cfsh_buffer_filters + i))
+#define get_buffer_size(i)   (*(cfsh_buffer_sizes + i))
+#define get_buffer_real_size(i) (strnlen(get_buffer(i), get_buffer_size(i)))
+#define setbuffernull(i) \
+          (*(*(cfsh_buffer_sizes + i) + *(cfsh_buffer_size + i)) = 0)

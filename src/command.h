@@ -16,6 +16,17 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Controls the flow of the program. Figures out what needs to be called and
- * when. */
-void action_do();
+typedef int(*cfsh_command)(int argc, char **argv);
+
+typedef struct 
+{
+  cfsh_command command;
+  int argc;
+  char **argv;
+} cfsh_execinfo;
+
+int cfsh_parse(char *line, cfsh_execinfo *execinfo);
+int cfsh_get_func(char *name, cfsh_command *command);
+
+#define cfsh_exec(execinfo) execinfo.command(execinfo.argv, execinfo.argv);
+
