@@ -23,13 +23,100 @@ int main(int argc, char **argv)
   /* Take a look at argc & argv.
    * If argc == 0; go to interatcive mode (shell.c)
    * else, first look for switches:
-   *   -n --noauto disables auto-init
-   *   -f --file means that the file should be executed THEN go to interactive
-   *   -d --delay means that any file executed should be wholly parsed first
+   *   -n disables auto-init
+   *   -i means that the file should be executed THEN go to interactive
+   *   -f is a synonym for just using the script instruction on its own
+   *   -q means that any file executed shouldn't be wholly parsed first
+   *   -s means that soft-fails will cause an exit, not just hard-fails
    * then treat the rest as a shell command. 
    * For scripting mode, the "rest" could be the "script" instruction to run
    * the contents of that file. (Different to -i in that it exits when done.) */
 
+  int i, noauto, init, file, quick, soft;
+  cfsh_execinfo execinfo;
+
+  noauto = 0;
+  init   = 0;
+  file   = 0;
+  quick  = 0;
+  soft   = 0;
+
+  if (argc < 2)
+  {
+    cfsh_autoinit();
+    return cfsh_interactive();
+  }
+  else
+  {
+    /* Are there any sqitches? */
+    if (**(argv + 1) == '-')   /* First char of first arg. */
+    {
+      for (i = 1; i < strlen(*(argv + 1)); i++) switch (*(*(argv + 1) + i))
+      {
+        case 'n':   noauto = 1;  break;
+        case 'i':   init   = 1;  break;
+        case 'f':   file   = 1;  break;
+        case 'd':   quick  = 1;  break;
+        case 's':   soft   = 1;  break;
+      }
+    }
+
+    if ((init || file) && argc > 3)
+    {
+      printf("cifer (main): trailing arguments.\n");
+      return 1;
+    }
+
+    if ((quick || soft) && !(init || file))
+    {
+      printf("cifer (main): quick || soft specified but no init or file.\n");
+      return 1;
+    }
+
+    if (init && file)
+    {
+      printf("cifer (main): init cannot be used in conjection with file.\n");
+      return 1;
+    }
+
+    if (init || file)
+    {
+      if (argc < 3)
+      {
+        printf("cifer (main): please specify a file.\n");
+        return 1;
+      }
+
+      if (!noauto) cfsh_autoinit();
+      cfsh_scriptfile(*(argv + 2), !quick, soft);
+    }
+    else if (argc > 2)
+    {
+      if (!noauto) cfsh_autoinit();
+
+      i = (**(argv + 1) == '-' ? 3 : 2);
+      execinfo.argc = argc - i;
+
+      if (execinfo.argc != 0)
+        execinfo.argv = malloc_good( sizeof(char *) * execinfo.argc );
+      else
+        execinfo.argv = NULL;
+
+      if (cfsh_get_func(*(argv + i - 1), &execinfo.command) 
+             == CFSH_FUNC_NOEXIST)
+      {
+        printf("cifer (main): command does not exist.\n");
+        return 1;
+      }
+
+      return cfsh_exec(execinfo);
+    }
+    else
+    {
+      if (!noauto) cfsh_autoinit();
+      return cfsh_interactive();
+    }
+  }
 
   return 0;  /* This should return whatever shell.c ends up with */
 } 
