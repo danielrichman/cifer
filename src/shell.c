@@ -16,23 +16,34 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-int cfsh_autoinit()
-{
+#include "stdinc.h"
 
+void cfsh_init()
+{
+  /* Crucial startup routines. Basically initialises global variables. */
+  init_buffers();
+}
+
+void cfsh_autoinit()
+{
+  /* Automatic "we guessed you wanted this" stuff:
+   *  Make 10 Buffers,
+   *  Load the Dictionary */ 
 }
 
 int cfsh_interactive()
 {
-
+  /* Enter the Loop, accepting stuff from stdin and passing to cfsh_line */
 }
 
-int cfsh_scriptfile()
+int cfsh_scriptfile(char *name)
 {
-
+  /* Execute the file, taking each line and giving it to cfsh_line */
 }
 
-int cfsh_line()
+int cfsh_line(char *input)
 {
-
+  /* Use command.c to parse it, execute it and free it. command.c functions
+   * won't produce output or errors to stdout, so you must do that here. */ 
 }
 

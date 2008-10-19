@@ -16,6 +16,14 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define CFSH_PARSE_OK           0
+#define CFSH_PARSE_EBAD        -2
+#define CFSH_PARSE_EMPTY       -5
+#define CFSH_PARSE_QUOTEOPEN   -9
+
+#define CFSH_FUNC_OK            0
+#define CFSH_FUNC_NOEXIST      -1
+
 typedef int(*cfsh_command)(int argc, char **argv);
 
 typedef struct 
@@ -25,8 +33,9 @@ typedef struct
   char **argv;
 } cfsh_execinfo;
 
-int cfsh_parse(char *line, cfsh_execinfo *execinfo);
+int cfsh_parse(char *input, cfsh_execinfo *execinfo);
 int cfsh_get_func(char *name, cfsh_command *command);
+void cfsh_free_execinfo(cfsh_execinfo *execinfo);
 
-#define cfsh_exec(execinfo) execinfo.command(execinfo.argv, execinfo.argv);
+#define cfsh_exec(execinfo) execinfo.command(execinfo.argc, execinfo.argv);
 

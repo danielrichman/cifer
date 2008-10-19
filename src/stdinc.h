@@ -16,6 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+ /* TODO: Update me. Remove arg & action, add shell, command, new io. */
+
 #ifndef STDINC_CIPHERCRACK
 #define STDINC_CIPHERCRACK 1
 

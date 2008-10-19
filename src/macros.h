@@ -30,6 +30,8 @@
 #define ALPHANUMERIC_CH(ch)    (ALPHA_CH(ch)  || NUMBER_CH(ch))
 #define SPACE_CH(ch)           (ch == 32)
 #define XSPACE_CH(ch)          (ch < 32 || ch == 127)
+#define QUOTE_CH(ch)           (ch == 39 || ch == 34)
+#define ESCAPE_CH(ch)          (ch == 92)
 
 #define ALPHA_TOUPPER(ch)      (ALPHAL_CH(ch) ? ch - 32 : ch)
 #define ALPHA_TOLOWER(ch)      (ALPHAH_CH(ch) ? ch + 32 : ch)
