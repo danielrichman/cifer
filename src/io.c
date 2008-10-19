@@ -39,7 +39,7 @@ void create_buffers(int num)
   int i, j;
 
   /* Should never happen */
-  if (num < 0)    return -1;
+  if (num < 0)    return;
 
   if (cfsh_num_buffers == 0)
   {
@@ -48,7 +48,7 @@ void create_buffers(int num)
       printf("create_buffers: Creating buffers for the first time!\n");
       size_buffer_array(num);
 
-      printf("create_buffers: initting all buffers with %i default length\n",
+      printf("create_buffers: initting all %i buffers with %i default length\n",
                                     num, DEFAULT_BUFFER_SIZE);
       for (i = 0; i < num; i++)                 initbuffer(i);
     }
@@ -59,7 +59,8 @@ void create_buffers(int num)
   }
   else if (cfsh_num_buffers > num)
   {
-    printf("create_buffers: buffers %i to %i will be discarded\n");
+    printf("create_buffers: buffers %i to %i will be discarded\n", 
+                                             num, cfsh_num_buffers);
     for (i = num; i < cfsh_num_buffers; i++)    destroybuffer(i);
 
     printf("create_buffers: reducing array size by %i\n", 
@@ -80,12 +81,12 @@ void create_buffers(int num)
   }
 }
 
-void size_buffer_array(int num)
+void size_buffer_array(int n)
 {
-  cfsh_buffers        = realloc_good( sizeof(char *) * num );
-  cfsh_buffer_filters = realloc_good( sizeof(int)    * num );
-  cfsh_buffer_sizes   = realloc_good( sizeof(int)    * num );
-  cfsh_num_buffers    = num;
+  cfsh_buffers        = realloc_good( cfsh_buffers,        sizeof(char *) * n );
+  cfsh_buffer_filters = realloc_good( cfsh_buffer_filters, sizeof(int)    * n );
+  cfsh_buffer_sizes   = realloc_good( cfsh_buffer_sizes,   sizeof(int)    * n );
+  cfsh_num_buffers    = n;
 }
 
 void file2buffer(char *name, int buffer_id)
@@ -106,7 +107,7 @@ void file2buffer(char *name, int buffer_id)
   flock(fileno(file), LOCK_SH);
 
   i = 0;
-  while (feof(file) == 0) { i++; fgetc(file) }
+  while (feof(file) == 0) { i++; fgetc(file); }
   rewind(file);
 
   if (i > get_buffer_size(buffer_id))
@@ -205,13 +206,24 @@ void resizebuffer(int buffer_id, int newsize)
   setbuffernull(buffer_id);
 }
 
+int get_buffer_real_size(int buffer_id)
+{
+  /* I wanted to use strnlen, but aparantly that's a GNU Extention and 
+   * compatability sez no. SO the easiest way it to ensure that there is at
+   * least a \0 on the end and that strlen won't segfault, then strlen 
+   * normally... */
+
+  setbuffernull(buffer_id);
+  return strlen(get_buffer(buffer_id));
+}
+
 void copybuffer(int buffer_id_1, int buffer_id_2)
 {
   printf("copybuffer: copying %i to %i...\n", buffer_id_1, buffer_id_2);
 
   if (get_buffer_size(buffer_id_2) < get_buffer_size(buffer_id_1))
   {
-    printf("copybuffer: must resise buffer %i to %i bytes\n", 
+    printf("copybuffer: must resize buffer %i to %i bytes\n", 
                             buffer_id_2, get_buffer_size(buffer_id_1));
     resizebuffer(buffer_id_2, get_buffer_size(buffer_id_1));
   }
@@ -243,8 +255,9 @@ void filterbuffer(int buffer_id, int mode)
   char *buf;
 
   newsize = 0;
-  buf = get_buffer(buffer_id);
-  j = get_buffer_real_size(buffer_id);
+  buf     = get_buffer(buffer_id);
+  j       = get_buffer_real_size(buffer_id);
+  t       = 0;
 
   for (i = 0; i < j; i++)
   {

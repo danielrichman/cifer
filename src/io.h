@@ -38,21 +38,22 @@ extern int cfsh_num_buffers;
 
 void buffers_init();
 void create_buffers(int num);
-void size_buffer_array(int num)
+void size_buffer_array(int num);
 
-int file2buffer(char *name, int buffer_id);
-int buffer2file(char *name, int buffer_id, int mode);
+void file2buffer(char *name, int buffer_id);
+void buffer2file(char *name, int buffer_id, int mode);
 
 void initbuffer(int buffer_id);
 void destroybuffer(int buffer_id);
-void resisebuffer(int buffer_id, int newsize);
+void resizebuffer(int buffer_id, int newsize);
 void copybuffer(int buffer_id_1, int buffer_id_2);
 void filterbuffer(int buffer_id, int mode);
 void clearbuffer(int buffer_id);
 
-#define get_buffer(i)        (*(cfsh_buffer + i))
-#define get_buffer_filter(i) (*(cfsh_buffer_filters + i))
-#define get_buffer_size(i)   (*(cfsh_buffer_sizes + i))
-#define get_buffer_real_size(i) (strnlen(get_buffer(i), get_buffer_size(i)))
-#define setbuffernull(i) \
-          (*(*(cfsh_buffer_sizes + i) + *(cfsh_buffer_size + i)) = 0)
+int get_buffer_real_size(int buffer_id);
+
+#define get_buffer(i)            (*(cfsh_buffers + i))
+#define get_buffer_filter(i)     (*(cfsh_buffer_filters + i))
+#define get_buffer_size(i)       (*(cfsh_buffer_sizes + i))
+#define setbuffernull(i)         (*(get_buffer(i) + get_buffer_size(i)) = 0)
+

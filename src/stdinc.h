@@ -16,10 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
- /* TODO: Update me. Remove arg & action, add shell, command, new io. */
-
-#ifndef STDINC_CIPHERCRACK
-#define STDINC_CIPHERCRACK 1
+#ifndef STDINC_CIFER
+#define STDINC_CIFER 1
 
 #include <stdio.h>
 
@@ -39,25 +37,27 @@
 #include "settings.h"
 #include "macros.h"
 
-#include "urandom_access.h"
-#include "frequency_data.h"
-#include "frequency_analysis.h"
-#include "dictionary.h"
-#include "interface.h"
+#include "command.h"
+#include "io.h"
+#include "shell.h"
 
-#include "vigenere.h"
+#include "frequency_analysis.h"
+#include "frequency_data.h"
+
 #include "affine.h"
+#include "bacon.h"
+#include "ciphers.h"
 #include "columnar_transposition.h"
 #include "keyword.h"
-#include "ciphers.h"
-#include "rf.h"
 #include "polybius.h"
-#include "bacon.h"
+#include "rf.h"
+#include "vigenere.h"
+#include "vowel_mash.h"
 
+#include "dictionary.h"
+#include "interface.h"
 #include "utility.h"
-#include "arg.h"
-#include "io.h"
-#include "action.h"
+#include "urandom_access.h"
 
 #endif
 

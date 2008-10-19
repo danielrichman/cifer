@@ -21,7 +21,7 @@
 void cfsh_init()
 {
   /* Crucial startup routines. Basically initialises global variables. */
-  init_buffers();
+  buffers_init();
 }
 
 void cfsh_autoinit()
@@ -34,16 +34,19 @@ void cfsh_autoinit()
 int cfsh_interactive()
 {
   /* Enter the Loop, accepting stuff from stdin and passing to cfsh_line */
+  return 0;  /* main.c will return this as the exit code */
 }
 
 int cfsh_scriptfile(char *name)
 {
   /* Execute the file, taking each line and giving it to cfsh_line */
+  return 0;  /* if applicable, main.c will return this as the exit code */
 }
 
 int cfsh_line(char *input)
 {
   /* Use command.c to parse it, execute it and free it. command.c functions
    * won't produce output or errors to stdout, so you must do that here. */ 
+  return 0;  /* Some fail/succeed info */
 }
 
