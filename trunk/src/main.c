@@ -20,13 +20,13 @@
 
 int main(int argc, char **argv)
 {
-  if ((arg_parse(argc, argv)) == -1) /* Bad argument(s) */
-  {
-    printf("Bad argument(s), exiting!\n");
-    return 0;
-  }
-  
-  action_do();
-  
-  return 0;
+  /* Take a look at argc & argv.
+   * If argc == 0; go to interatcive mode (shell.c)
+   * else, first look for switches:
+   *   -n --noauto disables auto-init
+   *   -f --file means that the file should be executed THEN go to interactive
+   *   -d --delay means that any file executed should be wholly parsed first
+   * then treat the rest as a shell command. 
+   * For scripting mode, the "rest" could be the "script" instruction to run
+   * the contents of that file. (Different to -i in that it exits when done.) */
 } 
