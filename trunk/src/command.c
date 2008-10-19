@@ -23,7 +23,7 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
   /* Parse string line into argc and argv */
   int i, j, size, spacing, had_char, had_command, quote, escaping;
   char *input_mark, *input_end, *command;
-  char ch, previous;
+  char ch;
 
   execinfo->argc   = 0;
   spacing          = 0;
@@ -31,6 +31,8 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
   had_command      = 0;
   quote            = 0;
   escaping         = 0;
+
+  command          = NULL;
   size             = strlen(input);
   input_end        = input + size;
 
@@ -99,7 +101,7 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
 
   /* Allocate... */
   if (execinfo->argc != 0)
-    execinfo->argv = malloc_good( sizeof(char *) * argc );
+    execinfo->argv = malloc_good( sizeof(char *) * (execinfo->argc) );
 
   /* Pass 2: Allocate correct lengths! */
   execinfo->argc   = 0;
@@ -120,7 +122,7 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
       {
         if (had_command)
         {
-          *(argv + argc) = malloc_good( j + 1 );
+          *((execinfo->argv) + (execinfo->argc)) = malloc_good( j + 1 );
           (execinfo->argc)++;
         }
         else
@@ -164,7 +166,7 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
   {
     if (had_command)
     {
-      *(argv + argc) = malloc_good( j + 1 );
+      *((execinfo->argv) + (execinfo->argc)) = malloc_good( j + 1 );
       (execinfo->argc)++;          j = 0;
     }
     else
@@ -268,6 +270,8 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
 
 void cfsh_free_execinfo(cfsh_execinfo *execinfo)
 {
+  int i;
+
   for (i = 0; i < (execinfo->argc); i++)    free(*((execinfo->argv) + i));
   if (execinfo->argc != 0)                  free(execinfo->argv);
 }
@@ -282,5 +286,8 @@ int cfsh_get_func(char *name, cfsh_command *command)
   else cfsh_func("load",        cfsh_load)
   else cfsh_func("affine",      cfsh_affine_dec)
   */
+
+  /* Else... */
+  return CFSH_FUNC_NOEXIST;
 }
 

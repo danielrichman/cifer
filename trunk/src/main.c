@@ -29,4 +29,7 @@ int main(int argc, char **argv)
    * then treat the rest as a shell command. 
    * For scripting mode, the "rest" could be the "script" instruction to run
    * the contents of that file. (Different to -i in that it exits when done.) */
+
+
+  return 0;  /* This should return whatever shell.c ends up with */
 } 

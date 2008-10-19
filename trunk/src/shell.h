@@ -16,8 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-int cfsh_init();
-int cfsh_autoinit();
+void cfsh_init();
+void cfsh_autoinit();
 int cfsh_interactive();
 int cfsh_scriptfile(char *name);
 int cfsh_line(char *input);
