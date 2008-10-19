@@ -281,10 +281,10 @@ void cfsh_free_execinfo(cfsh_execinfo *execinfo)
 
 int cfsh_get_func(char *name, cfsh_command *command)
 {
-  /* Examples:
-       cfsh_func("quit",        cfsh_quit)
-  else cfsh_func("load",        cfsh_load)
-  else cfsh_func("affine",      cfsh_affine_dec)
+  /* eg.
+  cfsh_func("quit",        cfsh_quit)
+  cfsh_func("load",        cfsh_load)
+  cfsh_func("affine",      cfsh_affine_dec)
   */
 
   /* Else... */
