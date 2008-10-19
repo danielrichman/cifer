@@ -25,6 +25,9 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
   char *input_mark, *input_end, *command;
   char ch;
 
+  execinfo->argv    = NULL;
+  execinfo->command = NULL;
+
   execinfo->argc   = 0;
   spacing          = 0;
   had_char         = 0;

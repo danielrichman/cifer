@@ -29,24 +29,172 @@ void cfsh_autoinit()
   /* Automatic "we guessed you wanted this" stuff:
    *  Make 10 Buffers,
    *  Load the Dictionary */ 
+  create_buffers(10);
+  load_dict();
 }
 
-int cfsh_interactive()
+int cfsh_read(FILE *read, int mode)
 {
-  /* Enter the Loop, accepting stuff from stdin and passing to cfsh_line */
-  return 0;  /* main.c will return this as the exit code */
+  /* Enter the Loop, accepting stuff from read and passing to cfsh_line */
+  int result, looping, linesize, i, num, have_nl;
+  char *line;
+
+  /* Start out at 512 chars */
+  line = malloc_good( 512 );
+  linesize = 512;
+
+  /* Gogogo! */
+  looping = 1;
+  num = 0;
+
+  /* Shouldn't happen */
+  if (mode == CFSH_READ_MODE_INTERACTIVE && read != stdin)
+  {
+    return CFSH_OK;
+  }
+
+  while (looping && feof(read) == 0)
+  {
+    if (mode == CFSH_READ_MODE_INTERACTIVE) printf("cifer> ");
+
+    *line = 0;  /* Set the first byte so */
+    have_nl = 0;
+
+    for (i = 0; feof(read) == 0 && !have_nl; i++)
+    {
+      if (i >= linesize - 1)
+      {
+        line = realloc_good( line, linesize + 512 );
+        linesize += 512;
+      }
+
+      *(line + i) = fgetc(read);
+
+      if (IS_NEWLINE(*(line + i)))
+      {
+        *(line + i) = 0;
+        have_nl = 1;
+      }
+    }
+
+    /* If its not from stdin, then echo it out */
+    if (mode != CFSH_READ_MODE_INTERACTIVE) printf("cifer> %s\n", line);
+
+    /* If a EOF was fired in interactive mode, an extra \n is 
+     * needed for niceness */
+    if (mode == CFSH_READ_MODE_INTERACTIVE && feof(read) != 0) printf("\n");
+
+    /* Execute/parse and update loop status from that */
+    switch (mode)
+    {
+      case CFSH_READ_MODE_PARSECHECK:
+        result = cfsh_line(line, mode);
+        if (result != CFSH_OK)
+          printf("cfsh_read: parse reports error on line %i.\n", num);
+        break;
+      case CFSH_READ_MODE_EXECUTE_SF:
+      case CFSH_READ_MODE_EXECUTE_HF:
+        result = cfsh_line(line, mode);
+        if (result != CFSH_OK && result != CFSH_COMMAND_PARSEFAIL)
+        {
+          printf("cfsh_read: break loop.\n");
+          looping = 0;
+        }
+        break;
+      case CFSH_READ_MODE_INTERACTIVE:
+        cfsh_line(line, mode);
+        break;
+    }
+
+    printf("\n");
+    num++;
+  }
+
+  if (feof(read) != 0)  printf("cfsh_read: end of file\n");
+  if (!looping)         printf("cfsh_read: loop broken by cfsh_line\n");
+
+  free(line);
+
+  /* For Parsecheck, the last result will either 
+   * be the error or all are ok. Otherwise, this means that
+   * the last instruction is the exit code.*/
+  return result;
 }
 
-int cfsh_scriptfile(char *name)
+void cfsh_scriptfile(char *name, int preparse, int softfail)
 {
   /* Execute the file, taking each line and giving it to cfsh_line */
-  return 0;  /* if applicable, main.c will return this as the exit code */
+  FILE *read;
+  int result;
+
+  read = fopen(name, "r");
+  if (read == NULL)
+  {
+    printf("cfsh_scriptfile: failed to open %s: %s\n", name, strerror(errno));
+    return;
+  }
+
+  flock(fileno(read), LOCK_SH);
+
+  if (preparse)
+  {
+    result = cfsh_read(read, CFSH_READ_MODE_PARSECHECK);
+    if (result == CFSH_COMMAND_PARSEFAIL)
+      printf("cfsh_scriptfile: parse error in file, not executing.\n");
+  }
+  else
+  {
+    result = CFSH_OK;
+  }
+
+  if (result == CFSH_OK)
+  {
+    if (softfail) result = cfsh_read(read, CFSH_READ_MODE_EXECUTE_SF);
+    else          result = cfsh_read(read, CFSH_READ_MODE_EXECUTE_HF);
+  }
+
+  flock(fileno(read), LOCK_UN);
+  fclose(read);
 }
 
-int cfsh_line(char *input)
+int cfsh_line(char *input, int mode)
 {
   /* Use command.c to parse it, execute it and free it. command.c functions
    * won't produce output or errors to stdout, so you must do that here. */ 
-  return 0;  /* Some fail/succeed info */
+  cfsh_execinfo execinfo;
+  int result;
+
+  result = cfsh_parse(input, &execinfo);
+
+  /* No need to break, we has return */
+  switch (result)
+  {
+    case CFSH_PARSE_EBAD:
+      printf("cfsh_parse: escape sequence misuse)\n");
+      cfsh_free_execinfo(&execinfo);
+      return CFSH_COMMAND_PARSEFAIL;
+    case CFSH_PARSE_EMPTY:
+      printf("cfsh_parse: no command specified\n");
+      cfsh_free_execinfo(&execinfo);
+      return CFSH_COMMAND_PARSEFAIL;
+    case CFSH_PARSE_QUOTEOPEN:
+      printf("cfsh_parse: quotes left open/unclosed.\n");
+      cfsh_free_execinfo(&execinfo);
+      return CFSH_COMMAND_PARSEFAIL;
+    case CFSH_FUNC_NOEXIST:
+      printf("cfsh_parse: no such command or function\n");
+      return CFSH_COMMAND_PARSEFAIL;
+  }
+
+  if (mode == CFSH_READ_MODE_PARSECHECK)  return CFSH_OK;
+
+  result = cfsh_exec(execinfo);
+
+  if ((result == CFSH_COMMAND_SOFTFAIL || result == CFSH_COMMAND_HARDFAIL) &&
+      mode == CFSH_READ_MODE_EXECUTE_SF)   return result;
+  if (result == CFSH_COMMAND_HARDFAIL && 
+      mode == CFSH_READ_MODE_EXECUTE_HF)   return result;
+
+  return CFSH_OK;
 }
 
