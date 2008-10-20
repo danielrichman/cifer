@@ -17,7 +17,6 @@ typedef struct
 } ga_memb;
 
 void init_pop(ga_memb *pop);
-FILE *open_ur(void);
 void zero_fitness(ga_memb *pop);
 void rand_sols(ga_memb *pop);
 void calc_fitness(ga_memb *pop);
@@ -29,7 +28,7 @@ int main(void)
   int i;
   
   ga_memb pop_a[GA_POPSIZE], pop_b[GA_POPSIZE];
-  ga_memb *pop, *buf;
+  ga_memb *pop, *buf, *tmp;
   
   pop = pop_a;
   buf = pop_b;
@@ -41,37 +40,27 @@ int main(void)
   {
     calc_fitness(pop); // Fill out ga_memb.fitness
     sort_by_fitness(pop);
-    print_best(pop);
+    // print_best(pop); // I can has spam.
     
     if (pop[0].fitness == TARGET_LEN) break; // We can has solution! :)
     
-    //mate(*pop, *buf) // Mate the population into the buffer
-    //mutate(*buf) // Radiation!
+    // mate(*pop, *buf) // Mate the population into the buffer
+    // mutate(*buf) // Radiation!
     
-    //swap_pt(pop, buf) // Swap teh pointerz faw speedz
+    tmp = buf; // For some reason gcc doesn't like XOR Swap ownage on 
+    buf = pop; // a pointer ='( - so we can use temp variable.
+    pop = tmp; // Swap teh pointerz faw speedz
   }
-  
+
+  print_best(pop);
+
   return 0;
 }
 
 void init_pop(ga_memb *pop)
 {
-  //FILE *ur = open_ur();
-  
   zero_fitness(pop);
   rand_sols(pop);
-}
-
-FILE *open_ur(void)
-{
-  FILE *fp;
-  if ((fp = fopen("/dev/urandom", "r")) == NULL)
-  {
-    printf("\nFailed to fopen() /dev/urandom\n");
-    exit(0);
-  }
-  
-  return fp;
 }
 
 void zero_fitness(ga_memb *pop)
@@ -136,5 +125,9 @@ void sort_by_fitness(ga_memb *pop)
 
 void print_best(ga_memb *pop)
 {
-  printf("Best: %*d (%d%%)\n", TARGET_LEN, pop[0].sol, (pop[0].fitness / TARGET_LEN) * 100);
+  int i;
+
+  printf("Best: %d", *(pop[0].sol));
+  for (i = 1; i < TARGET_LEN; i++) printf(", %d", *((pop[0].sol) + i));
+  printf("  (%d%%)\n", (pop[0].fitness / TARGET_LEN) * 100);
 }
