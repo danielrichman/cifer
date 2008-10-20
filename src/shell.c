@@ -196,7 +196,7 @@ int cfsh_line(char *input, int mode)
   switch (result)
   {
     case CFSH_PARSE_EBAD:
-      printf("cfsh_parse: escape sequence misuse)\n");
+      printf("cfsh_parse: escape sequence misuse\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_EMPTY:
       printf("cfsh_parse: no command specified\n");
