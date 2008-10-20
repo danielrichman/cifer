@@ -16,13 +16,13 @@ struct ga_memb
   int fitness; // How good the solution is
 };
 
-void init_pop(ga_memb &pop);
+void init_pop(ga_memb *pop);
 FILE *open_ur(void);
-void zero_fitness(ga_memb &pop);
-void rand_sols(ga_memb &pop);
-void calc_fitness(ga_memb &pop);
-void sort_by_fitness(ga_memb &pop);
-void print_best(ga_memb &pop);
+void zero_fitness(ga_memb *pop);
+void rand_sols(ga_memb *pop);
+void calc_fitness(ga_memb *pop);
+void sort_by_fitness(ga_memb *pop);
+void print_best(ga_memb *pop);
 
 int main(void)
 {
@@ -52,7 +52,7 @@ int main(void)
   return 0;
 }
 
-void init_pop(ga_memb &pop)
+void init_pop(ga_memb *pop)
 {
   FILE *ur = open_ur();
   
@@ -71,7 +71,7 @@ FILE *open_ur(void)
   return fp;
 }
 
-void zero_fitness(ga_memb &pop)
+void zero_fitness(ga_memb *pop)
 {
   for (int i = 0; i < GA_POPSIZE; i++)
   {
@@ -79,7 +79,7 @@ void zero_fitness(ga_memb &pop)
   }
 }
 
-void rand_sols(ga_memb &pop)
+void rand_sols(ga_memb *pop)
 {
   for (int i = 0; i < GA_POPSIZE; i++)
   {
@@ -90,7 +90,7 @@ void rand_sols(ga_memb &pop)
   }
 }
 
-void calc_fitness(ga_memb &pop)
+void calc_fitness(ga_memb *pop)
 {
   unsigned int fitness;
   
@@ -109,7 +109,7 @@ void calc_fitness(ga_memb &pop)
 }
 
 // Insertion sort
-void sort_by_fitness(ga_memb &pop)
+void sort_by_fitness(ga_memb *pop)
 {
   int j;
   int value;
@@ -127,7 +127,7 @@ void sort_by_fitness(ga_memb &pop)
   }
 }
 
-void print_best(ga_memb &pop)
+void print_best(ga_memb *pop)
 {
   printf("Best: %*d (%d%%)\n", TARGET_LEN, (*pop)[0].sol, ((*pop)[0].fitness / TARGET_LEN) * 100);
 }
