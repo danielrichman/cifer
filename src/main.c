@@ -56,7 +56,7 @@ int main(int argc, char **argv)
         case 'n':   noauto = 1;  break;
         case 'i':   init   = 1;  break;
         case 'f':   file   = 1;  break;
-        case 'd':   quick  = 1;  break;
+        case 'q':   quick  = 1;  break;
         case 's':   soft   = 1;  break;
       }
     }
@@ -79,6 +79,9 @@ int main(int argc, char **argv)
       return 1;
     }
 
+    /* Depending on if there were switches or not, where do args start ? */
+    i = (**(argv + 1) == '-' ? 3 : 2);
+
     if (init || file)
     {
       if (argc < 3)
@@ -89,12 +92,11 @@ int main(int argc, char **argv)
 
       if (!noauto) cfsh_autoinit();
       cfsh_scriptfile(*(argv + 2), !quick, soft);
+      if (init) cfsh_interactive();
     }
-    else if (argc > 2)
+    else if (argc > i - 1)
     {
       if (!noauto) cfsh_autoinit();
-
-      i = (**(argv + 1) == '-' ? 3 : 2);
       execinfo.argc = argc - i;
 
       if (execinfo.argc != 0)

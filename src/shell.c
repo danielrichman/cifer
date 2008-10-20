@@ -77,38 +77,62 @@ int cfsh_read(FILE *read, int mode)
       }
     }
 
-    /* If its not from stdin, then echo it out */
-    if (mode != CFSH_READ_MODE_INTERACTIVE) printf("cifer> %s\n", line);
-
-    /* If a EOF was fired in interactive mode, an extra \n is 
-     * needed for niceness */
-    if (mode == CFSH_READ_MODE_INTERACTIVE && feof(read) != 0) printf("\n");
-
-    /* Execute/parse and update loop status from that */
-    switch (mode)
+    if (strlen(line) != 0)
     {
-      case CFSH_READ_MODE_PARSECHECK:
-        result = cfsh_line(line, mode);
-        if (result != CFSH_OK)
-          printf("cfsh_read: parse reports error on line %i.\n", num);
-        break;
-      case CFSH_READ_MODE_EXECUTE_SF:
-      case CFSH_READ_MODE_EXECUTE_HF:
-        result = cfsh_line(line, mode);
-        if (result != CFSH_OK && result != CFSH_COMMAND_PARSEFAIL)
-        {
-          printf("cfsh_read: break loop.\n");
-          looping = 0;
-        }
-        break;
-      case CFSH_READ_MODE_INTERACTIVE:
-        cfsh_line(line, mode);
-        break;
-    }
+      /* If its not from stdin, then echo it out */
+      if (mode != CFSH_READ_MODE_INTERACTIVE && 
+          mode != CFSH_READ_MODE_PARSECHECK)
+        printf("cifer> %s\n", line);
 
-    printf("\n");
-    num++;
+      /* If a EOF was fired in interactive mode, an extra \n is 
+       * needed for niceness */
+      if (mode == CFSH_READ_MODE_INTERACTIVE && feof(read) != 0) printf("\n");
+
+      /* Execute/parse and update loop status from that */
+      switch (mode)
+      {
+        case CFSH_READ_MODE_PARSECHECK:
+          result = cfsh_line(line, mode);
+          if (result == CFSH_COMMAND_PARSEFAIL)
+          {
+            printf("cfsh_read: parse reports error on line %i.\n", num);
+            looping = 0;
+          }
+          break;
+        case CFSH_READ_MODE_EXECUTE_SF:
+          result = cfsh_line(line, mode);
+          if (result == CFSH_COMMAND_HARDFAIL || 
+              result == CFSH_COMMAND_SOFTFAIL)
+          {
+            printf("cfsh_read: exit requested by cfsh_line on softhard err.\n");
+            looping = 0;
+          }
+          break;
+        case CFSH_READ_MODE_EXECUTE_HF:
+          result = cfsh_line(line, mode);
+          if (result == CFSH_COMMAND_HARDFAIL)
+          {
+            printf("cfsh_read: exit requested by cfsh_line on hard err.\n");
+            looping = 0;
+          }
+          break;
+        case CFSH_READ_MODE_INTERACTIVE:
+          result = cfsh_line(line, mode);
+          break;
+      }
+
+      if (result == CFSH_BREAK_LOOP)
+      {
+        printf("cfsh_read: break_loop requested (graceful)\n");
+        looping = 0;
+      }
+
+      if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
+      num++;
+    }
   }
+
+  printf("cfsh_read: read %i lines.\n", num);
 
   if (feof(read) != 0)  printf("cfsh_read: end of file\n");
   if (!looping)         printf("cfsh_read: loop broken by cfsh_line\n");
@@ -166,20 +190,19 @@ int cfsh_line(char *input, int mode)
 
   result = cfsh_parse(input, &execinfo);
 
-  /* No need to break, we has return */
+  /* No need to break, we has return 
+   * Also, there's no need for free_execinfo because if we
+   * parsefail, nothing should have been allocated. */
   switch (result)
   {
     case CFSH_PARSE_EBAD:
       printf("cfsh_parse: escape sequence misuse)\n");
-      cfsh_free_execinfo(&execinfo);
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_EMPTY:
       printf("cfsh_parse: no command specified\n");
-      cfsh_free_execinfo(&execinfo);
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_QUOTEOPEN:
       printf("cfsh_parse: quotes left open/unclosed.\n");
-      cfsh_free_execinfo(&execinfo);
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_FUNC_NOEXIST:
       printf("cfsh_parse: no such command or function\n");
@@ -189,12 +212,8 @@ int cfsh_line(char *input, int mode)
   if (mode == CFSH_READ_MODE_PARSECHECK)  return CFSH_OK;
 
   result = cfsh_exec(execinfo);
+  cfsh_free_execinfo(&execinfo);
 
-  if ((result == CFSH_COMMAND_SOFTFAIL || result == CFSH_COMMAND_HARDFAIL) &&
-      mode == CFSH_READ_MODE_EXECUTE_SF)   return result;
-  if (result == CFSH_COMMAND_HARDFAIL && 
-      mode == CFSH_READ_MODE_EXECUTE_HF)   return result;
-
-  return CFSH_OK;
+  return result;
 }
 
