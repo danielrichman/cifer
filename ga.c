@@ -37,7 +37,7 @@ int main(void)
   init_pop(pop_a);
   init_pop(pop_b);
   
-  for (i = 0; i < GA_MAXITER; i++);
+  for (i = 0; i < GA_MAXITER; i++)
   {
     calc_fitness(pop); // Fill out ga_memb.fitness
     sort_by_fitness(pop);
@@ -56,7 +56,7 @@ int main(void)
 
 void init_pop(ga_memb *pop)
 {
-  FILE *ur = open_ur();
+  //FILE *ur = open_ur();
   
   zero_fitness(pop);
   rand_sols(pop);
@@ -64,7 +64,8 @@ void init_pop(ga_memb *pop)
 
 FILE *open_ur(void)
 {
-  if ((FILE *fp = fopen("/dev/urandom", "r") == NULL))
+  FILE *fp;
+  if ((fp = fopen("/dev/urandom", "r")) == NULL)
   {
     printf("\nFailed to fopen() /dev/urandom\n");
     exit(0);
@@ -75,7 +76,8 @@ FILE *open_ur(void)
 
 void zero_fitness(ga_memb *pop)
 {
-  for (int i = 0; i < GA_POPSIZE; i++)
+  int i;
+  for (i = 0; i < GA_POPSIZE; i++)
   {
     pop[i].fitness = 0;
   }
@@ -83,9 +85,11 @@ void zero_fitness(ga_memb *pop)
 
 void rand_sols(ga_memb *pop)
 {
-  for (int i = 0; i < GA_POPSIZE; i++)
+  int i;
+  int j;
+  for (i = 0; i < GA_POPSIZE; i++)
   {
-    for (int j = 0; j < TARGET_LEN; j++)
+    for (j = 0; j < TARGET_LEN; j++)
     {
       pop[i].sol[j] = rand();
     }
@@ -96,10 +100,11 @@ void calc_fitness(ga_memb *pop)
 {
   unsigned int fitness;
   
-  for (int i = 0; i < GA_POPSIZE; i++)
+  int i, j;
+  for (i = 0; i < GA_POPSIZE; i++)
   {
     fitness = 0;
-    for (int j = 0; j < TARGET_LEN; j++)
+    for (j = 0; j < TARGET_LEN; j++)
     {
       if (pop[i].sol[j] == target[j])
       {
@@ -113,10 +118,10 @@ void calc_fitness(ga_memb *pop)
 // Insertion sort
 void sort_by_fitness(ga_memb *pop)
 {
-  int j;
+  int i, j;
   int value;
   
-  for (int i = 0; i < GA_POPSIZE; i++)
+  for (i = 0; i < GA_POPSIZE; i++)
   {
     value = pop[i].fitness;
     j = i - 1;
@@ -125,7 +130,7 @@ void sort_by_fitness(ga_memb *pop)
       pop[j + 1] = pop[j];
       j -= 1;
     }
-    pop[j + 1] = value;
+    pop[j + 1].fitness = value;
   }
 }
 
