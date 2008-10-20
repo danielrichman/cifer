@@ -10,11 +10,11 @@
 int target[TARGET_LEN] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                            0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; // Target solution
 
-struct ga_memb
+typedef struct
 {
   int sol[TARGET_LEN]; // This member's solution (chromosome)
   int fitness; // How good the solution is
-};
+} ga_memb;
 
 void init_pop(ga_memb *pop);
 FILE *open_ur(void);
@@ -26,22 +26,24 @@ void print_best(ga_memb *pop);
 
 int main(void)
 {
-  struct ga_memb pop_a[GA_POPSIZE], pop_b[GA_POPSIZE];
-  struct ga_memb *pop, *buf;
+  int i;
+  
+  ga_memb pop_a[GA_POPSIZE], pop_b[GA_POPSIZE];
+  ga_memb *pop, *buf;
+  
+  pop = pop_a;
+  buf = pop_b;
   
   init_pop(pop_a);
   init_pop(pop_b);
   
-  pop = &pop_a;
-  buf = &pop_b;
-  
-  for (int i = 0; i < GA_MAXITER; i++);
+  for (i = 0; i < GA_MAXITER; i++);
   {
-    calc_fitness(*pop); // Fill out ga_memb.fitness
-    sort_by_fitness(*pop);
-    print_best(*pop);
+    calc_fitness(pop); // Fill out ga_memb.fitness
+    sort_by_fitness(pop);
+    print_best(pop);
     
-    if ((*pop)[0].fitness == TARGET_LEN) break; // We can has solution! :)
+    if (pop[0].fitness == TARGET_LEN) break; // We can has solution! :)
     
     //mate(*pop, *buf) // Mate the population into the buffer
     //mutate(*buf) // Radiation!
@@ -75,7 +77,7 @@ void zero_fitness(ga_memb *pop)
 {
   for (int i = 0; i < GA_POPSIZE; i++)
   {
-    (*pop)[i].fitness = 0;
+    pop[i].fitness = 0;
   }
 }
 
@@ -85,7 +87,7 @@ void rand_sols(ga_memb *pop)
   {
     for (int j = 0; j < TARGET_LEN; j++)
     {
-      (*pop)[i].sol[j] = rand();
+      pop[i].sol[j] = rand();
     }
   }
 }
@@ -99,12 +101,12 @@ void calc_fitness(ga_memb *pop)
     fitness = 0;
     for (int j = 0; j < TARGET_LEN; j++)
     {
-      if ((*pop)[i].sol[j] == target[j])
+      if (pop[i].sol[j] == target[j])
       {
         fitness += 1;
       }
     }
-    (*pop)[i].fitness = fitness;
+    pop[i].fitness = fitness;
   }
 }
 
@@ -116,18 +118,18 @@ void sort_by_fitness(ga_memb *pop)
   
   for (int i = 0; i < GA_POPSIZE; i++)
   {
-    value = (*pop)[i].fitness;
+    value = pop[i].fitness;
     j = i - 1;
-    while ((j >= 0) && ((*pop)[i].fitness > value))
+    while ((j >= 0) && (pop[i].fitness > value))
     {
-      (*pop)[j + 1] = (*pop)[j];
+      pop[j + 1] = pop[j];
       j -= 1;
     }
-    (*pop)[j + 1] = value;
+    pop[j + 1] = value;
   }
 }
 
 void print_best(ga_memb *pop)
 {
-  printf("Best: %*d (%d%%)\n", TARGET_LEN, (*pop)[0].sol, ((*pop)[0].fitness / TARGET_LEN) * 100);
+  printf("Best: %*d (%d%%)\n", TARGET_LEN, pop[0].sol, (pop[0].fitness / TARGET_LEN) * 100);
 }
