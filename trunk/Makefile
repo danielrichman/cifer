@@ -50,29 +50,67 @@ cflags_opt_debug = $(cflags_opt) -pg -g
 
 gprof_files = gmon.out
 
-objects = src/affine.o                  src/frequency_data.o  src/shell.o            \
-          src/bacon.o                   src/interface.o       src/urandom_access.o   \
-          src/ciphers.o                 src/io.o              src/utility.o          \
-          src/columnar_transposition.o  src/keyword.o         src/vigenere.o         \
-          src/command.o                 src/main.o            src/vowel_mash.o       \
-          src/dictionary.o              src/polybius.o                               \
-          src/frequency_analysis.o      src/rf.o
+objects = src/affine.o \
+	src/frequency_data.o \
+	src/shell.o \
+	src/bacon.o \
+	src/interface.o \
+	src/urandom_access.o \
+	src/ciphers.o \
+	src/io.o \
+	src/utility.o \
+	src/columnar_transposition.o \
+	src/keyword.o \
+	src/vigenere.o \
+	src/command.o \
+	src/main.o \
+	src/vowel_mash.o \
+	src/dictionary.o \
+	src/polybius.o \
+	src/frequency_analysis.o \
+	src/rf.o
 
-cfiles  = src/affine.c                  src/frequency_data.c  src/shell.c            \
-          src/bacon.c                   src/interface.c       src/urandom_access.c   \
-          src/ciphers.c                 src/io.c              src/utility.c          \
-          src/columnar_transposition.c  src/keyword.c         src/vigenere.c         \
-          src/command.c                 src/main.c            src/vowel_mash.c       \
-          src/dictionary.c              src/polybius.c                               \
-          src/frequency_analysis.c      src/rf.c
+cfiles = src/affine.c \
+	src/frequency_data.c \
+	src/shell.c \
+	src/bacon.c \
+	src/interface.c \
+	src/urandom_access.c   \
+	src/ciphers.c \
+	src/io.c \
+	src/utility.c \
+	src/columnar_transposition.c \
+	src/keyword.c \
+	src/vigenere.c \
+	src/command.c \
+	src/main.c \
+        src/vowel_mash.c \
+	src/dictionary.c \
+	src/polybius.c \
+	src/frequency_analysis.c \
+	src/rf.c
 
-headers = src/affine.h                  src/frequency_data.h  src/settings.h         \
-          src/bacon.h                   src/interface.h       src/shell.h            \
-          src/ciphers.h                 src/io.h              src/stdinc.h           \
-          src/columnar_transposition.h  src/keyword.h         src/urandom_access.h   \
-          src/command.h                 src/macros.h          src/utility.h          \
-          src/dictionary.h              src/polybius.h        src/vigenere.h         \
-          src/frequency_analysis.h      src/rf.h              src/vowel_mash.h       \
+headers = src/affine.h \
+	src/frequency_data.h \
+        src/settings.h \
+	src/bacon.h \
+	src/interface.h \
+	src/shell.h \
+	src/ciphers.h \
+	src/io.h \
+	src/stdinc.h \
+	src/columnar_transposition.h \
+	src/keyword.h \
+	src/urandom_access.h \
+	src/command.h \
+	src/macros.h \
+	src/utility.h \
+	src/dictionary.h \
+	src/polybius.h \
+	src/vigenere.h \
+	src/frequency_analysis.h \
+	src/rf.h \
+	src/vowel_mash.h
 
 $(bin_norm_name) : $(objects) $(dict_name)
 	$(CC) $(CFLAGS) $(cflags_norm)       -o $@ $(objects)
