@@ -27,6 +27,7 @@
 #define CFSH_COMMAND_HARDFAIL      -8
 
 #define CFSH_OK                     0
+#define CFSH_BREAK_LOOP             99
 
 void cfsh_init();
 void cfsh_autoinit();

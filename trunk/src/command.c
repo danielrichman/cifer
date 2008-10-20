@@ -144,8 +144,16 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
     }
     else if (escaping == 0 && ch == quote)
     {
-      if (had_command)   (execinfo->argc)++;
-      else               had_command = 1;
+      if (had_command)
+      {
+        *((execinfo->argv) + (execinfo->argc)) = malloc_good( j + 1 );
+        (execinfo->argc)++;
+      }
+      else
+      {
+        command = malloc_good( j + 1 );
+        had_command = 1;
+      }
 
       spacing = 1;
       quote = 0;
@@ -200,13 +208,13 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
       {
         if (had_command)
         {
-          (execinfo->argc)++;
           *( *((execinfo->argv) + execinfo->argc) + j ) = 0;
+          (execinfo->argc)++;
         }
         else
         {
-          had_command = 1;
           *( command + j ) = 0;
+          had_command = 1;
         }
 
         spacing = 1;   /* Catch multiple spaces */
@@ -221,13 +229,13 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
     {
       if (had_command)   
       {   
-        (execinfo->argc)++;
         *( *((execinfo->argv) + execinfo->argc) + j ) = 0;
+        (execinfo->argc)++;
       }
       else
       {               
-        had_command = 1;
         *( command + j ) = 0;
+        had_command = 1;
       }
 
       j = 0;
@@ -253,9 +261,23 @@ int cfsh_parse(char *input, cfsh_execinfo *execinfo)
 
   if (!spacing && had_char)
   {
-    if (had_command)      (execinfo->argc)++;
-    else                  had_command = 1;
+    if (had_command)
+    {
+      *( *((execinfo->argv) + execinfo->argc) + j ) = 0;
+      (execinfo->argc)++;
+    }
+    else
+    {
+      *( command + j ) = 0;
+      had_command = 1;
+    }
   }
+
+  /* DEBUG */
+  printf("command: %s\n", command);
+  for (i = 0; i < execinfo->argc; i++)
+    printf(" argv[%2i]  %s\n", i, *((execinfo->argv) + i));
+  /* End of debug */
 
   i = cfsh_get_func(command, &(execinfo->command));
   free(command);
