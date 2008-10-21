@@ -40,6 +40,7 @@
 #include "command.h"
 #include "io.h"
 #include "shell.h"
+#include "actions.h"
 
 #include "frequency_analysis.h"
 #include "frequency_data.h"
@@ -57,7 +58,6 @@
 #include "dictionary.h"
 #include "interface.h"
 #include "utility.h"
-#include "urandom_access.h"
 
 #endif
 

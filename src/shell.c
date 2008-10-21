@@ -22,6 +22,7 @@ void cfsh_init()
 {
   /* Crucial startup routines. Basically initialises global variables. */
   buffers_init();
+  init_dict();
 }
 
 void cfsh_autoinit()

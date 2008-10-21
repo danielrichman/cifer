@@ -16,6 +16,9 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define DICT_INIT_CHECK   297  /* Just some random number ;) */
+
+void init_dict(void);
 void load_dict(void);
 int score_text_dict_fast(char *text, int size);
 
@@ -29,6 +32,7 @@ typedef struct {
   int *identity_frequency_graph;
   digram *digrams_temp;
   trigram *trigrams_temp;
+  int init_check;
 } score_text_pro_state;
 
 void score_text_pro_start(int text_size, score_text_pro_state *state);
