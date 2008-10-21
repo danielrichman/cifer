@@ -38,7 +38,7 @@ void *realloc_good(void *ptr, size_t size)
   void *r;
 
   r = realloc(ptr, size);
-  if (r == NULL)
+  if (size != 0 && r == NULL)
   {
     printf("\n\nrealloc_good: Unable to realloc(%i), auto-exiting\n\n",
                                                                   size);
@@ -48,34 +48,41 @@ void *realloc_good(void *ptr, size_t size)
   return r;
 }
 
-size_t strtlen(const char *s)
+size_t strtlens(const char *s, size_t sz)
 {
-  int i, sz, started, lastchar;
+  return sz - strlefts(s, sz) - strrights(s, sz);
+}
+
+size_t strlefts(const char *s, size_t sz)
+{
+  int i, left;
   char ch;
 
-  i = 0;
-  sz = 0;
-  started  = 0;
-  lastchar = 0;
-  ch = -1;
-
-  while (ch != 0)
+  for (i = 0, left = 0; i < sz; i++)
   {
     ch = *(s + i);
-    i++;
 
-    if (!XSPACE_CH(ch) && !SPACE_CH(ch))
-    {
-      started = 1;
-      lastchar = i;
-    }
-
-    if (started)  sz++;
+    if (XSPACE_CH(ch) || SPACE_CH(ch))  left++;
+    else                                break;
   }
 
-  /* Remove the chunk that represents the end, before the last char */
-  if (!started)     return 0;
-  return sz - (i - lastchar);
+  return left;
+}
+
+size_t strrights(const char *s, size_t sz)
+{
+  int i, right;
+  char ch;
+  
+  for (i = sz - 1, right = 0; i >= 0; i--)
+  {
+    ch = *(s + i);
+
+    if (XSPACE_CH(ch) || SPACE_CH(ch))  right++;
+    else                                break;
+  }
+
+  return right;
 }
 
 /* The following macro is a condensed version of this code 
