@@ -48,6 +48,36 @@ void *realloc_good(void *ptr, size_t size)
   return r;
 }
 
+size_t strtlen(const char *s)
+{
+  int i, sz, started, lastchar;
+  char ch;
+
+  i = 0;
+  sz = 0;
+  started  = 0;
+  lastchar = 0;
+  ch = -1;
+
+  while (ch != 0)
+  {
+    ch = *(s + i);
+    i++;
+
+    if (!XSPACE_CH(ch) && !SPACE_CH(ch))
+    {
+      started = 1;
+      lastchar = i;
+    }
+
+    if (started)  sz++;
+  }
+
+  /* Remove the chunk that represents the end, before the last char */
+  if (!started)     return 0;
+  return sz - (i - lastchar);
+}
+
 /* The following macro is a condensed version of this code 
  * void insertion_columnic_sort(vigenere_column_ic a[], int asize)
  * {

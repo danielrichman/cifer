@@ -78,7 +78,7 @@ int cfsh_read(FILE *read, int mode)
       }
     }
 
-    if (strlen(line) != 0)
+    if (strtlen(line) != 0)
     {
       /* If its not from stdin, then echo it out */
       if (mode != CFSH_READ_MODE_INTERACTIVE && 
@@ -128,7 +128,6 @@ int cfsh_read(FILE *read, int mode)
         looping = 0;
       }
 
-      if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       num++;
     }
   }
@@ -187,6 +186,7 @@ int cfsh_line(char *input, int mode)
   /* Use command.c to parse it, execute it and free it. command.c functions
    * won't produce output or errors to stdout, so you must do that here. */ 
   cfsh_execinfo execinfo;
+  struct timeval time1, time2;
   int result;
 
   result = cfsh_parse(input, &execinfo);
@@ -197,23 +197,39 @@ int cfsh_line(char *input, int mode)
   switch (result)
   {
     case CFSH_PARSE_EBAD:
-      printf("cfsh_parse: escape sequence misuse\n");
+      printf("cfsh_parse: escape sequence misuse\n\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_EMPTY:
-      printf("cfsh_parse: no command specified\n");
+      printf("cfsh_parse: no command specified\n\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_QUOTEOPEN:
-      printf("cfsh_parse: quotes left open/unclosed.\n");
+      printf("cfsh_parse: quotes left open/unclosed.\n\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_FUNC_NOEXIST:
-      printf("cfsh_parse: no such command or function\n");
+      printf("cfsh_parse: no such command or function\n\n");
       return CFSH_COMMAND_PARSEFAIL;
   }
 
   if (mode == CFSH_READ_MODE_PARSECHECK)  return CFSH_OK;
 
+  /* gettimeofday should never fail */
+  gettimeofday(&time1, NULL);
   result = cfsh_exec(execinfo);
+  gettimeofday(&time2, NULL);
+
+  /* Free up */
   cfsh_free_execinfo(&execinfo);
+
+  /* timing info. note: microsecond = one millionth */
+  /* Subtract time1 from time2 */
+  time2.tv_sec  -= time1.tv_sec;
+  time2.tv_usec -= time1.tv_usec;
+  printf("cfsh_line: command spent %6li.%.6li seconds.\n", 
+                              time2.tv_sec, time2.tv_usec);
+  /* Use printf to provide 000s on the left of usec, to make it correct ;) */
+
+  /* nice spacing =) */
+  printf("\n");
 
   return result;
 }
