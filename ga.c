@@ -2,9 +2,13 @@
 #include <stdlib.h>
 
 #define GA_POPSIZE 2048 // Population size
-#define GA_MAXITER 16348 // Maximum iteration
+#define GA_MAXITER 16348 // Maximum iterations
 #define GA_ELITERATE 0.10 // Elitism rate
-#define GA_MUTRATE 0.25 // Mutation rate
+#define GA_MUTPERC 0.25 // Mutation rate
+#define PRINT_INTER 1000 // Print status every this iterations/generations
+
+#define GA_ELITSIZE (GA_POPSIZE * GA_ELITERATE) // Number of elites
+#define GA_MUTCHANCE 4
 
 #define TARGET_LEN 20
 int target[TARGET_LEN] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -13,19 +17,21 @@ int target[TARGET_LEN] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 typedef struct
 {
   int sol[TARGET_LEN]; // This member's solution (chromosome)
-  int fitness; // How good the solution is
+  int fitness;         // How good the solution is
 } ga_memb;
 
 void init_pop(ga_memb *pop);
-void zero_fitness(ga_memb *pop);
-void rand_sols(ga_memb *pop);
+  void zero_fitness(ga_memb *pop);
+  void randall_sols(ga_memb *pop);
 void calc_fitness(ga_memb *pop);
 void sort_by_fitness(ga_memb *pop);
 void print_best(ga_memb *pop);
+void mate_pop(ga_memb *pop, ga_memb *buf); // Mates pop into buf
+void mutate(ga_memb *pop); // Mutates some of the population
 
 int main(void)
 {
-  int i;
+  int i, j;
   
   ga_memb pop_a[GA_POPSIZE], pop_b[GA_POPSIZE];
   ga_memb *pop, *buf, *tmp;
@@ -36,20 +42,21 @@ int main(void)
   init_pop(pop_a);
   init_pop(pop_b);
   
-  for (i = 0; i < GA_MAXITER; i++)
+  for (i = 0, j = 0; i < GA_MAXITER; i++, j++)
   {
     calc_fitness(pop); // Fill out ga_memb.fitness
     sort_by_fitness(pop);
-    // print_best(pop); // I can has spam.
+    if (j > PRINT_INTER) print_best(pop);
     
     if (pop[0].fitness == TARGET_LEN) break; // We can has solution! :)
     
-    // mate(*pop, *buf) // Mate the population into the buffer
+    // mate_pop(*pop, *buf) // Mate the population into the buffer
     // mutate(*buf) // Radiation!
     
+    // Swap the pointers
     tmp = buf; // For some reason gcc doesn't like XOR Swap ownage on 
     buf = pop; // a pointer ='( - so we can use temp variable.
-    pop = tmp; // Swap teh pointerz faw speedz
+    pop = tmp;
   }
 
   print_best(pop);
@@ -60,7 +67,7 @@ int main(void)
 void init_pop(ga_memb *pop)
 {
   zero_fitness(pop);
-  rand_sols(pop);
+  randall_sols(pop);
 }
 
 void zero_fitness(ga_memb *pop)
@@ -72,7 +79,7 @@ void zero_fitness(ga_memb *pop)
   }
 }
 
-void rand_sols(ga_memb *pop)
+void randall_sols(ga_memb *pop)
 {
   int i;
   int j;
@@ -130,4 +137,21 @@ void print_best(ga_memb *pop)
   printf("Best: %d", *(pop[0].sol));
   for (i = 1; i < TARGET_LEN; i++) printf(", %d", *((pop[0].sol) + i));
   printf("  (%d%%)\n", (pop[0].fitness / TARGET_LEN) * 100);
+}
+
+void mate_pop(ga_memb *pop, ga_memb *buf) // Mates pop into buf
+{
+  int i;
+  for (i = 0; i < GA_ELITSIZE; i++)
+  {
+    buf[i].
+
+    if (rand() % GA_MUTCHANCE == 0)  mutate(buf + i);
+  }
+}
+
+void mutate(ga_memb *pop) // Mutates some of the population
+{
+  /* Radiation babies */
+  *(pop).sol[ rand() % TARGET_LEN ] = rand();
 }
