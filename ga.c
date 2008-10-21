@@ -27,14 +27,16 @@ void calc_fitness(ga_memb *pop);
 void sort_by_fitness(ga_memb *pop);
 void print_best(ga_memb *pop);
 void mate_pop(ga_memb *pop, ga_memb *buf); // Mates pop into buf
-void mutate(ga_memb *pop); // Mutates some of the population
+  void cp_mems(ga_memb *src, ga_memb *targ, unsigned int size);
+  void mutate(ga_memb *pop); // Mutates some of the population
+void swap_pts(ga_memb *pt1, ga_memb *pt2);
 
 int main(void)
 {
   int i, j;
   
   ga_memb pop_a[GA_POPSIZE], pop_b[GA_POPSIZE];
-  ga_memb *pop, *buf, *tmp;
+  ga_memb *pop, *buf;
   
   pop = pop_a;
   buf = pop_b;
@@ -50,13 +52,9 @@ int main(void)
     
     if (pop[0].fitness == TARGET_LEN) break; // We can has solution! :)
     
-    // mate_pop(*pop, *buf) // Mate the population into the buffer
-    // mutate(*buf) // Radiation!
+    mate_pop(pop, buf); // Mate the population into the buffer
     
-    // Swap the pointers
-    tmp = buf; // For some reason gcc doesn't like XOR Swap ownage on 
-    buf = pop; // a pointer ='( - so we can use temp variable.
-    pop = tmp;
+    swap_pts(pop, buf);
   }
 
   print_best(pop);
@@ -134,24 +132,75 @@ void print_best(ga_memb *pop)
 {
   int i;
 
-  printf("Best: %d", *(pop[0].sol));
-  for (i = 1; i < TARGET_LEN; i++) printf(", %d", *((pop[0].sol) + i));
-  printf("  (%d%%)\n", (pop[0].fitness / TARGET_LEN) * 100);
+  printf("Best: %d", *(pop[GA_POPSIZE].sol));
+  for (i = 1; i < TARGET_LEN; i++) printf(", %d", *((pop[GA_POPSIZE].sol) + i));
+  printf("  (%d%%)\n", (pop[GA_POPSIZE].fitness / TARGET_LEN) * 100);
 }
 
 void mate_pop(ga_memb *pop, ga_memb *buf) // Mates pop into buf
 {
-  int i;
+  unsigned int i, j;
+  int randint;
+  
+  // Copy over the elites
+  cp_mems(pop, buf, GA_ELITSIZE);
+  
+  // Don't touch the elites, mate the others
+  for (i = GA_ELITSIZE; i < GA_POPSIZE; i += 2)
+  {
+    randint = rand() % TARGET_LEN;
+    
+    // The first half of the chromosomes don't change
+    for (j = 0; j < randint; j++)
+    {
+      buf[i    ].sol[j] = pop[i    ].sol[j];
+      buf[i + 1].sol[j] = pop[i + 1].sol[j];
+    }
+    // The second half of the chromosomes are swapped
+    for (j = randint; j < TARGET_LEN; j++)
+    {
+      buf[i    ].sol[j] = pop[i + 1].sol[j];
+      buf[i + 1].sol[j] = pop[i    ].sol[j];
+    }
+  }
+  
+  mutate(buf);
+}
+
+// Swap pt1 and pt2
+void swap_pts(ga_memb *pt1, ga_memb *pt2)
+{
+  ga_memb *pt_tmp;
+  
+  pt_tmp = pt2;
+  pt2 = pt1;
+  pt1 = pt_tmp;
+}
+
+// Mutates some of the population
+void mutate(ga_memb *pop)
+{
+  int i, randint;
   for (i = 0; i < GA_ELITSIZE; i++)
   {
-    buf[i].
-
-    if (rand() % GA_MUTCHANCE == 0)  mutate(buf + i);
+    if (rand() % GA_MUTCHANCE == 0)
+    {
+      randint = rand();
+      pop[0].sol[randint % TARGET_LEN] = randint;
+    }
   }
 }
 
-void mutate(ga_memb *pop) // Mutates some of the population
+void cp_mems(ga_memb *src, ga_memb *targ, unsigned int size)
 {
-  /* Radiation babies */
-  *(pop).sol[ rand() % TARGET_LEN ] = rand();
+  unsigned int i, j;
+  
+  for (i = 0; i < size; i++)
+  {
+    targ[i].fitness = src[i].fitness;
+    for (j = 0; j < TARGET_LEN; j++)
+    {
+      targ[i].sol[j] = src[i].sol[j];
+    }
+  }
 }
