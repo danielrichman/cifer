@@ -79,8 +79,7 @@ void zero_fitness(ga_memb *pop)
 
 void randall_sols(ga_memb *pop)
 {
-  int i;
-  int j;
+  int i, j;
   for (i = 0; i < GA_POPSIZE; i++)
   {
     for (j = 0; j < TARGET_LEN; j++)
