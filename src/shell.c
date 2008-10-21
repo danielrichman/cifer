@@ -71,7 +71,7 @@ int cfsh_read(FILE *read, int mode)
 
       *(line + i) = fgetc(read);
 
-      if (IS_NEWLINE(*(line + i)))
+      if (IS_NEWLINE(*(line + i)) || *(line + i) == -1)
       {
         *(line + i) = 0;
         have_nl = 1;
@@ -165,6 +165,8 @@ void cfsh_scriptfile(char *name, int preparse, int softfail)
     result = cfsh_read(read, CFSH_READ_MODE_PARSECHECK);
     if (result == CFSH_COMMAND_PARSEFAIL)
       printf("cfsh_scriptfile: parse error in file, not executing.\n");
+
+    rewind(read);
   }
   else
   {
@@ -197,16 +199,24 @@ int cfsh_line(char *input, int mode)
   switch (result)
   {
     case CFSH_PARSE_EBAD:
-      printf("cfsh_parse: escape sequence misuse\n\n");
+      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\n%s\n", input);
+      printf("cfsh_parse: escape sequence misuse\n");
+      if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_EMPTY:
-      printf("cfsh_parse: no command specified\n\n");
+      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\n%s\n", input);
+      printf("cfsh_parse: no command specified\n");
+      if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_QUOTEOPEN:
-      printf("cfsh_parse: quotes left open/unclosed.\n\n");
+      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\n%s\n", input);
+      printf("cfsh_parse: quotes left open/unclosed.\n");
+      if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_FUNC_NOEXIST:
-      printf("cfsh_parse: no such command or function\n\n");
+      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\n%s\n", input);
+      printf("cfsh_parse: no such command or function\n");
+      if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       return CFSH_COMMAND_PARSEFAIL;
   }
 

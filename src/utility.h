@@ -35,5 +35,11 @@ int modular_multiplicative_inverse(int a, int b);
 int gcd(int a, int b);
 void *malloc_good(size_t size);
 void *realloc_good(void *ptr, size_t size);
-size_t strtlen(const char *s);
+size_t strtlens(const char *s, size_t sz);
+size_t strlefts(const char *s, size_t sz);
+size_t strrights(const char *s, size_t sz);
+
+#define strtlen(s)  (strtlens(s, strlen(s)))
+#define strleft(s)  (strlefts(s, strlen(s)))
+#define strright(s) (strrights(s, strlen(s)))
 
