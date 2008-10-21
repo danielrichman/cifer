@@ -50,6 +50,9 @@ void score_text_pro_start(int text_size, score_text_pro_state *state)
   state->num_checked = 0;
   state->num_checked_freq_ok = 0;
   state->num_checked_the_ok = 0;
+
+  /* So that any function knows its all good */
+  state->init_check    = DICT_INIT_CHECK;
 }
 
 void score_text_pro_cleanup(score_text_pro_state *state)
@@ -80,7 +83,7 @@ int score_text_pro(char *text, score_text_pro_state *state)
   /* This routine is made to quickly discard garbage but generate a better
    * score for real matches */
 
-  if (state->text_size == 0) return 0;
+  if (state->init_check == DICT_INIT_CHECK)  return 0;
   state->num_checked ++;
 
   /* Reset the variables */
@@ -208,6 +211,9 @@ int score_text_dict_fast(char *text, int size)
   char *test_start, *test_end, *j;
   char ch1, ch2;
 
+  /* Check */
+  if (dict == NULL)          return 0; 
+
   /* Prepare */
   match_size = 1;
   score = 0;
@@ -255,6 +261,14 @@ int score_text_dict_fast(char *text, int size)
   return score;
 }
 
+void init_dict(void)
+{
+  /* Simply initialises the pointers */
+  dict = NULL;
+  dict_pointer = NULL;
+  dict_pointer_end = NULL;
+}
+
 void load_dict(void)
 {
   FILE *dictf;
@@ -269,6 +283,9 @@ void load_dict(void)
   int buf_size;
 
   int searching;
+
+  /* Check */
+  if (dict != NULL)  return;
 
   dictf = fopen(DICTIONARY, "r");
   if (dictf == NULL)

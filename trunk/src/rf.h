@@ -17,3 +17,4 @@
 */
 
 void rf_bf(char *text, int text_size, int minrails, int maxrails);
+

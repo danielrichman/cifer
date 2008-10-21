@@ -50,66 +50,66 @@ cflags_opt_debug = $(cflags_opt) -pg -g
 
 gprof_files = gmon.out
 
-objects = src/affine.o \
-	src/frequency_data.o \
-	src/shell.o \
+objects = src/actions.o \
+	src/affine.o \
 	src/bacon.o \
-	src/interface.o \
-	src/urandom_access.o \
 	src/ciphers.o \
-	src/io.o \
-	src/utility.o \
 	src/columnar_transposition.o \
-	src/keyword.o \
-	src/vigenere.o \
 	src/command.o \
-	src/main.o \
-	src/vowel_mash.o \
 	src/dictionary.o \
-	src/polybius.o \
 	src/frequency_analysis.o \
-	src/rf.o
+	src/frequency_data.o \
+	src/interface.o \
+	src/io.o \
+	src/keyword.o \
+	src/main.o \
+	src/polybius.o \
+	src/rf.o \
+	src/shell.o \
+	src/utility.o \
+	src/vigenere.o \
+	src/vowel_mash.o
 
-cfiles = src/affine.c \
-	src/frequency_data.c \
-	src/shell.c \
+cfiles = src/actions.c \
+	src/affine.c \
 	src/bacon.c \
-	src/interface.c \
-	src/urandom_access.c   \
 	src/ciphers.c \
-	src/io.c \
-	src/utility.c \
 	src/columnar_transposition.c \
-	src/keyword.c \
-	src/vigenere.c \
 	src/command.c \
-	src/main.c \
-        src/vowel_mash.c \
 	src/dictionary.c \
-	src/polybius.c \
 	src/frequency_analysis.c \
-	src/rf.c
+	src/frequency_data.c \
+	src/interface.c \
+	src/io.c \
+	src/keyword.c \
+	src/main.c \
+	src/polybius.c \
+	src/rf.c \
+	src/shell.c \
+	src/utility.c \
+	src/vigenere.c \
+	src/vowel_mash.c
 
-headers = src/affine.h \
-	src/frequency_data.h \
-        src/settings.h \
+headers = src/actions.h \
+	src/affine.h \
 	src/bacon.h \
-	src/interface.h \
-	src/shell.h \
 	src/ciphers.h \
-	src/io.h \
-	src/stdinc.h \
 	src/columnar_transposition.h \
-	src/keyword.h \
-	src/urandom_access.h \
 	src/command.h \
-	src/macros.h \
-	src/utility.h \
 	src/dictionary.h \
-	src/polybius.h \
-	src/vigenere.h \
 	src/frequency_analysis.h \
+	src/frequency_data.h \
+	src/interface.h \
+	src/io.h \
+	src/keyword.h \
+	src/macros.h \
+	src/polybius.h \
 	src/rf.h \
+	src/settings.h \
+	src/shell.h \
+	src/stdinc.h \
+	src/utility.h \
+	src/vigenere.h \
 	src/vowel_mash.h
 
 $(bin_norm_name) : $(objects) $(dict_name)
