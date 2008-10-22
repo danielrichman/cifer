@@ -31,6 +31,10 @@ uniq = uniq
 dd = dd
 dd_options = conv=lcase
 
+ctags = ctags
+ctags_files = src/*.c src/*.h src/*.i *.c *.h *.i
+ctags_name = tags
+
 opt_lvl = 2
 
 dict_name = dict
@@ -110,7 +114,11 @@ headers = src/actions.h \
 	src/stdinc.h \
 	src/utility.h \
 	src/vigenere.h \
-	src/vowel_mash.h
+	src/vowel_mash.h \
+	\
+	src/utility.i \
+	src/command_info.i \
+	src/command.i
 
 $(bin_norm_name) : $(objects) $(dict_name)
 	$(CC) $(CFLAGS) $(cflags_norm)       -o $@ $(objects)
@@ -152,10 +160,14 @@ $(dict_name) :
 	$(sorter) | $(uniq) \
         > $@
 
+$(ctags_name):
+	$(ctags) -f $@ $(ctags_files)
+
 .PHONY : clean clean-objects
 
 clean :
-	$(rm) $(bin_all_name) $(dict_name) $(objects) $(gprof_files)
+	$(rm) $(bin_all_name) $(dict_name) $(objects) $(gprof_files) \
+	$(ctags_name)
 
 clean-objects :
 	$(rm) $(objects)
