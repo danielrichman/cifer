@@ -391,10 +391,45 @@ int action_usage(int argc, char **argv)
   return CFSH_OK;
 }
 
+#define cfsh_func(n, f)                                                     \
+   if (&f != last_command)                                                  \
+   {                                                                        \
+     if (aliases_print) printf("\n");                                       \
+     printf( f ## _use );                                                   \
+     last_command = &f;                                                     \
+     aliases_print = 0;                                                     \
+   }                                                                        \
+   else                                                                     \
+   {                                                                        \
+     if (!aliases_print)                                                    \
+     {                                                                      \
+       printf("aliases: %s", n);                                            \
+       aliases_print = 1;                                                   \
+     }                                                                      \
+     else                                                                   \
+     {                                                                      \
+       printf(", %s", n);                                                   \
+     }                                                                      \
+   }
+
 int action_help(int argc, char **argv)
 {
+  cfsh_command last_command;
+  int aliases_print;
+
+  aliases_print = 0;
+  last_command = NULL;
+
+  #include "command.i"
+
+  if (aliases_print) printf("\n");
+  printf("\n");
+  printf("type usage <command name> for more information.\n");
+
   return CFSH_OK;
 }
+
+#undef cfsh_func
 
 int action_system(int argc, char **argv)
 {

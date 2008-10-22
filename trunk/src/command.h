@@ -35,6 +35,8 @@ typedef struct
 
 int cfsh_parse(char *input, cfsh_execinfo *execinfo);
 int cfsh_get_func(char *name, cfsh_command *command);
+char *cfsh_get_usage(char *name);
+char *cfsh_get_use(char *name);
 void cfsh_free_execinfo(cfsh_execinfo *execinfo);
 
 #define cfsh_exec(execinfo) execinfo.command(execinfo.argc, execinfo.argv);
