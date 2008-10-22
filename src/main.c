@@ -32,7 +32,7 @@ int main(int argc, char **argv)
    * For scripting mode, the "rest" could be the "script" instruction to run
    * the contents of that file. (Different to -i in that it exits when done.) */
 
-  int i, noauto, init, file, quick, soft;
+  int i, j, noauto, init, file, quick, soft;
   cfsh_execinfo execinfo;
 
   noauto = 0;
@@ -110,6 +110,9 @@ int main(int argc, char **argv)
         printf("cifer (main): command does not exist.\n");
         return 1;
       }
+
+      for (j = 0; j < execinfo.argc; j++)  
+        *(execinfo.argv + j) = *(argv + j + i);
 
       return cfsh_exec(execinfo);
     }

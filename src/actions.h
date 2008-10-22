@@ -22,7 +22,7 @@
  *     CFSH_BREAK_LOOP             99 */
 
 #define ACTIONU_BUFFERPARSE_FAIL  -1
-int actionu_bufferparse(char *str, const char *u);
+int actionu_bufferparsef(char *str);
 
 int action_buffers(int argc, char **argv);
 int action_quit(int argc, char **argv);
