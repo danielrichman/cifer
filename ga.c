@@ -10,7 +10,8 @@
 #define GA_ELITSIZE (GA_POPSIZE * GA_ELITERATE) // Number of elites
 #define GA_MUTCHANCE 4
 
-#define TARGET_LEN 20
+#define TARGET_LEN       20
+#define CHROMOSOME_MAX   10
 int target[TARGET_LEN] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                            0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; // Target solution
 
@@ -31,13 +32,18 @@ void mate_pop(ga_memb *pop, ga_memb *buf); // Mates pop into buf
   void mutate(ga_memb *pop); // Mutates some of the population
 void swap_pts(ga_memb *pt1, ga_memb *pt2);
 
+#define sort_by_fitness(a) (insertion_sort_ga_memb(a, GA_POPSIZE))
+void insertion_sort_ga_memb(ga_memb *a, int asize);
+
 int main(void)
 {
   int i, j;
   
   ga_memb pop_a[GA_POPSIZE], pop_b[GA_POPSIZE];
   ga_memb *pop, *buf;
-  
+ 
+  srand(time());
+ 
   pop = pop_a;
   buf = pop_b;
   
@@ -48,7 +54,12 @@ int main(void)
   {
     calc_fitness(pop); // Fill out ga_memb.fitness
     sort_by_fitness(pop);
-    if (j > PRINT_INTER) print_best(pop);
+    
+    if (j > PRINT_INTER)
+    {
+      print_best(pop);
+      j = 0;
+    }
     
     if (pop[0].fitness == TARGET_LEN) break; // We can has solution! :)
     
@@ -80,13 +91,8 @@ void zero_fitness(ga_memb *pop)
 void randall_sols(ga_memb *pop)
 {
   int i, j;
-  for (i = 0; i < GA_POPSIZE; i++)
-  {
-    for (j = 0; j < TARGET_LEN; j++)
-    {
-      pop[i].sol[j] = rand();
-    }
-  }
+  for (i = 0; i < GA_POPSIZE; i++)  for (j = 0; j < TARGET_LEN; j++)
+    pop[i].sol[j] = rand() % CHROMOSOME_MAX;
 }
 
 void calc_fitness(ga_memb *pop)
@@ -108,22 +114,24 @@ void calc_fitness(ga_memb *pop)
   }
 }
 
-// Insertion sort
-void sort_by_fitness(ga_memb *pop)
+#define balh(a) (insertion_sort_ga_memb(a, GA_POPSIZE))
+
+void insertion_sort_ga_memb(ga_memb *a, int asize)
 {
-  int i, j;
-  int value;
-  
-  for (i = 0; i < GA_POPSIZE; i++)
+  int i, j, k;
+  ga_memb d;
+
+  k = asize;
+  for (i = 0; i < k; i++)
   {
-    value = pop[i].fitness;
+    d = a[i];
     j = i - 1;
-    while ((j >= 0) && (pop[i].fitness > value))
+    while (j >= 0 && a[j].fitness > d.fitness)
     {
-      pop[j + 1] = pop[j];
-      j -= 1;
+      a[j + 1] = a[j];
+      j = j - 1;
     }
-    pop[j + 1].fitness = value;
+    a[j + 1] = d;
   }
 }
 
@@ -131,9 +139,9 @@ void print_best(ga_memb *pop)
 {
   int i;
 
-  printf("Best: %d", *(pop[GA_POPSIZE].sol));
-  for (i = 1; i < TARGET_LEN; i++) printf(", %d", *((pop[GA_POPSIZE].sol) + i));
-  printf("  (%d%%)\n", (pop[GA_POPSIZE].fitness / TARGET_LEN) * 100);
+  printf("Best: %d", *(pop[GA_POPSIZE - 1].sol));
+  for (i = 1; i < TARGET_LEN; i++) printf(", %d", *((pop[GA_POPSIZE - 1].sol) + i));
+  printf("  (%d%%)\n", (pop[GA_POPSIZE - 1].fitness * 100 )/ TARGET_LEN);
 }
 
 void mate_pop(ga_memb *pop, ga_memb *buf) // Mates pop into buf
@@ -149,7 +157,7 @@ void mate_pop(ga_memb *pop, ga_memb *buf) // Mates pop into buf
   {
     randint = rand() % TARGET_LEN;
     
-    // The first half of the chromosomes don't change
+    // The first half of the chromosomes don't changef
     for (j = 0; j < randint; j++)
     {
       buf[i    ].sol[j] = pop[i    ].sol[j];
@@ -194,7 +202,7 @@ void cp_mems(ga_memb *src, ga_memb *targ, unsigned int size)
 {
   unsigned int i, j;
   
-  for (i = 0; i < size; i++)
+  for (i = GA_POPSIZE - 1; i >= size; i--)
   {
     targ[i].fitness = src[i].fitness;
     for (j = 0; j < TARGET_LEN; j++)
