@@ -1,7 +1,7 @@
 These are the planned functions for the shell to be able to execute.
 
 buffers X                    create_buffers(int num)
-quit                         exit(0)
+quit or exit                 exit(0)
 resize buffer_X X            resizebuffer(int buffer_id, int newsize)
 clear buffer_X               clearbuffer(int buffer_id)
 copy buffer_X buffer_X       copybuffer(int buffer_id_1, int buffer_id_2)
@@ -10,8 +10,9 @@ write file buffer_X mode     buffer2file(char *name, int buffer_id, int mode)
                              mode = append, overwrite, omit/auto
                              mode = CFSH_IO_MODE_ AUTO|OVERWRITE|APPEND
 filter buffer_X mode         filterbuffer(int buffer_id, int mode)  (mode, see io.h)
-getsize buffer_X             get_buffer_size(int buffer_id)
-getfilter buffer_X           get_buffer_filter(int buffer_id)
+read or print buffer_X       get_buffer(int buffer_id)
+bufferinfo or getsize or getfilter buffer_X
+                             get_buffer_*(int buffer_id)
 nullbuffer buffer_X          setbuffernull(int buffer_id)
 PREFIXscript or file file    cfsh_scriptfile(char *name, int preparse, int softfail)
                              PREFIX:  quick, soft, quicksoft, softquick

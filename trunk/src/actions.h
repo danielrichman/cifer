@@ -32,8 +32,8 @@ int action_copy(int argc, char **argv);
 int action_load(int argc, char **argv);
 int action_write(int argc, char **argv);
 int action_filter(int argc, char **argv);
-int action_getsize(int argc, char **argv);
-int action_getfilter(int argc, char **argv);
+int action_read(int argc, char **argv);
+int action_bufferinfo(int argc, char **argv);
 int action_nullbuffer(int argc, char **argv);
 int action_script(int argc, char **argv);
 int action_quickscript(int argc, char **argv);
@@ -66,6 +66,9 @@ int action_mmi(int argc, char **argv);
 int action_gcd(int argc, char **argv);
 int action_coprime(int argc, char **argv);
 int action_charinfo(int argc, char **argv);
+int action_usage(int argc, char **argv);
+int action_help(int argc, char **argv);
+int action_system(int argc, char **argv);
 
 /* int action_(int argc, char **argv); */
 

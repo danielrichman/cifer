@@ -51,6 +51,8 @@ void filterbuffer(int buffer_id, int mode);
 void clearbuffer(int buffer_id);
 
 int get_buffer_real_size(int buffer_id);
+int get_buffer_filter_fromtext(char *str);
+char *get_buffer_filter_text(int buffer_id);
 
 #define get_buffer(i)            (*(cfsh_buffers + i))
 #define get_buffer_filter(i)     (*(cfsh_buffer_filters + i))
