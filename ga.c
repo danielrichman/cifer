@@ -23,7 +23,7 @@
 #define GA_MAXITER 16348 // Maximum iterations
 #define GA_ELITERATE 0.10 // Elitism rate
 #define GA_MUTPERC 0.25 // Mutation rate
-#define PRINT_INTER 1000 // Print status every this iterations/generations
+#define PRINT_INTER 1 // Print status every this iterations/generations
 
 #define GA_ELITSIZE (GA_POPSIZE * GA_ELITERATE) // Number of elites
 #define GA_MUTCHANCE 4
@@ -44,7 +44,7 @@ void init_pop(ga_memb *pop);
   void randall_sols(ga_memb *pop);
 void calc_fitness(ga_memb *pop);
 void sort_by_fitness(ga_memb *pop);
-void print_best(ga_memb *pop);
+void print_best(ga_memb *pop, unsigned const int gen);
 void mate_pop(ga_memb *pop, ga_memb *buf); // Mates pop into buf
   void cp_mems(ga_memb *src, ga_memb *targ, unsigned int size);
   void mutate(ga_memb *pop); // Mutates some of the population
@@ -75,18 +75,18 @@ int main(void)
     
     if (j > PRINT_INTER)
     {
-      print_best(pop);
+      print_best(pop, i);
       j = 0;
     }
     
-    if (pop[GA_POPSIZE - 1].fitness == TARGET_LEN) break; 
     // We can has solution! :)
+    if (pop[GA_POPSIZE - 1].fitness == TARGET_LEN) break;
     
     mate_pop(pop, buf); // Mate the population into the buffer
     swap_pts(&pop, &buf);
   }
 
-  print_best(pop);
+  print_best(pop, i);
 
   return 0;
 }
@@ -153,11 +153,11 @@ void insertion_sort_ga_memb(ga_memb *a, int asize)
   }
 }
 
-void print_best(ga_memb *pop)
+void print_best(ga_memb *pop, unsigned const int gen)
 {
   int i;
 
-  printf("Best: %d", *(pop[GA_POPSIZE - 1].sol));
+  printf("At gen %d, best: %d", gen, *(pop[GA_POPSIZE - 1].sol));
   for (i = 1; i < TARGET_LEN; i++) 
               printf(", %d", *((pop[GA_POPSIZE - 1].sol) + i));
   printf("  (%d%%)\n", (pop[GA_POPSIZE - 1].fitness * 100 )/ TARGET_LEN);
