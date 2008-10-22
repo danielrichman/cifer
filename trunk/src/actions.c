@@ -21,15 +21,13 @@
 /*     CFSH_OK                     0
  *     CFSH_BREAK_LOOP             99 */
 
-#define actionu_bufferparse_fail(u)                                          \
+#define actionu_argchk(i, u)                                                 \
+    if (argc != (i))                                                         \
     {                                                                        \
-      printf("invalid buffer_name %s, use buffer_X (X, integer 0 to %i)\n",  \
-                          str, cfsh_num_buffers);                            \
       printf(u);                                                             \
-      return ACTIONU_BUFFERPARSE_FAIL;                                       \
+      return CFSH_COMMAND_SOFTFAIL;                                          \
     }
 
-#define actionu_argchk(i, u)   if (argc != (i))   return CFSH_COMMAND_SOFTFAIL;
 #define actionu_argless(u)     actionu_argchk(0, u)
 #define actionu_intparse_setup()                                             \
       size_t intparse_sz;                                                    \
@@ -47,7 +45,19 @@
       }                                                                      \
     }                                                                        \
 
-int actionu_bufferparse(char *str, const char *u)
+#define actionu_bufferparse(s, t, u)                                         \
+    {                                                                        \
+      t = actionu_bufferparsef(s);                                           \
+      if (t == ACTIONU_BUFFERPARSE_FAIL)                                     \
+      {                                                                      \
+        printf("invalid buffer name '%s', use 'buffer_X' (X, int 0 to %i)n", \
+                               s, cfsh_num_buffers);                         \
+        printf(u);                                                           \
+        return CFSH_COMMAND_HARDFAIL;                                        \
+      }                                                                      \
+    }                                                                        \
+
+int actionu_bufferparsef(char *str)
 {
   /* strlen("buffer_") = 7 */
   size_t sz;
@@ -55,14 +65,15 @@ int actionu_bufferparse(char *str, const char *u)
   char *validator;
 
   sz = strlen(str);
-  if (strtlens(str, sz) < 8)                        actionu_bufferparse_fail(u);
-  if (strncasecmp(str, "buffer_", 7) != 0)          actionu_bufferparse_fail(u);
+  if (strtlens(str, sz) < 8)                   return ACTIONU_BUFFERPARSE_FAIL;
+  if (strncasecmp(str, "buffer_", 7) != 0)     return ACTIONU_BUFFERPARSE_FAIL;
 
   j = strtol(str + strlefts(str, sz) + 7, &validator, 10);
 
-  if (validator != (str + sz - strrights(str, sz))) actionu_bufferparse_fail(u);
-  if (j > cfsh_num_buffers)                         actionu_bufferparse_fail(u);
-  if (j < 0)                                        actionu_bufferparse_fail(u);
+  if (validator != (str + sz - strrights(str, sz))) 
+                                               return ACTIONU_BUFFERPARSE_FAIL;
+  if (j > cfsh_num_buffers)                    return ACTIONU_BUFFERPARSE_FAIL;
+  if (j < 0)                                   return ACTIONU_BUFFERPARSE_FAIL;
 
   return j;
 }
@@ -73,7 +84,7 @@ int action_buffers(int argc, char **argv)
   int num;
   actionu_intparse_setup();
 
-  actionu_argchk(1, action_buffers_usage);
+  actionu_argchk(1,              action_buffers_usage);
   actionu_intparse(*(argv), num, action_buffers_usage);
 
   if (num < 0)
@@ -99,11 +110,17 @@ int action_resize(int argc, char **argv)
   int newsize, buffer_id;
   actionu_intparse_setup();
 
-  actionu_argchk(2, action_resize_usage);
-  actionu_intparse(*(argv + 1), newsize, action_resize_usage);
-  buffer_id = actionu_bufferparse(*(argv), action_resize_usage);
-  if (buffer_id == ACTIONU_BUFFERPARSE_FAIL) return CFSH_COMMAND_HARDFAIL;
+  actionu_argchk(2,                       action_resize_usage);
+  actionu_intparse(*(argv + 1), newsize,  action_resize_usage);
+  actionu_bufferparse(*(argv), buffer_id, action_resize_usage);
 
+  if (newsize < 1) 
+  {
+    printf(action_resize_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  resizebuffer(buffer_id, newsize);
   return CFSH_OK;
 }
 
