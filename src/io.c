@@ -217,6 +217,51 @@ int get_buffer_real_size(int buffer_id)
   return strlen(get_buffer(buffer_id));
 }
 
+char *get_buffer_filter_text(int buffer_id)
+{
+  int mode;
+  mode = get_buffer_filter(buffer_id);
+
+  switch (mode)
+  {
+    case BUFFER_FILTER_ALPHA:       return "alpha";
+    case BUFFER_FILTER_ALPHANUM:    return "alphanum";
+    case BUFFER_FILTER_LALPHA:      return "lalpha";
+    case BUFFER_FILTER_UALPHA:      return "ualpha";
+    case BUFFER_FILTER_FLIPCASE:    return "flipcase";
+    case BUFFER_FILTER_CASEBACON:   return "casebacon";
+    case BUFFER_FILTER_NUM:         return "num";
+    case BUFFER_FILTER_ESP:         return "esp";
+    case BUFFER_FILTER_ENL:         return "enl";
+  }
+
+  return "none";
+}
+
+int get_buffer_filter_fromtext(char *str)
+{
+  if (strcasecmp("alpha", str) == 0)
+    return BUFFER_FILTER_ALPHA;
+  else if (strcasecmp("alphanum", str) == 0)
+    return BUFFER_FILTER_ALPHANUM;
+  else if (strcasecmp("lalpha", str) == 0)
+    return BUFFER_FILTER_LALPHA;
+  else if (strcasecmp("ualpha", str) == 0)
+    return BUFFER_FILTER_UALPHA;
+  else if (strcasecmp("flipcase", str) == 0)
+    return BUFFER_FILTER_FLIPCASE;
+  else if (strcasecmp("casebacon", str) == 0)
+    return BUFFER_FILTER_CASEBACON;
+  else if (strcasecmp("num", str) == 0)
+    return BUFFER_FILTER_NUM;
+  else if (strcasecmp("esp", str) == 0)
+    return BUFFER_FILTER_ESP;
+  else if (strcasecmp("enl", str) == 0)
+    return BUFFER_FILTER_ENL;
+  else
+    return BUFFER_FILTER_NONE;
+}
+
 void copybuffer(int buffer_id_1, int buffer_id_2)
 {
   printf("copybuffer: copying %i to %i...\n", buffer_id_1, buffer_id_2);

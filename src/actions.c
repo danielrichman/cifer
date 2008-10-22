@@ -50,7 +50,7 @@
       t = actionu_bufferparsef(s);                                           \
       if (t == ACTIONU_BUFFERPARSE_FAIL)                                     \
       {                                                                      \
-        printf("invalid buffer name '%s', use 'buffer_X' (X, int 0 to %i)n", \
+        printf("invalid buffer name '%s', use 'buffer_#' (X, int 0 to %i)n", \
                                s, cfsh_num_buffers);                         \
         printf(u);                                                           \
         return CFSH_COMMAND_HARDFAIL;                                        \
@@ -78,7 +78,6 @@ int actionu_bufferparsef(char *str)
   return j;
 }
 
-#define action_buffers_usage "usage: buffers X  (num of buffers, > 0)\n"
 int action_buffers(int argc, char **argv)
 {
   int num;
@@ -97,14 +96,12 @@ int action_buffers(int argc, char **argv)
   return CFSH_OK;
 }
 
-#define action_quit_usage "usage: quit <no args>\n"
 int action_quit(int argc, char **argv)
 {
   actionu_argless(action_quit_usage);
   return CFSH_BREAK_LOOP;
 }
 
-#define action_resize_usage "usage: buffer_X X (buffer_id, new_size)\n"
 int action_resize(int argc, char **argv)
 {
   int newsize, buffer_id;
@@ -126,41 +123,111 @@ int action_resize(int argc, char **argv)
 
 int action_clear(int argc, char **argv)
 {
+  int buffer_id;
+  actionu_argchk(1,                       action_clear_usage);
+  actionu_bufferparse(*(argv), buffer_id, action_clear_usage);
+  clearbuffer(buffer_id);
   return CFSH_OK;
 }
 
 int action_copy(int argc, char **argv)
 {
+  int buffer_id_1, buffer_id_2;
+  actionu_argchk(2,                       action_copy_usage);
+  actionu_bufferparse(*(argv),     buffer_id_1, action_copy_usage);
+  actionu_bufferparse(*(argv + 1), buffer_id_2, action_copy_usage);
+  copybuffer(buffer_id_1, buffer_id_2);
   return CFSH_OK;
 }
 
 int action_load(int argc, char **argv)
 {
+  int buffer_id;
+  actionu_argchk(2,                           action_load_usage);
+  actionu_bufferparse(*(argv + 1), buffer_id, action_load_usage);
+  file2buffer(*(argv), buffer_id);
   return CFSH_OK;
 }
 
 int action_write(int argc, char **argv)
 {
+  int mode, buffer_id;
+
+  if (argc != 2 && argc != 3)
+  {
+    printf(action_write_usage);
+    return CFSH_COMMAND_SOFTFAIL;
+  }
+
+  if (argc == 3)
+  {
+    if (strcasecmp(*(argv + 2), "auto")      == 0)
+    {
+      mode = CFSH_IO_MODE_AUTO;
+    }
+    else if (strcasecmp(*(argv + 2), "overwrite") == 0)
+    {
+      mode = CFSH_IO_MODE_OVERWRITE;
+    }
+    else if (strcasecmp(*(argv + 2), "append")    == 0)
+    {
+      mode = CFSH_IO_MODE_APPEND;
+    }
+    else
+    {
+      printf(action_write_usage);
+      return CFSH_COMMAND_SOFTFAIL;
+    }
+  }
+  else
+  {
+    mode = CFSH_IO_MODE_AUTO;
+  }
+
+  actionu_bufferparse(*(argv + 1), buffer_id, action_write_usage);
+  buffer2file(*(argv), buffer_id, mode);
+
   return CFSH_OK;
 }
 
 int action_filter(int argc, char **argv)
 {
+  int mode, buffer_id;
+  actionu_argchk(2,                       action_filter_usage);
+  actionu_bufferparse(*(argv), buffer_id, action_filter_usage);
+  mode = get_buffer_filter_fromtext(*(argv + 1));
+  filterbuffer(buffer_id, mode);
   return CFSH_OK;
 }
 
-int action_getsize(int argc, char **argv)
+int action_read(int argc, char **argv)
 {
+  int buffer_id;
+  actionu_argchk(1,                       action_read_usage);
+  actionu_bufferparse(*(argv), buffer_id, action_read_usage);
+  printf("  Buffer %i - %i bytes. Filter %s. \n\n%s\n", buffer_id, 
+          get_buffer_size(buffer_id), get_buffer_filter_text(buffer_id),
+          get_buffer(buffer_id));
   return CFSH_OK;
 }
 
-int action_getfilter(int argc, char **argv)
+int action_bufferinfo(int argc, char **argv)
 {
+  int buffer_id;
+  actionu_argchk(1,                       action_bufferinfo_usage);
+  actionu_bufferparse(*(argv), buffer_id, action_bufferinfo_usage);
+  printf("  Buffer %i - %i bytes. Filter %s. \n", buffer_id, 
+         get_buffer_size(buffer_id), get_buffer_filter_text(buffer_id));
   return CFSH_OK;
 }
 
 int action_nullbuffer(int argc, char **argv)
 {
+  int buffer_id;
+  actionu_argchk(1,                       action_nullbuffer_usage);
+  actionu_bufferparse(*(argv), buffer_id, action_nullbuffer_usage);
+  setbuffernull(buffer_id);
+  printf("set buffer %i's safety-null byte.\n", buffer_id);
   return CFSH_OK;
 }
 
@@ -315,6 +382,21 @@ int action_coprime(int argc, char **argv)
 }
 
 int action_charinfo(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_usage(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_help(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_system(int argc, char **argv)
 {
   return CFSH_OK;
 }
