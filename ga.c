@@ -1,3 +1,21 @@
+/*
+    Cifer: Automating classical cipher cracking in C
+    Copyright (C) 2008  Daniel Richman & Simrun Basuita
+
+    Cifer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Cifer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +29,7 @@
 #define GA_MUTCHANCE 4
 
 #define TARGET_LEN       20
-#define CHROMOSOME_MAX   10
+#define CHROMOSOME_MAX   500
 int target[TARGET_LEN] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                            0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; // Target solution
 
@@ -30,7 +48,7 @@ void print_best(ga_memb *pop);
 void mate_pop(ga_memb *pop, ga_memb *buf); // Mates pop into buf
   void cp_mems(ga_memb *src, ga_memb *targ, unsigned int size);
   void mutate(ga_memb *pop); // Mutates some of the population
-void swap_pts(ga_memb *pt1, ga_memb *pt2);
+void swap_pts(ga_memb **pt1, ga_memb **pt2);
 
 #define sort_by_fitness(a) (insertion_sort_ga_memb(a, GA_POPSIZE))
 void insertion_sort_ga_memb(ga_memb *a, int asize);
@@ -61,11 +79,11 @@ int main(void)
       j = 0;
     }
     
-    if (pop[0].fitness == TARGET_LEN) break; // We can has solution! :)
+    if (pop[GA_POPSIZE - 1].fitness == TARGET_LEN) break; 
+    // We can has solution! :)
     
     mate_pop(pop, buf); // Mate the population into the buffer
-    
-    swap_pts(pop, buf);
+    swap_pts(&pop, &buf);
   }
 
   print_best(pop);
@@ -140,7 +158,8 @@ void print_best(ga_memb *pop)
   int i;
 
   printf("Best: %d", *(pop[GA_POPSIZE - 1].sol));
-  for (i = 1; i < TARGET_LEN; i++) printf(", %d", *((pop[GA_POPSIZE - 1].sol) + i));
+  for (i = 1; i < TARGET_LEN; i++) 
+              printf(", %d", *((pop[GA_POPSIZE - 1].sol) + i));
   printf("  (%d%%)\n", (pop[GA_POPSIZE - 1].fitness * 100 )/ TARGET_LEN);
 }
 
@@ -175,13 +194,13 @@ void mate_pop(ga_memb *pop, ga_memb *buf) // Mates pop into buf
 }
 
 // Swap pt1 and pt2
-void swap_pts(ga_memb *pt1, ga_memb *pt2)
+void swap_pts(ga_memb **pt1, ga_memb **pt2)
 {
   ga_memb *pt_tmp;
   
-  pt_tmp = pt2;
-  pt2 = pt1;
-  pt1 = pt_tmp;
+  pt_tmp = *pt2;
+  *pt2 = *pt1;
+  *pt1 = pt_tmp;
 }
 
 // Mutates some of the population
