@@ -22,11 +22,11 @@
 #define GA_POPSIZE 2048 // Population size
 #define GA_MAXITER 16348 // Maximum iterations
 #define GA_ELITERATE 0.10 // Elitism rate
-#define GA_MUTPERC 0.25 // Mutation rate
 #define PRINT_INTER 1 // Print status every this iterations/generations
 
 #define GA_ELITSIZE (GA_POPSIZE * GA_ELITERATE) // Number of elites
-#define GA_MUTCHANCE 4
+#define GA_MUTCHANCE 500  // Chance that the baby will go bad.
+#define GA_MUTRATE 4    // Number of chromosomes to screw with
 
 #define TARGET_LEN       20
 #define CHROMOSOME_MAX   500
@@ -132,8 +132,6 @@ void calc_fitness(ga_memb *pop)
   }
 }
 
-#define balh(a) (insertion_sort_ga_memb(a, GA_POPSIZE))
-
 void insertion_sort_ga_memb(ga_memb *a, int asize)
 {
   int i, j, k;
@@ -167,12 +165,15 @@ void mate_pop(ga_memb *pop, ga_memb *buf) // Mates pop into buf
 {
   unsigned int i, j;
   int randint;
-  
+
+  // Temporary cache. Find where the elites start
+  i = GA_POPSIZE - GA_ELITSIZE - 1;
+
   // Copy over the elites
-  cp_mems(pop, buf, GA_ELITSIZE);
+  cp_mems(pop + i, buf + i, GA_ELITSIZE);
   
   // Don't touch the elites, mate the others
-  for (i = GA_ELITSIZE; i < GA_POPSIZE; i += 2)
+  for (i = GA_POPSIZE - GA_ELITSIZE - 1; i < GA_POPSIZE; i += 2)
   {
     randint = rand() % TARGET_LEN;
     
@@ -188,9 +189,11 @@ void mate_pop(ga_memb *pop, ga_memb *buf) // Mates pop into buf
       buf[i    ].sol[j] = pop[i + 1].sol[j];
       buf[i + 1].sol[j] = pop[i    ].sol[j];
     }
+
+    // Now mutate these noobs
+    mutate(buf + i);
+    mutate(buf + i + 1);
   }
-  
-  mutate(buf);
 }
 
 // Swap pt1 and pt2
@@ -203,17 +206,17 @@ void swap_pts(ga_memb **pt1, ga_memb **pt2)
   *pt1 = pt_tmp;
 }
 
-// Mutates some of the population
+// Mutates a member of the population
 void mutate(ga_memb *pop)
 {
   int i, randint;
-  for (i = 0; i < GA_ELITSIZE; i++)
+
+  if (rand() % GA_MUTCHANCE != 0)  return;
+
+  for (i = 0; i < GA_MUTRATE; i++)
   {
-    if (rand() % GA_MUTCHANCE == 0)
-    {
-      randint = rand();
-      pop[0].sol[randint % TARGET_LEN] = randint;
-    }
+    randint = rand();
+    (*(pop)).sol[randint % TARGET_LEN] = randint % CHROMOSOME_MAX;
   }
 }
 
@@ -221,12 +224,6 @@ void cp_mems(ga_memb *src, ga_memb *targ, unsigned int size)
 {
   unsigned int i, j;
   
-  for (i = GA_POPSIZE - 1; i >= size; i--)
-  {
-    targ[i].fitness = src[i].fitness;
-    for (j = 0; j < TARGET_LEN; j++)
-    {
+  for (i = 0; i < size; i++)  for (j = 0; j < TARGET_LEN; j++)
       targ[i].sol[j] = src[i].sol[j];
-    }
-  }
 }
