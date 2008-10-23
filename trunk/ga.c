@@ -18,12 +18,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define GA_POPSIZE 2048 // Population size
 #define GA_MAXITER 16348 // Maximum iterations
 #define GA_ELITERATE 0.10 // Elitism rate
 #define GA_MUTPERC 0.25 // Mutation rate
-#define PRINT_INTER 1 // Print status every this iterations/generations
+#define PRINT_INTER 0 // Print status every this iterations/generations
 
 #define GA_ELITSIZE (GA_POPSIZE * GA_ELITERATE) // Number of elites
 #define GA_MUTCHANCE 4
@@ -60,7 +61,7 @@ int main(void)
   ga_memb pop_a[GA_POPSIZE], pop_b[GA_POPSIZE];
   ga_memb *pop, *buf;
  
-  srand(time());
+  srand((unsigned int) time(NULL));
  
   pop = pop_a;
   buf = pop_b;
@@ -160,7 +161,7 @@ void print_best(ga_memb *pop, unsigned const int gen)
   printf("At gen %d, best: %d", gen, *(pop[GA_POPSIZE - 1].sol));
   for (i = 1; i < TARGET_LEN; i++) 
               printf(", %d", *((pop[GA_POPSIZE - 1].sol) + i));
-  printf("  (%d%%)\n", (pop[GA_POPSIZE - 1].fitness * 100 )/ TARGET_LEN);
+  printf("  (%d%%)\n", (pop[GA_POPSIZE - 1].fitness * 100 ) / TARGET_LEN);
 }
 
 void mate_pop(ga_memb *pop, ga_memb *buf) // Mates pop into buf
