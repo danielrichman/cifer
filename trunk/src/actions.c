@@ -50,7 +50,7 @@
       t = actionu_bufferparsef(s);                                           \
       if (t == ACTIONU_BUFFERPARSE_FAIL)                                     \
       {                                                                      \
-        printf("invalid buffer name '%s', use 'buffer_#' (X, int 0 to %i)n", \
+        printf("bad buffer name '%s', use 'buffer_#' (X, int 0 to %i)\n",    \
                                s, cfsh_num_buffers);                         \
         printf(u);                                                           \
         return CFSH_COMMAND_HARDFAIL;                                        \
@@ -117,6 +117,8 @@ int action_resize(int argc, char **argv)
     return CFSH_COMMAND_HARDFAIL;
   }
 
+  printf("resizebuffer: resizing buffer_%i to %i bytes...\n", 
+                                      buffer_id, newsize);
   resizebuffer(buffer_id, newsize);
   return CFSH_OK;
 }
@@ -126,6 +128,7 @@ int action_clear(int argc, char **argv)
   int buffer_id;
   actionu_argchk(1,                       action_clear_usage);
   actionu_bufferparse(*(argv), buffer_id, action_clear_usage);
+  printf("clearbuffer: clearing buffer_%i...\n", buffer_id);
   clearbuffer(buffer_id);
   return CFSH_OK;
 }
@@ -205,9 +208,10 @@ int action_read(int argc, char **argv)
   int buffer_id;
   actionu_argchk(1,                       action_read_usage);
   actionu_bufferparse(*(argv), buffer_id, action_read_usage);
-  printf("  Buffer %i - %i bytes. Filter %s. \n\n%s\n", buffer_id, 
-          get_buffer_size(buffer_id), get_buffer_filter_text(buffer_id),
-          get_buffer(buffer_id));
+  printf("  Buffer %i: %i/%i bytes. Filter %s. \n\n", buffer_id, 
+         get_buffer_real_size(buffer_id), get_buffer_size(buffer_id),
+         get_buffer_filter_text(buffer_id));
+  printf("%s\n", get_buffer(buffer_id));
   return CFSH_OK;
 }
 
@@ -216,8 +220,9 @@ int action_bufferinfo(int argc, char **argv)
   int buffer_id;
   actionu_argchk(1,                       action_bufferinfo_usage);
   actionu_bufferparse(*(argv), buffer_id, action_bufferinfo_usage);
-  printf("  Buffer %i - %i bytes. Filter %s. \n", buffer_id, 
-         get_buffer_size(buffer_id), get_buffer_filter_text(buffer_id));
+  printf("  Buffer %i: %i/%i bytes. Filter %s. \n", buffer_id, 
+         get_buffer_real_size(buffer_id), get_buffer_size(buffer_id),
+         get_buffer_filter_text(buffer_id));
   return CFSH_OK;
 }
 
@@ -388,6 +393,8 @@ int action_charinfo(int argc, char **argv)
 
 int action_usage(int argc, char **argv)
 {
+  actionu_argchk(1, action_usage_usage);
+  printf("%s%s", cfsh_get_usage(*argv), cfsh_get_use(*argv));
   return CFSH_OK;
 }
 
@@ -395,7 +402,10 @@ int action_usage(int argc, char **argv)
    if (&f != last_command)                                                  \
    {                                                                        \
      if (aliases_print) printf("\n");                                       \
+     printf( "\n" );                                                        \
      printf( f ## _use );                                                   \
+     printf( f ## _usage );                                                 \
+                                                                            \
      last_command = &f;                                                     \
      aliases_print = 0;                                                     \
    }                                                                        \
@@ -432,6 +442,16 @@ int action_help(int argc, char **argv)
 #undef cfsh_func
 
 int action_system(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_cd(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_ls(int argc, char **argv)
 {
   return CFSH_OK;
 }
