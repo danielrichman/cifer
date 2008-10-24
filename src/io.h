@@ -52,10 +52,11 @@ void clearbuffer(int buffer_id);
 
 int get_buffer_real_size(int buffer_id);
 int get_buffer_filter_fromtext(char *str);
-char *get_buffer_filter_text(int buffer_id);
+char *get_filter_text(int mode);
 
-#define get_buffer(i)            (*(cfsh_buffers + i))
-#define get_buffer_filter(i)     (*(cfsh_buffer_filters + i))
-#define get_buffer_size(i)       (*(cfsh_buffer_sizes + i))
-#define setbuffernull(i)         (*(get_buffer(i) + get_buffer_size(i)) = 0)
+#define get_buffer(i)              (*(cfsh_buffers + i))
+#define get_buffer_filter(i)       (*(cfsh_buffer_filters + i))
+#define get_buffer_filter_text(i)  get_filter_text(get_buffer_filter(i))
+#define get_buffer_size(i)         (*(cfsh_buffer_sizes + i))
+#define setbuffernull(i)           (*(get_buffer(i) + get_buffer_size(i)) = 0)
 

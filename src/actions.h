@@ -69,6 +69,8 @@ int action_charinfo(int argc, char **argv);
 int action_usage(int argc, char **argv);
 int action_help(int argc, char **argv);
 int action_system(int argc, char **argv);
+int action_cd(int argc, char **argv);
+int action_ls(int argc, char **argv);
 
 /* int action_(int argc, char **argv); */
 

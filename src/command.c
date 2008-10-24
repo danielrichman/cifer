@@ -311,7 +311,7 @@ int cfsh_get_func(char *name, cfsh_command *command)
 char *cfsh_get_usage(char *name)
 {
   #include "command.i"
-  return "no such command";
+  return action_default_usage;
 }
 #undef cfsh_func
 
@@ -320,7 +320,7 @@ char *cfsh_get_usage(char *name)
 char *cfsh_get_use(char *name)
 {
   #include "command.i"
-  return "no such command";
+  return action_default_use;
 }
 #undef cfsh_func
 

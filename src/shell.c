@@ -103,7 +103,8 @@ int cfsh_read(FILE *read, int mode)
         case CFSH_READ_MODE_EXECUTE_SF:
           result = cfsh_line(line, mode);
           if (result == CFSH_COMMAND_HARDFAIL || 
-              result == CFSH_COMMAND_SOFTFAIL)
+              result == CFSH_COMMAND_SOFTFAIL ||
+              result == CFSH_COMMAND_PARSEFAIL)
           {
             printf("cfsh_read: exit requested by cfsh_line on softhard err.\n");
             looping = 0;
@@ -132,9 +133,11 @@ int cfsh_read(FILE *read, int mode)
     }
   }
 
-  printf("cfsh_read: read %i lines.\n", num);
+  if (mode != CFSH_READ_MODE_PARSECHECK || result == CFSH_COMMAND_PARSEFAIL)
+    printf("cfsh_read: read %i lines.\n", num);
 
-  if (feof(read) != 0)  printf("cfsh_read: end of file\n");
+  if ((mode != CFSH_READ_MODE_PARSECHECK || result == CFSH_COMMAND_PARSEFAIL) &&
+      feof(read) != 0)  printf("cfsh_read: end of file\n");
   if (!looping)         printf("cfsh_read: loop broken by cfsh_line\n");
 
   free(line);
@@ -234,10 +237,14 @@ int cfsh_line(char *input, int mode)
   /* Subtract time1 from time2 */
   time2.tv_sec  -= time1.tv_sec;
   time2.tv_usec -= time1.tv_usec;
-  printf("cfsh_line: command spent %6li.%.6li seconds.\n", 
-                              time2.tv_sec, time2.tv_usec);
-  /* Use printf to provide 000s on the left of usec, to make it correct ;) */
 
+  /* Only print if its significant */
+  if (time2.tv_sec > 0)
+  {
+    printf("cfsh_line: command spent %6li.%.6li seconds.\n", 
+                              time2.tv_sec, time2.tv_usec);
+    /* Use printf to provide 000s on the left of usec, to make it correct ;) */
+  }
   /* nice spacing =) */
   printf("\n");
 

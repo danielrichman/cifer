@@ -123,6 +123,7 @@ void file2buffer(char *name, int buffer_id)
   while (feof(file) == 0)
   {
     *(buf + i) = fgetc(file);
+    if (*(buf + i) == -1)  *(buf + i) = 0;
     i++;
   }
 
@@ -174,6 +175,8 @@ void buffer2file(char *name, int buffer_id, int mode)
 
   if (i == EOF)       printf("buffer2file: error in fputs.\n");
   if (ferror(file))   printf("buffer2file: warning - outfile error is set.\n");
+  printf("buffer2file: wrote %i bytes to file.\n", 
+                          get_buffer_real_size(buffer_id));
 
   flock(fileno(file), LOCK_UN);
   fclose(file);
@@ -217,11 +220,8 @@ int get_buffer_real_size(int buffer_id)
   return strlen(get_buffer(buffer_id));
 }
 
-char *get_buffer_filter_text(int buffer_id)
+char *get_filter_text(int mode)
 {
-  int mode;
-  mode = get_buffer_filter(buffer_id);
-
   switch (mode)
   {
     case BUFFER_FILTER_ALPHA:       return "alpha";
@@ -272,7 +272,7 @@ void copybuffer(int buffer_id_1, int buffer_id_2)
                             buffer_id_2, get_buffer_size(buffer_id_1));
     resizebuffer(buffer_id_2, get_buffer_size(buffer_id_1));
   }
-  else if (get_buffer_size(buffer_id_1) == get_buffer_size(buffer_id_2))
+  else if (get_buffer_size(buffer_id_1) != get_buffer_size(buffer_id_2))
   {
     printf("copybuffer: note - buffers arn't the same size (not a problem)\n");
   }
@@ -303,6 +303,8 @@ void filterbuffer(int buffer_id, int mode)
   buf     = get_buffer(buffer_id);
   j       = get_buffer_real_size(buffer_id);
   t       = 0;
+
+  printf("filterbuffer: applying filter %s...\n", get_filter_text(mode));
 
   for (i = 0; i < j; i++)
   {
