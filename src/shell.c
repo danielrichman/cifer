@@ -32,6 +32,7 @@ void cfsh_autoinit()
    *  Load the Dictionary */ 
   create_buffers(10);
   load_dict();
+  printf("\n");
 }
 
 int cfsh_read(FILE *read, int mode)

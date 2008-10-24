@@ -60,7 +60,7 @@
 #define action_coprime_usage "usage: coprime int_arg1 int_arg2\n"
 #define action_charinfo_usage "usage: charinfo char|num\n"
 #define action_usage_usage "usage: usage command_name\n"
-#define action_help_usage "usage: help <no args>\n"
+#define action_help_usage "usage: help <no args> (use usage <command name> for spesific-commands)\n"
 #define action_system_usage "usage: system command arg1 arg2 ...\n"
 #define action_cd_usage "usage: cd new_directory (can be relative or definite)\n"
 #define action_ls_usage "usage: ls directory_to_list (can be omitted to list current directory)\n"
