@@ -33,8 +33,8 @@ void crack_vigenere(char *text, int text_size)
   h = min(VIGENERE_MAX_KEYLEN, text_size) - VIGENERE_MIN_KEYLEN;
   if (h <= 0)
   {
-    printf("h <= 0; epic fail.\n");
-    exit(1);
+    printf("vigenere: no column-lengths to try (h <= 0).\n");
+    return;
   }
 
   /* Check all column lengths that we are supposed to */

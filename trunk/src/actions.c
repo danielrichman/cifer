@@ -57,6 +57,14 @@
       }                                                                      \
     }                                                                        \
 
+#define actionu_dictcheck()                                                  \
+    if (dict == NULL)                                                        \
+    {                                                                        \
+      printf("dictionary not loaded. use `loaddict`\n");                     \
+      return CFSH_COMMAND_HARDFAIL;                                          \
+    }
+
+
 int actionu_bufferparsef(char *str)
 {
   /* strlen("buffer_") = 7 */
@@ -238,32 +246,61 @@ int action_nullbuffer(int argc, char **argv)
 
 int action_script(int argc, char **argv)
 {
+  actionu_argchk(1, action_script_usage);
+  cfsh_scriptfile(*argv, 0, 0);
   return CFSH_OK;
 }
 
 int action_quickscript(int argc, char **argv)
 {
+  actionu_argchk(1, action_script_usage);
+  cfsh_scriptfile(*argv, 1, 0);
   return CFSH_OK;
 }
 
 int action_softscript(int argc, char **argv)
 {
+  actionu_argchk(1, action_script_usage);
+  cfsh_scriptfile(*argv, 0, 1);
   return CFSH_OK;
 }
 
 int action_quicksoftscript(int argc, char **argv)
 {
+  actionu_argchk(1, action_script_usage);
+  cfsh_scriptfile(*argv, 1, 1);
   return CFSH_OK;
 }
 
 int action_score(int argc, char **argv)
 {
+  int buffer_id, sizecache;
+  actionu_argchk(1,                       action_score_usage);
+  actionu_bufferparse(*(argv), buffer_id, action_score_usage);
+  sizecache = get_buffer_real_size(buffer_id);
+  actionu_dictcheck();
+
+  printf("  Buffer %i: %i/%i bytes. Filter %s. \n", buffer_id,
+         sizecache, get_buffer_size(buffer_id),
+         get_buffer_filter_text(buffer_id));
+  printf("  Dictionary Score: %i/%i \n", 
+         score_text_dict_fast(get_buffer(buffer_id), sizecache), sizecache);
+
   return CFSH_OK;
 }
 
 int action_loaddict(int argc, char **argv)
 {
-  return CFSH_OK;
+  actionu_argless(action_loaddict_usage);
+  if (dict != NULL)
+  {
+    printf("loaddict: dictionary already loaded.\n");
+    return CFSH_COMMAND_SOFTFAIL;
+  }
+
+  load_dict();
+  if (dict != NULL)  return CFSH_OK;
+  else               return CFSH_COMMAND_HARDFAIL;
 }
 
 int action_affine(int argc, char **argv)
@@ -426,6 +463,8 @@ int action_help(int argc, char **argv)
 {
   cfsh_command last_command;
   int aliases_print;
+
+  actionu_argless(action_help_usage);
 
   aliases_print = 0;
   last_command = NULL;

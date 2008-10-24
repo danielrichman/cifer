@@ -290,11 +290,10 @@ void load_dict(void)
   dictf = fopen(DICTIONARY, "r");
   if (dictf == NULL)
   {
-    printf("\n\n");
     perror("load_dict: fopen");
-    printf("\n");
-
-    exit(1);
+    printf("dictionary not loaded.\n");
+    dict = NULL;
+    return;
   }
 
   /* Count filesize */
@@ -311,6 +310,9 @@ void load_dict(void)
       if (buf_size >= WORD_BUF_SIZE)
       {
         printf("Error: A Word busted WORD_BUF_SIZE %i\n", WORD_BUF_SIZE);
+        printf("ditionary not loaded.\n");
+        dict = NULL;
+        return;
       }
     }
     else if (IS_NEWLINE(ch))
@@ -329,13 +331,6 @@ void load_dict(void)
   dict             = malloc_good( filesize + 1 );
   dict_pointer     = malloc_good( sizeof(char *) * ((26 * 26) + 1) );
   dict_pointer_end = malloc_good( sizeof(char *) * ((26 * 26) + 1) );
-
-  if (dict == NULL || dict_pointer == NULL || dict_pointer_end == NULL)
-  {
-    /* Epic fail */
-    printf("Malloc for dictionary failed. \n");
-    exit(1);
-  }
 
   dict_insert = dict;
   buf_size = 0;
@@ -361,11 +356,16 @@ void load_dict(void)
       {
         if ((i + buf_size) >= filesize)
         {
-          printf("\n\n");
+          printf("\n");
           printf("*dict overflow at %i (Attempted to add %i)\n", i, buf_size);
-          printf("\n\n");
+          printf("dictionary not loaded.\n");
 
-          exit(1);
+          free(dict);
+          free(dict_pointer);
+          free(dict_pointer_end);
+
+          dict = NULL;
+          return;
         }
 
         memcpy(dict_insert, buf, buf_size);
@@ -408,7 +408,14 @@ void load_dict(void)
     if (j <= MIN_WORD_SIZE)
     {
       printf("Word length is %i (< %i), dict load fail.\n", j, MIN_WORD_SIZE);
-      exit(1);
+      printf("dictionary not loaded\n");
+
+      free(dict);
+      free(dict_pointer);
+      free(dict_pointer_end);
+
+      dict = NULL;
+      return;
     }
     else
     {
