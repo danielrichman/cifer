@@ -36,7 +36,7 @@
 
 #include "settings.h"
 #include "macros.h"
-#include "command_info.i"
+#include "command_info.h"
 
 #include "command.h"
 #include "io.h"

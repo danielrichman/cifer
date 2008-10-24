@@ -32,7 +32,6 @@ dd = dd
 dd_options = conv=lcase
 
 ctags = ctags
-ctags_files = src/*.c src/*.h src/*.i *.c *.h *.i
 ctags_name = tags
 
 opt_lvl = 2
@@ -100,6 +99,7 @@ headers = src/actions.h \
 	src/ciphers.h \
 	src/columnar_transposition.h \
 	src/command.h \
+	src/command_info.h \
 	src/dictionary.h \
 	src/frequency_analysis.h \
 	src/frequency_data.h \
@@ -117,7 +117,6 @@ headers = src/actions.h \
 	src/vowel_mash.h \
 	\
 	src/utility.i \
-	src/command_info.i \
 	src/command.i
 
 $(bin_norm_name) : $(objects) $(dict_name)
@@ -153,21 +152,15 @@ src/vigenere.o                  : $(headers)
 src/vowel_mash.o                : $(headers)
 
 $(dict_name) :
-	$(cat) $(dict_file) | \
-        $(iconv) $(iconv_options) | \
-	$(sed) $(sed_options) | \
-        $(dd) $(dd_options) | \
-	$(sorter) | $(uniq) \
-        > $@
+	$(cat) $(dict_file) | $(iconv) $(iconv_options) | $(sed) $(sed_options) | $(dd) $(dd_options) | $(sorter) | $(uniq) > $@
 
 $(ctags_name):
-	$(ctags) -f $@ $(ctags_files)
+	$(ctags) -f $@ $(cfiles) $(headers)
 
 .PHONY : clean clean-objects
 
 clean :
-	$(rm) $(bin_all_name) $(dict_name) $(objects) $(gprof_files) \
-	$(ctags_name)
+	$(rm) $(bin_all_name) $(dict_name) $(objects) $(gprof_files) $(ctags_name)
 
 clean-objects :
 	$(rm) $(objects)
