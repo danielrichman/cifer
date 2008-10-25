@@ -25,7 +25,7 @@
     if (argc != (i))                                                         \
     {                                                                        \
       printf(u);                                                             \
-      return CFSH_COMMAND_SOFTFAIL;                                          \
+      return CFSH_COMMAND_HARDFAIL;                                          \
     }
 
 #define actionu_argless(u)     actionu_argchk(0, u)
@@ -45,6 +45,16 @@
       }                                                                      \
     }                                                                        \
 
+#define actionu_intparse_char(s, t, u)                                       \
+    {                                                                        \
+      intparse_sz = strlen(s);                                               \
+      if (strtlens(s, intparse_sz) == 1 &&                                   \
+           ALPHA_CH( *(s + strlefts(s, intparse_sz)) ))                      \
+        t = CHARNUM( *(s + strlefts(s, intparse_sz)) );                      \
+      else                                                                   \
+        actionu_intparse(s, t, u);                                           \
+    }
+
 #define actionu_bufferparse(s, t, u)                                         \
     {                                                                        \
       t = actionu_bufferparsef(s);                                           \
@@ -56,6 +66,31 @@
         return CFSH_COMMAND_HARDFAIL;                                        \
       }                                                                      \
     }                                                                        \
+
+#define actionu_bufferchk(i, o, u)                                           \
+    if (i == o)                                                              \
+    {                                                                        \
+      printf("bad output buffer: same as input buffer.\n");                  \
+      printf(u);                                                             \
+      return CFSH_COMMAND_HARDFAIL;                                          \
+    }
+
+#define actionu_bufferfchk(b, f, u)                                          \
+    if (get_buffer_filter(b) != f)                                           \
+    {                                                                        \
+      printf("bad input buffer: filter type '%s' should be '%s'. \n",        \
+                    get_buffer_filter_text(b), get_filter_text(f) );         \
+      printf(u);                                                             \
+      return CFSH_COMMAND_HARDFAIL;                                          \
+    }
+
+#define actionu_bufferschk(i, o, u)                                          \
+    if (get_buffer_real_size(i) > get_buffer_size(o))                        \
+    {                                                                        \
+      printf("auto expanding output buffer %i to %i bytes.\n", o,            \
+                    get_buffer_real_size(i));                                \
+      resizebuffer(o, get_buffer_real_size(i));                              \
+    }
 
 #define actionu_dictcheck()                                                  \
     if (dict == NULL)                                                        \
@@ -144,9 +179,10 @@ int action_clear(int argc, char **argv)
 int action_copy(int argc, char **argv)
 {
   int buffer_id_1, buffer_id_2;
-  actionu_argchk(2,                       action_copy_usage);
+  actionu_argchk(2,                             action_copy_usage);
   actionu_bufferparse(*(argv),     buffer_id_1, action_copy_usage);
   actionu_bufferparse(*(argv + 1), buffer_id_2, action_copy_usage);
+  actionu_bufferchk(buffer_id_1, buffer_id_2,   action_copy_usage);
   copybuffer(buffer_id_1, buffer_id_2);
   return CFSH_OK;
 }
@@ -167,7 +203,7 @@ int action_write(int argc, char **argv)
   if (argc != 2 && argc != 3)
   {
     printf(action_write_usage);
-    return CFSH_COMMAND_SOFTFAIL;
+    return CFSH_COMMAND_HARDFAIL;
   }
 
   if (argc == 3)
@@ -187,7 +223,7 @@ int action_write(int argc, char **argv)
     else
     {
       printf(action_write_usage);
-      return CFSH_COMMAND_SOFTFAIL;
+      return CFSH_COMMAND_HARDFAIL;
     }
   }
   else
@@ -289,6 +325,55 @@ int action_score(int argc, char **argv)
   return CFSH_OK;
 }
 
+int action_spaces(int argc, char **argv)
+{
+  int buffer_in, buffer_out, sizecache, sizeadd, i, j;
+  int *space_array;
+  char *in, *out;
+
+  actionu_argchk(2,                            action_spaces_usage);
+  actionu_bufferparse(*(argv)    , buffer_in,  action_spaces_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_spaces_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_spaces_usage);
+  actionu_dictcheck();
+
+  in  = get_buffer(buffer_in);
+  out = get_buffer(buffer_out);
+  get_buffer_filter(buffer_out) = BUFFER_FILTER_NONE;
+
+  sizecache = get_buffer_real_size(buffer_in);
+  sizeadd = 0;
+
+  space_array = malloc_good( sizeof(int) * sizecache );
+  score_text_dict_spaces(in, sizecache, space_array);
+
+  for (i = 0; i < sizecache; i++) if (*(space_array + i)) sizeadd++;
+
+  if (get_buffer_size(buffer_out) < (sizecache + sizeadd))
+  {
+    printf("spaces: must increase buffer size to %i bytes.\n", 
+                                           sizecache + sizeadd);
+    resizebuffer(buffer_out, sizecache + sizeadd);
+  }
+
+  j = 0;
+  for (i = 0; i < sizecache; i++)
+  {
+    *(out + j) = *(in + i);
+    j++;
+
+    if (*(space_array + i))
+    {
+      *(out + j) = ' ';
+      j++;
+    }
+  }
+
+  printf("\n%s\n\n", out);
+  free(space_array);
+  return CFSH_OK;
+}
+
 int action_loaddict(int argc, char **argv)
 {
   actionu_argless(action_loaddict_usage);
@@ -305,16 +390,88 @@ int action_loaddict(int argc, char **argv)
 
 int action_affine(int argc, char **argv)
 {
+  int buffer_in, buffer_out;
+  actionu_argchk(2,                            action_affine_usage);
+  actionu_bufferparse(*(argv),     buffer_in,  action_affine_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_affine_usage);
+  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA, action_affine_usage);
+  actionu_bufferchk(buffer_in, buffer_out, action_affine_usage);
+  crack_affine(get_buffer(buffer_in), get_buffer_real_size(buffer_in), 
+               get_buffer(buffer_out));
   return CFSH_OK;
 }
 
 int action_affinesolve(int argc, char **argv)
 {
+  int ct1, pt1, ct2, pt2, a, b;
+  actionu_intparse_setup();
+  actionu_argchk(4,                         action_affinesolve_usage);
+  actionu_intparse_char( *(argv)     , ct1, action_affinesolve_usage);
+  actionu_intparse_char( *(argv + 1) , pt1, action_affinesolve_usage);
+  actionu_intparse_char( *(argv + 2) , ct2, action_affinesolve_usage);
+  actionu_intparse_char( *(argv + 3) , pt2, action_affinesolve_usage);
+  affine_solve(ct1, pt1, ct2, pt2, &a, &b);
   return CFSH_OK;
 }
 
 int action_affinebf(int argc, char **argv)
 {
+  int buffer_in, buffer_out;
+  actionu_argchk(2,                            action_affinebf_usage);
+  actionu_bufferparse(*(argv),     buffer_in,  action_affinebf_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_affinebf_usage);
+  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA, action_affine_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_affineencode_usage);
+  affine_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+            get_buffer(buffer_out));
+  return CFSH_OK;
+}
+
+int action_affineencode(int argc, char **argv)
+{
+  int buffer_in, buffer_out, a, b;
+  actionu_intparse_setup();
+  actionu_argchk(4,                            action_affineencode_usage);
+
+  actionu_bufferparse(*(argv),     buffer_in,  action_affineencode_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_affineencode_usage);
+  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA, action_affine_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_affineencode_usage);
+
+  actionu_intparse(   *(argv + 2), a,          action_affineencode_usage);
+  actionu_intparse(   *(argv + 3), b,          action_affineencode_usage);
+
+  affine_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                get_buffer(buffer_out), a, b);
+
+  printf("affineencode: encrypting using the affine cipher, %ix + %i\n\n", 
+                    a, b);
+  printf("%s\n\n", get_buffer(buffer_out));
+
+  return CFSH_OK;
+}
+
+int action_affinedecode(int argc, char **argv)
+{
+  int buffer_in, buffer_out, a, b;
+  actionu_intparse_setup();
+  actionu_argchk(4,                            action_affinedecode_usage);
+
+  actionu_bufferparse(*(argv),     buffer_in,  action_affinedecode_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_affinedecode_usage);
+  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA, action_affine_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_affinedecode_usage);
+
+  actionu_intparse(   *(argv + 2), a,          action_affinedecode_usage);
+  actionu_intparse(   *(argv + 3), b,          action_affinedecode_usage);
+
+  affine_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                get_buffer(buffer_out), a, b);
+
+  printf("affinedecode: decrypting using the affine cipher, %ix + %i\n\n",
+                    a, b);
+  printf("%s\n\n", get_buffer(buffer_out));
+
   return CFSH_OK;
 }
 

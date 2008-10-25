@@ -22,6 +22,8 @@ loaddict or load_dict        load_dict()
 crack_affine or affine       crack_affine(char *text, int text_size)
 affine_solve or affinesolve  affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
 affine_bf    or affinebf     affine_bf(char *ctext, int ctext_size)
+affine_decode or affined     affine_decode(char *intext, int intext_size, char *outtext)
+affine_encode or affinee     affine_encode(char *intext, int intext_size, char *outtext)
 bacon                        bacon_decode(char *text, int text_size, int *new_size)
 vigenere_manual or shift     caesar_cipher_enc or 
                              caesar_cipher_dec(char *text, int text_size, int *shift, int shift_size)

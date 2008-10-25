@@ -16,19 +16,17 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* TODO: Implement affine encryption/decryption utility */
-
 #include "stdinc.h"
 
-void crack_affine(char *text, int text_size)
+void crack_affine(char *intext, int intext_size, char *outtext)
 {
   int a, b, i, j;
   digram  digrams[10];
   trigram trigrams[1];
 
   /* Count digrams & trigrams */
-  count_digrams(text, text_size, digrams, 10);
-  count_trigrams(text, text_size, trigrams, 1);
+  count_digrams(intext,  intext_size, digrams, 10);
+  count_trigrams(intext, intext_size, trigrams, 1);
 
   /* See if we can find the right digram, just to double check */
   j = 0;
@@ -77,20 +75,14 @@ void crack_affine(char *text, int text_size)
                digrams[j].digram_ch2, CHARNUM('H'), 
                &a, &b);
 
-  /* Fancy way of decoding: find the mod mul. inverse */
-  j = modular_multiplicative_inverse(a, 26);
+  affine_decode(intext, intext_size, outtext, a, b);
 
-  printf("Affine: Finding modular multiplicative inverse(a, 26) = %i;\n", j);
-
-  for (i = 0; i < text_size; i++)
-  {
-    /* Subtract b, multiply by the inverse and mod */
-    *(text + i) = NUMCHAR( modn((CHARNUM(*(text + i)) - b) * j, 26) );
-  }
+  /* Set the null byte */
+  *(outtext + intext_size) = 0;
 
   /* Print the results */
   printf("Affine: Deciphered Plaintext (hopefully):\n\n");
-  printf("%*s\n\n", text_size, text);
+  printf("%s\n\n", outtext);
 }
 
 int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
@@ -138,11 +130,7 @@ int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
   for (j = *a; j < 26; j += (26/i))
   {
     printf("%i, ", j);
-
-    if (IS_COPRIME(j, 26))
-    {
-      *a = j;
-    }
+    if (IS_COPRIME(j, 26))    *a = j;
   }
 
   printf("chosen %i.\n", *a);
@@ -171,12 +159,25 @@ int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
   }
 }
 
-void affine_bf(char *text, int text_size)
+void affine_encode(char *intext, int intext_size, char *outtext, int a, int b)
 {
-  int i; /* Counters */
+  int i;
+  for (i = 0; i < intext_size; i++)
+    *(outtext + i) = modp((CHARNUM(*(intext + i)) * a) + b, 26);
+}
+
+void affine_decode(char *intext, int intext_size, char *outtext, int a, int b)
+{
+  int i, mmi;
+  mmi = modular_multiplicative_inverse(a, 26);
+  for (i = 0; i < intext_size; i++)
+    *(outtext + i) = NUMCHAR(modn((CHARNUM(*(intext + i)) - b) * mmi, 26));
+}
+
+void affine_bf(char *intext, int intext_size, char *outtext)
+{
   int a, b; /* ax + b */
   int a_best = 0, b_best = 0;
-  int mmi; /* modular multiplicative inverse */
   int score, score_best; /* Dictionary text_tmp scoring */
   
   /* Select() stuff */
@@ -190,12 +191,11 @@ void affine_bf(char *text, int text_size)
   
   score_best = -1;
   score_text_pro_state pro_state;
-  score_text_pro_start(text_size, &pro_state);
-  
-  char *text_tmp  = malloc_good(sizeof(char) * text_size + 1);
-  char *text_best = malloc_good(sizeof(char) * text_size + 1);
+  score_text_pro_start(intext_size, &pro_state);
 
-  *(text_best + text_size) = '\0';
+  /* Temporary location for testing in */
+  char *text_tmp  = malloc_good(sizeof(char) * intext_size + 1);
+  *(text_tmp + intext_size) = 0;
   
   printf("Starting affine brute force, press enter to stop...\n");
   
@@ -208,27 +208,21 @@ void affine_bf(char *text, int text_size)
     {
       for (b = 0; b < 26; b++)
       {
-        mmi = modular_multiplicative_inverse(a, 26);
-      
-        for (i = 0; i < text_size; i++)
-        {
-          /* Subtract b, multiply by the inverse and mod */
-          *(text_tmp + i) = NUMCHAR(modn((CHARNUM(*(text + i)) - b) * mmi, 26));
-        }
-    
+        affine_decode(intext, intext_size, text_tmp, a, b);
         score = score_text_pro(text_tmp, &pro_state);
+
         if (score > score_best)
         {
           score_best = score;
           a_best = a;
           b_best = b;
-          memcpy(text_best, text_tmp, text_size);
+          memcpy(outtext, text_tmp, intext_size);
         } 
       
         if ((time(NULL) - AFFINE_WAIT) > (int) t1) /* Do stuff interval */
         {
           printf("Curent: %dx + %d\n", a, b);
-          printf("Best match (%dx + %d): %.50s\n", a_best, b_best, text_best);
+          printf("Best match (%dx + %d): %.50s\n", a_best, b_best, outtext);
         
           set_stdin_tmp = set_stdin;
           select(1, &set_stdin_tmp, NULL, NULL, &seltime);
@@ -245,18 +239,17 @@ void affine_bf(char *text, int text_size)
   }
   printf("Received user interrupt...\n\n");
 
-  /* Save */
-  memcpy(text, text_best, text_size);
-  
+  /* Set the null byte */
+  *(outtext + intext_size) = 0;
+
   /* Some info */
   score_text_pro_print_stats("Affine bruteforce", &pro_state);
   printf("Best match (%dx + %d): \n\n", a_best, b_best);
   
-  printf("%s\n\n", text_best);
+  printf("%s\n\n", outtext);
   
   /* Clean up */
   score_text_pro_cleanup(&pro_state);
   free(text_tmp);
-  free(text_best);
 }
 
