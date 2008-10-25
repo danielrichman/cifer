@@ -266,15 +266,11 @@ void copybuffer(int buffer_id_1, int buffer_id_2)
 {
   printf("copybuffer: copying %i to %i...\n", buffer_id_1, buffer_id_2);
 
-  if (get_buffer_size(buffer_id_2) < get_buffer_size(buffer_id_1))
+  if (get_buffer_size(buffer_id_2) < get_buffer_real_size(buffer_id_1))
   {
     printf("copybuffer: must resize buffer %i to %i bytes\n", 
                             buffer_id_2, get_buffer_size(buffer_id_1));
     resizebuffer(buffer_id_2, get_buffer_size(buffer_id_1));
-  }
-  else if (get_buffer_size(buffer_id_1) != get_buffer_size(buffer_id_2))
-  {
-    printf("copybuffer: note - buffers arn't the same size (not a problem)\n");
   }
 
   memcpy(get_buffer(buffer_id_2), get_buffer(buffer_id_1),

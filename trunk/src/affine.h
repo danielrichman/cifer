@@ -16,11 +16,9 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-void crack_affine(char *text, int text_size);
-
-/* Given two ptext -> ctext mappings (cl_1/2 -> pl_1/2), will give values for
- * a and b in equation: x -> ax + b (mod 26) */
 int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b);
+void crack_affine(char *intext, int intext_size, char *outtext);
+void affine_bf(char *intext, int intext_size, char *outtext);
+void affine_encode(char *intext, int intext_size, char *outtext, int a, int b);
+void affine_decode(char *intext, int intext_size, char *outtext, int a, int b);
 
-/* Affine brute force */
-void affine_bf(char *ctext, int ctext_size);

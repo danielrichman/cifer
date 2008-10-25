@@ -221,10 +221,11 @@ int score_text_dict_fast(char *text, int size)
   /* If it gets to size - MIN_WORD_SIZE we won't find the last bit anyway 
    * because it's limited by MIN_WORD_SIZE */
 
-  for (i = 0; i < (size - MIN_WORD_SIZE); i += match_size)
+  for (i = 0; i < (size - MIN_WORD_SIZE); i += max(match_size, 1))
   {
     ch1 = *(text + i);
     ch2 = *(text + i + 1);
+    match_size = 0;
 
     if (ALPHA_CH(ch1) && ALPHA_CH(ch2))
     {
@@ -233,32 +234,98 @@ int score_text_dict_fast(char *text, int size)
       test_start = *(dict_pointer + prefix);
       test_end = *(dict_pointer_end + prefix);
 
-      /* Find the smallest possibility (so start high) */
-      match_size = WORD_BUF_SIZE;
-
       for (j = test_start; j < test_end; j += jlen_buf + 1) /* Remember \0 */
       {
         /* In theory, the \0 terminators should take care of all size checks,
          * we use strncmp to limit to checking the correct size of text. */
         jlen_buf = strlen(j);
 
-        if (jlen_buf < match_size && strncasecmp(j, text + i, jlen_buf) == 0)
+        if (jlen_buf > match_size && strncasecmp(j, text + i, jlen_buf) == 0)
           match_size = jlen_buf;
       }
 
-      if (match_size != WORD_BUF_SIZE)
-      {
-        score += match_size;
-      }
-      else
-      {
-        /* For the loop incrementing... */
-        match_size = 1;
-      }
+      score += match_size;
     }
   }
 
   return score;
+}
+
+void score_text_dict_spaces(char *text, int size, int *space_array)
+{
+  int i, jlen_buf, prefix, match_size, super_size, failing;
+  char *test_start, *test_end, *j;
+  char ch1, ch2;
+
+  if (dict == NULL)          return;
+
+  match_size = 1;
+  failing = 0;
+
+  for (i = 0; i < size; i++)  *(space_array + i) = 0;
+
+  for (i = 0; i < (size - MIN_WORD_SIZE); i += max(match_size, 1))
+  {
+    ch1 = *(text + i);
+    ch2 = *(text + i + 1);
+    match_size = 0;
+    super_size = 0;
+
+    /* For spacing, we don't care about speed or score, so we use
+     * this hard coded preference list to make it readable */
+    #define superword(w)  if (strncasecmp(w, text + i, sizeof(w) - 1) == 0) \
+                                            super_size = sizeof(w) - 1;
+         superword("the")
+    else superword("of")
+    else superword("to")
+    else superword("in")
+    else superword("and")
+    else superword("for")
+    else superword("was")
+    else superword("is")
+    else superword("that")
+    else superword("on")
+    else superword("at")
+    else superword("he")
+    else superword("with")
+    else superword("by")
+    else superword("be")
+    else superword("it")
+    else superword("an")
+    else superword("his")
+
+    match_size = super_size;
+
+    if (ALPHA_CH(ch1) && ALPHA_CH(ch2))
+    {
+      prefix = (CHARNUM( ch1 ) * 26) + CHARNUM( ch2 );
+
+      test_start = *(dict_pointer + prefix);
+      test_end = *(dict_pointer_end + prefix);
+
+      for (j = test_start; j < test_end; j += jlen_buf + 1)
+      {
+        jlen_buf = strlen(j);
+
+        if (jlen_buf > match_size && strncasecmp(j, text + i, jlen_buf) == 0)
+          match_size = jlen_buf;
+      }
+    }
+
+    /* Something like this its worth hinting in super's favour */
+    if (match_size - 1 == super_size)  match_size = super_size;
+
+    if (match_size != 0)
+    {
+      if (failing)  *(space_array + i - 1) = 1;
+      *(space_array + i + match_size - 1) = 1;
+      failing = 0;
+    }
+    else
+    {
+      failing = 1;
+    }
+  }
 }
 
 void init_dict(void)

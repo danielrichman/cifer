@@ -18,9 +18,9 @@
 
 #define DICT_INIT_CHECK   297  /* Just some random number ;) */
 
-void init_dict(void);
-void load_dict(void);
-int score_text_dict_fast(char *text, int size);
+extern char *dict;
+extern char **dict_pointer;
+extern char **dict_pointer_end;
 
 typedef struct {
   int text_size;
@@ -35,12 +35,12 @@ typedef struct {
   int init_check;
 } score_text_pro_state;
 
+void init_dict(void);
+void load_dict(void);
+int score_text_dict_fast(char *text, int size);
+void score_text_dict_spaces(char *text, int size, int *space_array);
 void score_text_pro_start(int text_size, score_text_pro_state *state);
 void score_text_pro_cleanup(score_text_pro_state *state);
 void score_text_pro_print_stats(char *englishname, score_text_pro_state *state);
 int score_text_pro(char *text, score_text_pro_state *state);
-
-extern char *dict;
-extern char **dict_pointer;
-extern char **dict_pointer_end;
 

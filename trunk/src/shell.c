@@ -48,6 +48,7 @@ int cfsh_read(FILE *read, int mode)
   /* Gogogo! */
   looping = 1;
   num = 0;
+  result = CFSH_OK;
 
   /* Shouldn't happen */
   if (mode == CFSH_READ_MODE_INTERACTIVE && read != stdin)
