@@ -16,9 +16,9 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define CFSH_IO_MODE_AUTO        0  /* Create the file if it doesnt exist */
-#define CFSH_IO_MODE_OVERWRITE   1  /* Overwrite or create */
-#define CFSH_IO_MODE_APPEND      2  /* Append or create */
+#define CFSH_IO_MODE_AUTO        0    /* Create the file if it doesnt exist */
+#define CFSH_IO_MODE_OVERWRITE   1    /* Overwrite or create */
+#define CFSH_IO_MODE_APPEND      2    /* Append or create */
 
 #define BUFFER_FILTER_NONE       4    /* No filter applied yet */
 #define BUFFER_FILTER_ALPHA      5    /* Alpha only, case preserved */
@@ -27,9 +27,10 @@
 #define BUFFER_FILTER_UALPHA     8    /* Alpha only, All upper */
 #define BUFFER_FILTER_FLIPCASE   9    /* Flip Case */
 #define BUFFER_FILTER_CASEBACON  10   /* Changes case to ab */
-#define BUFFER_FILTER_NUM        11   /* Numbers only */
-#define BUFFER_FILTER_ESP        12   /* All but spaces & xsp chars */
-#define BUFFER_FILTER_ENL        13   /* All but xsp chars (see macros) */
+#define BUFFER_FILTER_BACON      11   /* Filters to AB only */
+#define BUFFER_FILTER_NUM        12   /* Numbers only */
+#define BUFFER_FILTER_ESP        13   /* All but spaces & xsp chars */
+#define BUFFER_FILTER_ENL        14   /* All but xsp chars (see macros) */
 
 extern char **cfsh_buffers;
 extern int *cfsh_buffer_filters;
