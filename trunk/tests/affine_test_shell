@@ -1,7 +1,25 @@
-buffers 2
+buffers 3
+
 load tests/ctext_affine buffer_0
+
+copy buffer_0 buffer_2
 filter buffer_0 alpha
+
 affine buffer_0 buffer_1
-spaces buffer_1 buffer_0
-clear buffer_1
+affine buffer_2 buffer_0
+
+filter buffer_1 esp
+filter buffer_0 esp
+
+spaces buffer_1 buffer_2
+spaces buffer_0 buffer_1
+
+wordwrap buffer_2 buffer_0
+wordwrap buffer_1 buffer_2
+
+copy buffer_2 buffer_1
+buffers 2
+
 read buffer_0
+read buffer_1
+

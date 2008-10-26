@@ -161,17 +161,27 @@ int affine_solve(int cl_1, int pl_1, int cl_2, int pl_2, int *a, int *b)
 
 void affine_encode(char *intext, int intext_size, char *outtext, int a, int b)
 {
-  int i;
+  int i, ch;
+
   for (i = 0; i < intext_size; i++)
-    *(outtext + i) = modp((CHARNUM(*(intext + i)) * a) + b, 26);
+  {
+    ch = CHARNUM(*(intext + i));
+    if (ch != -1) *(outtext + i) = modp((ch * a) + b, 26);
+    else          *(outtext + i) = *(intext + i);
+  }
 }
 
 void affine_decode(char *intext, int intext_size, char *outtext, int a, int b)
 {
-  int i, mmi;
+  int i, ch, mmi;
   mmi = modular_multiplicative_inverse(a, 26);
+
   for (i = 0; i < intext_size; i++)
-    *(outtext + i) = NUMCHAR(modn((CHARNUM(*(intext + i)) - b) * mmi, 26));
+  {
+    ch = CHARNUM(*(intext + i));
+    if (ch != -1) *(outtext + i) = NUMCHAR(modn((ch - b) * mmi, 26));
+    else          *(outtext + i) = *(intext + i);
+  }
 }
 
 void affine_bf(char *intext, int intext_size, char *outtext)

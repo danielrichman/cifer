@@ -38,8 +38,12 @@ void *realloc_good(void *ptr, size_t size);
 size_t strtlens(const char *s, size_t sz);
 size_t strlefts(const char *s, size_t sz);
 size_t strrights(const char *s, size_t sz);
+size_t stralens(const char *s, size_t sz);
+void cf_wordwrap(char *text, int text_size, int *nl_array);
 
-#define strtlen(s)  (strtlens(s, strlen(s)))
-#define strleft(s)  (strlefts(s, strlen(s)))
+
+#define strtlen(s)  (strtlens(s,  strlen(s)))
+#define strleft(s)  (strlefts(s,  strlen(s)))
 #define strright(s) (strrights(s, strlen(s)))
+#define stralen(s)  (stralens(s,  strlen(s)))
 
