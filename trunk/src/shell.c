@@ -80,7 +80,9 @@ int cfsh_read(FILE *read, int mode)
       }
     }
 
-    if (strtlen(line) != 0)
+    /* If it is > than 0 length and its not a #comment... */
+    /* To ensure we can test the first char, we do this */
+    if (strtlen(line) != 0) if (*(line) != '#')
     {
       /* If its not from stdin, then echo it out */
       if (mode != CFSH_READ_MODE_INTERACTIVE && 

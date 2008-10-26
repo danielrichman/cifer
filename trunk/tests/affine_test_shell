@@ -1,3 +1,5 @@
+#! ./cifer -f 
+
 buffers 3
 
 load tests/ctext_affine buffer_0
