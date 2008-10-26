@@ -331,15 +331,16 @@ int action_spaces(int argc, char **argv)
   int *space_array;
   char *in, *out;
 
-  actionu_argchk(2,                            action_spaces_usage);
-  actionu_bufferparse(*(argv)    , buffer_in,  action_spaces_usage);
-  actionu_bufferparse(*(argv + 1), buffer_out, action_spaces_usage);
-  actionu_bufferchk(buffer_in, buffer_out,     action_spaces_usage);
+  actionu_argchk(2,                                action_spaces_usage);
+  actionu_bufferparse(*(argv)    , buffer_in,      action_spaces_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out,     action_spaces_usage);
+  actionu_bufferchk(buffer_in, buffer_out,         action_spaces_usage);
+  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ESP, action_spaces_usage);
   actionu_dictcheck();
 
   in  = get_buffer(buffer_in);
   out = get_buffer(buffer_out);
-  get_buffer_filter(buffer_out) = BUFFER_FILTER_NONE;
+  get_buffer_filter(buffer_out) = BUFFER_FILTER_ENL;
 
   sizecache = get_buffer_real_size(buffer_in);
   sizeadd = 0;
@@ -374,6 +375,55 @@ int action_spaces(int argc, char **argv)
   return CFSH_OK;
 }
 
+int action_wordwrap(int argc, char **argv)
+{
+  int buffer_in, buffer_out, sizecache, sizeadd, i, j;
+  int *nl_array;
+  char *in, *out;
+
+  actionu_argchk(2,                                action_wordwrap_usage);
+  actionu_bufferparse(*(argv)    , buffer_in,      action_wordwrap_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out,     action_wordwrap_usage);
+  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ENL, action_wordwrap_usage);
+  actionu_bufferchk(buffer_in, buffer_out,         action_wordwrap_usage);
+
+  in  = get_buffer(buffer_in);
+  out = get_buffer(buffer_out);
+  get_buffer_filter(buffer_out) = BUFFER_FILTER_NONE;
+
+  sizecache = get_buffer_real_size(buffer_in);
+  sizeadd = 0;
+
+  nl_array = malloc_good( sizeof(int) * sizecache );
+  cf_wordwrap(in, sizecache, nl_array);
+
+  for (i = 0; i < sizecache; i++) if (*(nl_array + i)) sizeadd++;
+
+  if (get_buffer_size(buffer_out) < (sizecache + sizeadd))
+  {
+    printf("wordwrap: must increase buffer size to %i bytes.\n",
+                                           sizecache + sizeadd);
+    resizebuffer(buffer_out, sizecache + sizeadd);
+  }
+
+  j = 0;
+  for (i = 0; i < sizecache; i++)
+  {
+    *(out + j) = *(in + i);
+    j++;
+
+    if (*(nl_array + i))
+    {
+      *(out + j) = '\n';
+      j++;
+    }
+  }
+
+  printf("\n%s\n\n", out);
+  free(nl_array);
+  return CFSH_OK;
+}
+
 int action_loaddict(int argc, char **argv)
 {
   actionu_argless(action_loaddict_usage);
@@ -394,7 +444,6 @@ int action_affine(int argc, char **argv)
   actionu_argchk(2,                            action_affine_usage);
   actionu_bufferparse(*(argv),     buffer_in,  action_affine_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affine_usage);
-  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA, action_affine_usage);
   actionu_bufferchk(buffer_in, buffer_out, action_affine_usage);
   crack_affine(get_buffer(buffer_in), get_buffer_real_size(buffer_in), 
                get_buffer(buffer_out));
@@ -420,7 +469,6 @@ int action_affinebf(int argc, char **argv)
   actionu_argchk(2,                            action_affinebf_usage);
   actionu_bufferparse(*(argv),     buffer_in,  action_affinebf_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affinebf_usage);
-  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA, action_affine_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_affineencode_usage);
   affine_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
             get_buffer(buffer_out));
@@ -435,7 +483,6 @@ int action_affineencode(int argc, char **argv)
 
   actionu_bufferparse(*(argv),     buffer_in,  action_affineencode_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affineencode_usage);
-  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA, action_affine_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_affineencode_usage);
 
   actionu_intparse(   *(argv + 2), a,          action_affineencode_usage);
@@ -459,7 +506,6 @@ int action_affinedecode(int argc, char **argv)
 
   actionu_bufferparse(*(argv),     buffer_in,  action_affinedecode_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affinedecode_usage);
-  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA, action_affine_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_affinedecode_usage);
 
   actionu_intparse(   *(argv + 2), a,          action_affinedecode_usage);

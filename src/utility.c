@@ -53,6 +53,16 @@ size_t strtlens(const char *s, size_t sz)
   return sz - strlefts(s, sz) - strrights(s, sz);
 }
 
+size_t stralens(const char *s, size_t sz)
+{
+  int i, c;
+
+  for (i = 0, c = 0; i < sz; i++)
+    if (ALPHA_CH(*(s + i))) c++;
+
+  return c;
+}
+
 size_t strlefts(const char *s, size_t sz)
 {
   int i, left;
@@ -83,6 +93,37 @@ size_t strrights(const char *s, size_t sz)
   }
 
   return right;
+}
+
+void cf_wordwrap(char *text, int text_size, int *nl_array)
+{
+  int i, lastspace, linelen;
+  char ch;
+
+  lastspace = -1;
+  for (i = 0; i < text_size; i++)  *(nl_array + i) = 0;
+
+  for (i = 0, linelen = 0; i < text_size; i++, linelen++)
+  {
+    ch = *(text + i);
+    if (SPACE_CH(ch))  lastspace = i;
+
+    if (linelen >= 70)
+    {
+      if (lastspace == -1)
+      {
+        *(nl_array + i) = 1;
+        linelen = 0;
+      }
+      else
+      {
+        *(nl_array + lastspace) = 1;
+        linelen = i - lastspace - 1;
+      }
+
+      lastspace = -1;
+    }
+  }
 }
 
 /* The following macro is a condensed version of this code 

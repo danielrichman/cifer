@@ -41,17 +41,20 @@ void create_identity_frequency_graph(int *frequency_graph, int text_size)
 /* Does not support jump/column implementation like frequency_analysis does */
 void count_freq(char *text, int input_size, int *tgt)
 {
-  int i;
+  int i, ch;
 
   for (i = 0; i < 26; i++)          tgt[i] = 0;
-  for (i = 0; i < input_size; i++)  tgt[ CHARNUM(*(text + i)) ]++;
+  for (i = 0; i < input_size; i++)
+  {
+    ch = CHARNUM(*(text + i));
+    if (ch != -1)  tgt[ ch ]++;
+  }
 }
 
 /* Counts digrams, sorts them, and loads the top `tgt_size` into tgt[] */
 void count_digrams(char *text, int input_size, digram *tgt, int tgt_size)
 {
-  int i, h, j, k, l;
-  char ch1, ch2;
+  int i, h, j, ch1, ch2;
   digram digrams[26 * 26];
 
   /* Setup */
@@ -68,14 +71,10 @@ void count_digrams(char *text, int input_size, digram *tgt, int tgt_size)
   h = input_size - 1;
   for (i = 0; i < h; i++)
   {
-    ch1 = *(text + i);
-    ch2 = *(text + i + 1);
+    ch1 = CHARNUM(*(text + i));
+    ch2 = CHARNUM(*(text + i + 1));
 
-    j = CHARNUM(ch1);
-    k = CHARNUM(ch2);
-    l = (j * 26) + k;
-
-    digrams[l].digram_value ++;
+    if (ch1 != -1 && ch2 != -1)   digrams[((ch1 * 26) + ch2)].digram_value++;
   }
 
   /* No point sorting if we only want one */
@@ -99,8 +98,7 @@ void count_digrams(char *text, int input_size, digram *tgt, int tgt_size)
 
 void count_trigrams(char *text, int input_size, trigram *tgt, int tgt_size)
 {
-  int i, h, j, k, l, m;
-  char ch1, ch2, ch3;
+  int i, h, j, k, ch1, ch2, ch3;
   trigram trigrams[26 * 26 * 26];   /* You know something's wrong when one stack
                                      * frame is 70KB. =P */
 
@@ -119,16 +117,12 @@ void count_trigrams(char *text, int input_size, trigram *tgt, int tgt_size)
   h = input_size - 2;
   for (i = 0; i < h; i++)
   {
-    ch1 = *(text + i);
-    ch2 = *(text + i + 1);
-    ch3 = *(text + i + 2);
+    ch1 = CHARNUM(*(text + i));
+    ch2 = CHARNUM(*(text + i + 1));
+    ch3 = CHARNUM(*(text + i + 2));
 
-    j = CHARNUM(ch1);
-    k = CHARNUM(ch2);
-    l = CHARNUM(ch3);
-    m = (j * (26 * 26)) + (k * 26) + l;
-
-    trigrams[m].trigram_value ++;
+    if (ch1 != -1 && ch2 != -1 && ch3 != -1)
+      trigrams[((ch1 * (26 * 26)) + (ch2 * 26) + ch3)].trigram_value ++;
   }
 
   /* Better this way */

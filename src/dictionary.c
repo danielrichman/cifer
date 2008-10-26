@@ -275,29 +275,29 @@ void score_text_dict_spaces(char *text, int size, int *space_array)
      * this hard coded preference list to make it readable */
     #define superword(w)  if (strncasecmp(w, text + i, sizeof(w) - 1) == 0) \
                                             super_size = sizeof(w) - 1;
-         superword("the")
-    else superword("of")
-    else superword("to")
-    else superword("in")
-    else superword("and")
-    else superword("for")
-    else superword("was")
-    else superword("is")
-    else superword("that")
-    else superword("on")
-    else superword("at")
-    else superword("he")
-    else superword("with")
-    else superword("by")
-    else superword("be")
-    else superword("it")
-    else superword("an")
-    else superword("his")
-
-    match_size = super_size;
 
     if (ALPHA_CH(ch1) && ALPHA_CH(ch2))
     {
+           superword("the")
+      else superword("of")
+      else superword("to")
+      else superword("in")
+      else superword("and")
+      else superword("for")
+      else superword("was")
+      else superword("is")
+      else superword("that")
+      else superword("on")
+      else superword("at")
+      else superword("he")
+      else superword("with")
+      else superword("by")
+      else superword("be")
+      else superword("it")
+      else superword("an")
+      else superword("his")
+
+      match_size = super_size;
       prefix = (CHARNUM( ch1 ) * 26) + CHARNUM( ch2 );
 
       test_start = *(dict_pointer + prefix);
@@ -310,20 +310,20 @@ void score_text_dict_spaces(char *text, int size, int *space_array)
         if (jlen_buf > match_size && strncasecmp(j, text + i, jlen_buf) == 0)
           match_size = jlen_buf;
       }
-    }
 
-    /* Something like this its worth hinting in super's favour */
-    if (match_size - 1 == super_size)  match_size = super_size;
+      /* Something like this its worth hinting in super's favour */
+      if (match_size - 1 == super_size)  match_size = super_size;
 
-    if (match_size != 0)
-    {
-      if (failing)  *(space_array + i - 1) = 1;
-      *(space_array + i + match_size - 1) = 1;
-      failing = 0;
-    }
-    else
-    {
-      failing = 1;
+      if (match_size != 0)
+      {
+        if (failing)  *(space_array + i - 1) = 1;
+        *(space_array + i + match_size - 1) = 1;
+        failing = 0;
+      }
+      else
+      {
+        failing = 1;
+      }
     }
   }
 }

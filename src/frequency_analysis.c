@@ -152,7 +152,7 @@ int frequency_analysis(char *text, int text_size, int jump)
 {
   int frequency_graph[26];
   int identity_frequency_graph[26];
-  int i, j, temp_diff, best_diff, best_diff_shift;
+  int i, j, ch, temp_diff, best_diff, best_diff_shift;
 
   /* Prepare the variables */
   best_diff = -1;
@@ -165,8 +165,13 @@ int frequency_analysis(char *text, int text_size, int jump)
   /* J is used to temporarily store the total text/column size */
   for (i = 0; i < text_size; i += jump)
   {
-    frequency_graph[CHARNUM(*(text + i))] += 1;
-    j++;
+    ch = CHARNUM(*(text + i));
+
+    if (ch != -1)
+    {
+      frequency_graph[ch] += 1;
+      j++;
+    }
   }
 
   /* Setup the identity freq graphs */
