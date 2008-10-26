@@ -16,6 +16,6 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-void bacon_dec(char *text, int text_size, int *new_size);
-void bacon_upperlower_convert(char *text, int text_size);
+void bacon_encode(char *intext, int intext_size, char *outtext);
+void bacon_decode(char *intext, int intext_size, char *outtext);
 
