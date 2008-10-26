@@ -26,23 +26,54 @@ char *bacon_alphabet[26] = { "AAAAA", "AAAAB", "AAABA", "AAABB",
                              "BAABB", "BAABB", "BABAA", "BABAB", 
                              "BABBA", "BABBB" };
 
-void bacon_dec(char *text, int text_size, int *new_size)
+void bacon_encode(char *intext, int intext_size, char *outtext)
+{
+  int i, j;
+  char ch;
+
+  printf("Encrypting using bacon cipher...\n");
+
+  for (i = 0, j = 0; i < intext_size; i++)
+  {
+    ch = *(intext + i);
+
+    if (ALPHA_CH(ch))
+    {
+      memcpy(outtext + j, bacon_alphabet[CHARNUM(ch)], 5);
+      j += 5;
+    }
+    else
+    {
+      *(outtext + j) = ch;
+      j++;
+    }
+  }
+
+  *(outtext + j) = 0;
+  printf("\n%s\n\n", outtext);
+}
+
+void bacon_decode(char *intext, int intext_size, char *outtext)
 {
   int i, j, h, ptext_done;              /* Counters */
-  char buf[5];
+  char buf[5], ch;
 
   /* Prepare */
   j = 0;                    /* Number of chars written into buf */
   ptext_done = 0;           /* Number of ptext chars written */
  
   /* Header & stats */
-  printf("Cracking bacon cipher... text_size %d, (mod 5) %d\n", text_size,
-                                                         modp(text_size, 5));
-  
-  for (i = 0; i < text_size; i++)
+  printf("Decoding bacon cipher... \n");
+
+  for (i = 0; i < intext_size; i++)
   {
-    buf[j] = *(text + i);
-    j++;
+    ch = *(intext + i);
+
+    if (CHARNUM(ch) == 0 || CHARNUM(ch) == 1)
+    {
+      buf[j] = ch;
+      j++;
+    }
 
     /* We have one block filled, check it out */
     if (j == 5)
@@ -54,32 +85,25 @@ void bacon_dec(char *text, int text_size, int *new_size)
         { 
           /* We have a match! Don't worry about overlapping, we've 
            * buffered it so it should be fine */
-          *(text + ptext_done) = NUMCHAR(h);
+          *(outtext + ptext_done) = NUMCHAR(h);
           ptext_done++;
           break;
         }
       }
 
+      if (h == 26)
+      {
+        printf("Error: Invalid bacon '%s'\n", buf);
+        return;
+      }
+ 
       /* Reset the counter */
       j = 0;
     }
   }
 
   /* Update the null terminator and the size */
-  *(text + ptext_done) = 0;
-  *new_size = ptext_done;
-
-  printf("Done.\n\n");
-  printf("%*s\n\n", *new_size, text);
+  *(outtext + ptext_done) = 0;
+  printf("\n%s\n\n", outtext);
 }
 
-void bacon_upperlower_convert(char *text, int text_size)
-{
-  int i;
-
-  for (i = 0; i < text_size; i++)
-  {
-    if (ALPHAH_CH(*(text + i))) *(text + i) = 'A';
-    if (ALPHAL_CH(*(text + i))) *(text + i) = 'B';
-  }
-}

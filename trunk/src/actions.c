@@ -444,7 +444,8 @@ int action_affine(int argc, char **argv)
   actionu_argchk(2,                            action_affine_usage);
   actionu_bufferparse(*(argv),     buffer_in,  action_affine_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affine_usage);
-  actionu_bufferchk(buffer_in, buffer_out, action_affine_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_affine_usage);
+  actionu_bufferschk(buffer_in, buffer_out,    action_affine_usage);
   crack_affine(get_buffer(buffer_in), get_buffer_real_size(buffer_in), 
                get_buffer(buffer_out));
   return CFSH_OK;
@@ -469,7 +470,8 @@ int action_affinebf(int argc, char **argv)
   actionu_argchk(2,                            action_affinebf_usage);
   actionu_bufferparse(*(argv),     buffer_in,  action_affinebf_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affinebf_usage);
-  actionu_bufferchk(buffer_in, buffer_out,     action_affineencode_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_affinebf_usage);
+  actionu_bufferschk(buffer_in, buffer_out,    action_affinebf_usage);
   affine_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
             get_buffer(buffer_out));
   return CFSH_OK;
@@ -484,6 +486,7 @@ int action_affineencode(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in,  action_affineencode_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affineencode_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_affineencode_usage);
+  actionu_bufferschk(buffer_in, buffer_out,    action_affineencode_usage);
 
   actionu_intparse(   *(argv + 2), a,          action_affineencode_usage);
   actionu_intparse(   *(argv + 3), b,          action_affineencode_usage);
@@ -507,6 +510,7 @@ int action_affinedecode(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in,  action_affinedecode_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affinedecode_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_affinedecode_usage);
+  actionu_bufferschk(buffer_in, buffer_out,    action_affinedecdoe_usage);
 
   actionu_intparse(   *(argv + 2), a,          action_affinedecode_usage);
   actionu_intparse(   *(argv + 3), b,          action_affinedecode_usage);
@@ -521,8 +525,44 @@ int action_affinedecode(int argc, char **argv)
   return CFSH_OK;
 }
 
-int action_bacon(int argc, char **argv)
+int action_baconencode(int argc, char **argv)
 {
+  int buffer_in, buffer_out;
+  actionu_argchk(2,                            action_baconencode_usage);
+  actionu_bufferparse(*(argv),     buffer_in,  action_baconencode_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_baconencode_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_baconencode_usage);
+
+  if (get_buffer_real_size(buffer_in) * 5 > get_buffer_size(buffer_out))
+  {
+    printf("auto expanding output buffer %i to %i bytes (just in case).\n",
+                 buffer_out, get_buffer_real_size(buffer_in) * 5);
+    resizebuffer(buffer_out, get_buffer_real_size(buffer_in) * 5);
+  }
+
+
+  bacon_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+               get_buffer(buffer_out));
+  return CFSH_OK;
+}
+
+int action_bacondecode(int argc, char **argv)
+{
+  int buffer_in, buffer_out;
+  actionu_argchk(2,                            action_bacondecode_usage);
+  actionu_bufferparse(*(argv),     buffer_in,  action_bacondecode_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_bacondecode_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_bacondecode_usage);
+
+  if (get_buffer_real_size(buffer_in) > get_buffer_size(buffer_out))
+  {  
+    printf("auto expanding output buffer %i to %i bytes (just in case).\n",
+                  buffer_out, get_buffer_real_size(buffer_in));  
+    resizebuffer(buffer_out, get_buffer_real_size(buffer_in));  
+  }
+
+  bacon_decode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+               get_buffer(buffer_out));
   return CFSH_OK;
 }
 
