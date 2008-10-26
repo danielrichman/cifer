@@ -38,16 +38,21 @@ Features that are needed
     used, keywords, the lot.
 [X] Implement proper command line parsing using flags (-*) so we can tell the
     program exactly what we need to do.
-[ ] Arg.c and Action.c are a mess, need to be more... dynamic
-[ ] Better handling of input and output, perhaps a function defines what types
+[X] Arg.c and Action.c are a mess, need to be more... dynamic
+[X] Better handling of input and output, perhaps a function defines what types
     of chars it takes and input will preprocess them ready
-[ ] Dictionary _fast and _pro need to take non-alpha chars and discard them;
+[X] Dictionary _fast and _pro need to take non-alpha chars and discard them;
     perhaps some sort of system for specifing if the input will have such
     dirties
     in it and then enabling the slightly-insignificantly slower bits? Mebe? no.
-[ ] Support for numbers etc. in all functions. Transposition functions are 
+[X] Support for numbers etc. in all functions. Transposition functions are 
     already there and _pro and _fast (dictioary) should support them. 
     However, count_(trigrams|digrams|freq) need support for non-alpha chars 
     aswell as delta_ic
 [ ] Support for alphabet deformation, different alphabets and also vowel 
     destruction; see ncc 08-3b
+[ ] Autotest feature, with lots and LOTS of ciphers and their ptexts
+    in an autotest directory, and a script that runs autopwn on them
+    all, then uses diff -q to see if they differ. This could be as a make
+    target, eg. make test to test the whole program. That would be the 
+    benchmark that says "yes, we've made an awesome program"
