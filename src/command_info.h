@@ -15,7 +15,8 @@
   lalpha    - Only alpha chars allowed, all changed to lowercase. \n\
   ualpha    - Only alpha chars allowed, all changed to uppercase. \n\
   flipcase  - Only alpha chars allowed, upper/lowercase flipped. \n\
-  casebacon - Only only alpha, all changed to AB from upper/lower. \n\
+  casebacon - Only alpha, all changed to AB from upper/lower. \n\
+  bacon     - Only A or Bs \n\
   num       - Only numbers allowed. \n\
   esp       - Removes all whitespace. \n\
   enl       - Removes all whitespace except standard ' ' spaces. \n"

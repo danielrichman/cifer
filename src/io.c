@@ -230,6 +230,7 @@ char *get_filter_text(int mode)
     case BUFFER_FILTER_UALPHA:      return "ualpha";
     case BUFFER_FILTER_FLIPCASE:    return "flipcase";
     case BUFFER_FILTER_CASEBACON:   return "casebacon";
+    case BUFFER_FILTER_BACON:       return "bacon";
     case BUFFER_FILTER_NUM:         return "num";
     case BUFFER_FILTER_ESP:         return "esp";
     case BUFFER_FILTER_ENL:         return "enl";
@@ -252,6 +253,8 @@ int get_buffer_filter_fromtext(char *str)
     return BUFFER_FILTER_FLIPCASE;
   else if (strcasecmp("casebacon", str) == 0)
     return BUFFER_FILTER_CASEBACON;
+  else if (strcasecmp("bacon", str) == 0)
+    return BUFFER_FILTER_BACON;
   else if (strcasecmp("num", str) == 0)
     return BUFFER_FILTER_NUM;
   else if (strcasecmp("esp", str) == 0)
@@ -287,9 +290,10 @@ void filterbuffer(int buffer_id, int mode)
   // #define BUFFER_FILTER_UALPHA     8    /* Alpha only, All upper */
   // #define BUFFER_FILTER_FLIPCASE   9    /* Flip Case */
   // #define BUFFER_FILTER_CASEBACON  10   /* Changes case to ab */
-  // #define BUFFER_FILTER_NUM        11   /* Numbers only */
-  // #define BUFFER_FILTER_ESP        12   /* All but spaces & xsp chars */
-  // #define BUFFER_FILTER_ENL        13   /* All but xsp chars (see macros) */
+  // #define BUFFER_FILTER_BACON      11   /* AB only */
+  // #define BUFFER_FILTER_NUM        12   /* Numbers only */
+  // #define BUFFER_FILTER_ESP        13   /* All but spaces & xsp chars */
+  // #define BUFFER_FILTER_ENL        14   /* All but xsp chars (see macros) */
 
   int i, j, t, newsize, newpos;
   char ch;
@@ -314,6 +318,8 @@ void filterbuffer(int buffer_id, int mode)
       case BUFFER_FILTER_UALPHA:    t = ALPHA_CH(ch);                     break;
       case BUFFER_FILTER_FLIPCASE:  t = ALPHA_CH(ch);                     break;
       case BUFFER_FILTER_CASEBACON: t = ALPHA_CH(ch);                     break;
+      case BUFFER_FILTER_BACON:     t = (CHARNUM(ch) == 0 || CHARNUM(ch) == 1);
+                                                                          break;
       case BUFFER_FILTER_NUM:       t = NUMBER_CH(ch);                    break;
       case BUFFER_FILTER_ESP:       t = !(SPACE_CH(ch) || XSPACE_CH(ch)); break;
       case BUFFER_FILTER_ENL:       t = !XSPACE_CH(ch);                   break;
@@ -340,6 +346,8 @@ void filterbuffer(int buffer_id, int mode)
                                     ch = ALPHA_FLIP_CASE(ch);             break;
       case BUFFER_FILTER_CASEBACON: t = ALPHA_CH(ch);
                                     ch = ALPHA_CASEBACON(ch);             break;
+      case BUFFER_FILTER_BACON:     t = (CHARNUM(ch) == 0 || CHARNUM(ch) == 1);
+                                    ch = ALPHA_TOUPPER(ch);               break;
       case BUFFER_FILTER_NUM:       t = NUMBER_CH(ch);                    break;
       case BUFFER_FILTER_ESP:       t = !(SPACE_CH(ch) || XSPACE_CH(ch)); break;
       case BUFFER_FILTER_ENL:       t = !XSPACE_CH(ch);                   break;
@@ -361,6 +369,7 @@ void filterbuffer(int buffer_id, int mode)
     case BUFFER_FILTER_LALPHA:    t = BUFFER_FILTER_ALPHA;              break;
     case BUFFER_FILTER_UALPHA:    t = BUFFER_FILTER_ALPHA;              break;
     case BUFFER_FILTER_FLIPCASE:  t = BUFFER_FILTER_ALPHA;              break;
+    case BUFFER_FILTER_CASEBACON: t = BUFFER_FILTER_BACON;              break;
   }
 
   get_buffer_filter(buffer_id) = t;
