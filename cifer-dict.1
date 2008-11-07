@@ -1,0 +1,32 @@
+.TH CIFER-DICT 1
+.SH NAME
+cifer-dict \- turn files containing lists of words into a dictionary for 
+.BR cifer (1)
+.SH SYNOPSIS
+\fBcifer-dict\fR \fIinput1\fR [\fIinput2\fR]... \fIoutput\fR
+.SH DESCRIPTION
+In order to use some functions of 
+.BR cifer (1)
+a specially formatted 'dictionary' must be supplied.
+.B cifer-dict
+takes files contianing lists of words as arguments, and outputs the correctly
+formatted dictionary.
+
+This dictionary will have unicode characters converted to their nearest
+ASCII equivalents and all characters converted to lower case. It will be sorted
+and duplicates removed.
+.SH BUGS
+Please report any bugs by sending email to either <DRebellion1@googlemail.com>
+or <danieljonathanrichman@googlemail.com>.
+.SH AUTHOR
+Simrun Basuita <DRebellion1@googlemail.com>
+.SH COPYRIGHT
+This manual page was written by Simrun Basuita <DRebellion1@googlemail.com>.
+Permission is granted to copy, distribute and/or modify this document under the
+terms of the GNU General Public License, Version 3 or any later version
+published by the Free Software Foundation.
+
+On Debian systems, the complete text of the GNU General Public License can be
+found in \fI/usr/share/common-licenses/GPL\fR.
+.SH "SEE ALSO"
+.BR cifer (1)
