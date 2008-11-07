@@ -1,4 +1,6 @@
 
+#define dict_not_loaded "dictionary not loaded: type `usage load_dict' for more info\n"
+
 #define action_default_usage "usage: help (to list all commands) or usage <command name>";
 #define action_default_use "no such command";
 
@@ -30,7 +32,13 @@
 #define action_score_usage "usage: score buffer_#\n"
 #define action_spaces_usage "usage: spaces buffer_# buffer_# (input, output)\n"
 #define action_wordwrap_usage "usage: wordwrap buffer_# buffer_# (input, output)\n"
-#define action_loaddict_usage "usage: loaddict <no args>\n"
+#define action_loaddict_usage "usage: loaddict <no args>\n\
+ a dictionary can be created using the cifer-dict command \n\
+ (external to this shell), see the cifer-dict manpage for more info.\n\
+ Some functions will be unavailable. The location of the dictionary can be \n\
+ changed from its default by using the cifer command `dict_location` \n\
+ (a function of the shell) \n"
+#define action_dictlocation_usage "usage: dictlocation <new location: filename>\n"
 #define action_affine_usage "usage: affine buffer_# buffer_# (input, output)\n"
 #define action_affinesolve_usage "usage: affinesolve ct1 pt1 ct2 pt2\n"
 #define action_affinebf_usage "usage: affinebf buffer_# buffer_# (input, output)\n"
@@ -90,6 +98,7 @@
 #define action_spaces_use "spaces will attempt to add spaces to a ctext based on dictionary lookups\n"
 #define action_wordwrap_use "wordwrap will use spaces and try to wrap the text to the specified length\n"
 #define action_loaddict_use "loaddict loads the dictionary into memory if it is not already so\n"
+#define action_dictlocation_use "dictlocation sets the location of the dictionary for the loaddict command\n"
 #define action_affine_use "affine performs an affine crack by trying to find THE and using affinesolve\n"
 #define action_affinesolve_use "affinesolve uses modular arithmitic to solve an affine simultaneous equation\n"
 #define action_affinebf_use "affinebf works alike affine except it uses bruteforce to find the solution\n"

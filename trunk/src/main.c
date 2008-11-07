@@ -41,6 +41,10 @@ int main(int argc, char **argv)
   quick  = 0;
   soft   = 0;
 
+  /* Unavoidable startup. Initialises global pointers and sets
+   * default dictionary location */
+  cfsh_init();
+
   if (argc < 2)
   {
     cfsh_autoinit();

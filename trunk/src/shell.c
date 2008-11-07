@@ -242,6 +242,13 @@ int cfsh_line(char *input, int mode)
   time2.tv_sec  -= time1.tv_sec;
   time2.tv_usec -= time1.tv_usec;
 
+  /* Fix any overlap/carry-over */
+  if (time2.tv_usec < 0)
+  {
+    time2.tv_sec--;
+    time2.tv_usec += 1000000;
+  }
+
   /* Only print if its significant */
   if (time2.tv_sec > 0)
   {

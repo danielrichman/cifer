@@ -40,6 +40,7 @@ int action_quickscript(int argc, char **argv);
 int action_softscript(int argc, char **argv);
 int action_quicksoftscript(int argc, char **argv);
 int action_loaddict(int argc, char **argv);
+int action_dictlocation(int argc, char **argv);
 int action_score(int argc, char **argv);
 int action_spaces(int argc, char **argv);
 int action_wordwrap(int argc, char **argv);

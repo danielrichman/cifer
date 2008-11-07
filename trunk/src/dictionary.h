@@ -19,6 +19,7 @@
 #define DICT_INIT_CHECK   297  /* Just some random number ;) */
 
 extern char *dict;
+extern char *dict_location;
 extern char **dict_pointer;
 extern char **dict_pointer_end;
 

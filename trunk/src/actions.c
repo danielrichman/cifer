@@ -55,6 +55,29 @@
         actionu_intparse(s, t, u);                                           \
     }
 
+#define actionu_intparsef(s, t, u, f)                                        \
+    {                                                                        \
+      intparse_sz = strlen(s);                                               \
+      t = strtol((s) + strlefts((s), intparse_sz), &intparse_validator, 10); \
+      if (intparse_validator !=                                              \
+                       ((s) + intparse_sz - strrights((s), intparse_sz)))    \
+      {                                                                      \
+         printf(u);                                                          \
+         free(f);                                                            \
+         return CFSH_COMMAND_HARDFAIL;                                       \
+      }                                                                      \
+    }                                                                        \
+
+#define actionu_intparsef_char(s, t, u, f)                                   \
+    {                                                                        \
+      intparse_sz = strlen(s);                                               \
+      if (strtlens(s, intparse_sz) == 1 &&                                   \
+           ALPHA_CH( *(s + strlefts(s, intparse_sz)) ))                      \
+        t = CHARNUM( *(s + strlefts(s, intparse_sz)) );                      \
+      else                                                                   \
+        actionu_intparsef(s, t, u, f);                                       \
+    }
+
 #define actionu_bufferparse(s, t, u)                                         \
     {                                                                        \
       t = actionu_bufferparsef(s);                                           \
@@ -438,6 +461,16 @@ int action_loaddict(int argc, char **argv)
   else               return CFSH_COMMAND_HARDFAIL;
 }
 
+int action_dictlocation(int argc, char **argv)
+{
+  actionu_argchk(1, action_dictlocation_usage);
+  dict_location = malloc_good(strlen(*(argv)) + 1);
+  memcpy(dict_location, *(argv), strlen(*(argv)));
+  *(dict_location + strlen(*(argv))) = 0;
+  printf("dictlocation: set dict_location to be '%s'\n", dict_location);
+  return CFSH_OK;
+}
+
 int action_affine(int argc, char **argv)
 {
   int buffer_in, buffer_out;
@@ -568,11 +601,118 @@ int action_bacondecode(int argc, char **argv)
 
 int action_shift(int argc, char **argv)
 {
+  int i, j, k, l, buffer_in, buffer_out, direction;
+  char ch;
+  int *shift;
+  char *dirstr;
+  actionu_intparse_setup();
+
+  if (argc < 4)
+  {
+    printf(action_shift_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  actionu_bufferparse(*(argv),     buffer_in,  action_shift_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_shift_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_shift_usage);
+  actionu_bufferschk(buffer_in, buffer_out,    action_shift_usage);
+
+  if (strcasecmp(*(argv + 2), "forwards") == 0 ||
+      strcasecmp(*(argv + 2), "f") == 0)
+  {
+    direction = 1;
+    dirstr = "forwards";
+  }
+  else if (strcasecmp(*(argv + 2), "backwards") == 0 ||
+           strcasecmp(*(argv + 2), "b") == 0)
+  {
+    direction = 0;
+    dirstr = "backwards";
+  }
+  else
+  {
+    printf(action_shift_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  if (ALPHA_CH(*(*(argv + 3))))
+  {
+    for (i = 3, j = 0; i < argc; i++)
+    {
+      l = strlen(*(argv + i));
+      for (k = 0; k < l; k++)
+      {
+        ch = *(*(argv + i) + k);
+        if (ALPHA_CH(ch))        j++;
+        else if (!SPACE_CH(ch))
+        {
+          printf(action_shift_usage);
+          free(shift);
+          return CFSH_COMMAND_HARDFAIL;
+        }
+      }
+    }
+
+    shift = malloc_good( sizeof(int) * j );
+
+    for (i = 3, j = 0; i < argc; i++)
+    {
+      l = strlen(*(argv + i));
+      for (k = 0; k < l; k++)
+      {
+        ch = *(*(argv + i) + k);
+
+        if (ALPHA_CH(ch))
+        {
+          *(shift + j) = CHARNUM(ch);
+          j++;
+        }
+      }
+    }
+  }
+  else
+  {
+    shift = malloc_good( sizeof(int) * (argc - 3) );
+
+    for (i = 3, j = 0; i < argc; i++, j++)
+    {
+      actionu_intparsef(*(argv + i), *(shift + j), 
+                              action_shift_usage, shift);
+      *(shift + j) = modn( *(shift + j) , 26);
+    }
+  }
+
+  if (direction)   caesar_cipher_enc(get_buffer(buffer_in), 
+                                     get_buffer_real_size(buffer_in), 
+                                     get_buffer(buffer_out), 
+                                     shift, j);
+  else             caesar_cipher_dec(get_buffer(buffer_in), 
+                                     get_buffer_real_size(buffer_in), 
+                                     get_buffer(buffer_out), 
+                                     shift, j);
+
+  printf("shift: shifting %s by %c", dirstr, NUMCHAR(*(shift)));
+  for (i = 1; i < j; i++) printf("%c", NUMCHAR(*(shift + i)));
+  printf("\n\n");
+
+  printf("%s\n\n", get_buffer(buffer_out));
   return CFSH_OK;
 }
 
 int action_deltaic(int argc, char **argv)
 {
+  int buffer_id;
+  double result;
+
+  actionu_argchk(1,                       action_deltaic_usage);
+  actionu_bufferparse(*(argv), buffer_id, action_deltaic_usage);
+
+  result = delta_ic(get_buffer(buffer_id), get_buffer_real_size(buffer_id), 1);
+  printf("The DELTA_IC of buffer_%i is %f\n", buffer_id, result);
+  printf("A typical value for English is %f. buffer_%i differs by %f.\n",
+               OPTIMAL_DELTA_IC, buffer_id, diff(result, OPTIMAL_DELTA_IC));
+
   return CFSH_OK;
 }
 
@@ -674,7 +814,7 @@ int action_charinfo(int argc, char **argv)
 int action_usage(int argc, char **argv)
 {
   actionu_argchk(1, action_usage_usage);
-  printf("%s%s", cfsh_get_usage(*argv), cfsh_get_use(*argv));
+  printf("%s%s", cfsh_get_use(*argv), cfsh_get_usage(*argv));
   return CFSH_OK;
 }
 

@@ -37,11 +37,12 @@
 #define ALPHA_TOLOWER(ch)      (ALPHAH_CH(ch) ? ch + 32 : ch)
 #define ALPHA_FLIP_CASE(ch)    ( ALPHAL_CH(ch) ? ch - 32 :     \
                                 (ALPHAH_CH(ch) ? ch + 32 : ch) )
-#define ALPHA_CASEBACON(ch)    (ALPHAH_CH(ch) ? 'A' :   \
-                                ALPHAL_CH(ch) ? 'B' : ch)
+#define ALPHA_CASEBACON(ch)    (ALPHAH_CH(ch) ? 'A' :       \
+                                (ALPHAL_CH(ch) ? 'B' : ch)  )
 
 #define IS_NEWLINE(ch)         (ch == 10)
-#define CHARNUM(ch)            (ALPHA_CH(ch) ? ALPHA_TOLOWER(ch) - 97 : -1)
+#define CHARNUM(ch)            (ALPHAL_CH(ch) ? ch - 97 :      \
+                                (ALPHAH_CH(ch) ? ch - 65 : -1) )
 #define NUMCHAR(i)             (i + 97)
 
 #define NUMCHARNUM(ch)         (NUMBER_CH(ch) ? ch - 48 : -1)

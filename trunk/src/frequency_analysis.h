@@ -27,3 +27,5 @@ void random_frequency_match(int *frequency_graph,
                             int *table);
 void frequency_guesses(char *text, int text_size);
 int frequency_analysis(char *text, int text_size, int jump);
+double delta_ic (char *text, int text_size, int jump);
+

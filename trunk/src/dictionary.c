@@ -23,6 +23,7 @@
 #include "stdinc.h"
 
 char *dict;
+char *dict_location;
 char **dict_pointer;
 char **dict_pointer_end;
 
@@ -334,6 +335,11 @@ void init_dict(void)
   dict = NULL;
   dict_pointer = NULL;
   dict_pointer_end = NULL;
+
+  /* Set default location */
+  dict_location = malloc_good(strlen(DICTIONARY) + 1);
+  memcpy(dict_location, DICTIONARY, strlen(DICTIONARY));
+  *(dict_location + strlen(DICTIONARY)) = 0;
 }
 
 void load_dict(void)
@@ -354,11 +360,11 @@ void load_dict(void)
   /* Check */
   if (dict != NULL)  return;
 
-  dictf = fopen(DICTIONARY, "r");
+  dictf = fopen(dict_location, "r");
   if (dictf == NULL)
   {
     perror("load_dict: fopen");
-    printf("dictionary not loaded.\n");
+    printf(dict_not_loaded);
     dict = NULL;
     return;
   }
@@ -377,7 +383,7 @@ void load_dict(void)
       if (buf_size >= WORD_BUF_SIZE)
       {
         printf("Error: A Word busted WORD_BUF_SIZE %i\n", WORD_BUF_SIZE);
-        printf("ditionary not loaded.\n");
+        printf(dict_not_loaded);
         dict = NULL;
         return;
       }
@@ -425,7 +431,7 @@ void load_dict(void)
         {
           printf("\n");
           printf("*dict overflow at %i (Attempted to add %i)\n", i, buf_size);
-          printf("dictionary not loaded.\n");
+          printf(dict_not_loaded);
 
           free(dict);
           free(dict_pointer);
@@ -475,7 +481,7 @@ void load_dict(void)
     if (j <= MIN_WORD_SIZE)
     {
       printf("Word length is %i (< %i), dict load fail.\n", j, MIN_WORD_SIZE);
-      printf("dictionary not loaded\n");
+      printf(dict_not_loaded);
 
       free(dict);
       free(dict_pointer);
