@@ -22,8 +22,13 @@
 #define CTRANS_MIN_KEYLEN      4
 #define CTRANS_MAX_KEYLEN      9
 
+// The dictrionary that cifer tries to load at startup is (defined in settings.h)
+// If you need to use another location, allow the auto-load to fail and then type
+// dict_location <new location>
+// load_dict
+
 #define DICTIONARY             "./dict"
-#define WORD_BUF_SIZE          28    /* Slightly more than `cat dict | wc -L` */
+#define WORD_BUF_SIZE          1024
 #define MIN_WORD_SIZE          2
 
 #define OPTIMAL_DELTA_IC       1.73  /* Static data on English */ 

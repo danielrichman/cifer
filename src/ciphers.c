@@ -18,58 +18,44 @@
 
 #include "stdinc.h"
 
-void monoalph_substitute(char *text, int text_size, int *translation)
+void monoalph_substitute(char *intext, int intext_size, char *outtext,
+                                             int *translation)
 {
   int i;
+  char ch;
 
-  for (i = 0; i < text_size; i++)
+  for (i = 0; i < intext_size; i++)
   {
-    *(text + i) = NUMCHAR(translation[CHARNUM(*(text + i))]);
+    ch = *(intext + i);
+    *(outtext + i) = ALPHA_CH(ch) ? NUMCHAR(translation[CHARNUM(ch)]) : ch;
   }
 }
 
-void caesar_cipher_enc(char *text, int text_size, int *shift, int shift_size)
+void caesar_cipher_enc(char *intext, int intext_size, char *outtext,
+                                             int *shift, int shift_size)
 {
   int i;
+  char ch;
 
-  for (i = 0; i < text_size; i++)
+  for (i = 0; i < intext_size; i++)
   {
-    *(text + i) = NUMCHAR( modn( CHARNUM( *(text + i) ) +
-                                 *(shift + modp(i, shift_size)), 26) );
+    ch = *(intext + i);
+    *(outtext + i) = ALPHA_CH(ch) ? NUMCHAR( modn( CHARNUM(ch) +
+                                 *(shift + modp(i, shift_size)), 26) ) : ch;
   }
 }
 
-void caesar_cipher_dec(char *text, int text_size, int *shift, int shift_size)
+void caesar_cipher_dec(char *intext, int intext_size, char *outtext,
+                                             int *shift, int shift_size)
 {
   int i;
+  char ch;
 
-  for (i = 0; i < text_size; i++)
+  for (i = 0; i < intext_size; i++)
   {
-    *(text + i) = NUMCHAR( modn( CHARNUM( *(text + i) ) -
-                             *(shift + modp(i, shift_size)), 26) );
+    ch = *(intext + i);
+    *(outtext + i) = ALPHA_CH(ch) ? NUMCHAR( modn( CHARNUM(ch) -
+                             *(shift + modp(i, shift_size)), 26) ) : ch;
   }
 }
-
-double delta_ic (char *text, int text_size, int jump)
-{
-  int sfreq[26];
-  int i, t;
-  double j;
-
-  j = 0; t = 0;
-
-  /* Zero the char freq array; then count up the char freqs, then 
-   * calculate (3rd for) the top half of the fraction, 4 - total the chars 
-   * counted, finally, do the dividing from the bottom half */
-
-  for (i = 0; i < 26; i++)                sfreq[i] = 0;
-  for (i = 0; i < text_size; i += jump)   sfreq[CHARNUM(*(text + i))] += 1;
-  for (i = 0; i < 26; i++)                j += sfreq[i] * (sfreq[i] - 1);
-  for (i = 0; i < 26; i++)                t += sfreq[i];
-
-  j = j / (t * (t - 1) / 26);
-
-  return j;
-}
-
 

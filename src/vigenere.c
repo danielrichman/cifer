@@ -69,7 +69,7 @@ void crack_vigenere(char *text, int text_size)
   }
 
   /* Do the magic! */
-  caesar_cipher_dec(text, text_size, shift, column_ic[0].column_size);
+  caesar_cipher_dec(text, text_size, text, shift, column_ic[0].column_size);
 
   /* Print out the keyword and deciphered plaintext */
   printf("Keyword: ");

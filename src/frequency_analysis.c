@@ -18,6 +18,12 @@
 
 #include "stdinc.h"
 
+// TODO: Make the random frequency match function (bruteforce) try various
+// combinations of suggestions in the sorted array (removing one option,
+// then two, sliding about, etc.) and score the results, for better monoalph
+// craxin
+// Perhaps we could have some genetic algorithm ownage here?
+
 /* This function takes two graphs and tries to generate the best match
  * table. (table being array[source] => identity or array[cipher] => plain */
 void random_frequency_match(int *frequency_graph,
@@ -197,6 +203,28 @@ int frequency_analysis(char *text, int text_size, int jump)
   }
 
   return best_diff_shift;
+}
+
+double delta_ic (char *text, int text_size, int jump)
+{
+  int sfreq[26];
+  int i, t;
+  double j;
+
+  j = 0; t = 0;
+
+  /* Zero the char freq array; then count up the char freqs, then 
+   * calculate (3rd for) the top half of the fraction, 4 - total the chars 
+   * counted, finally, do the dividing from the bottom half */
+
+  for (i = 0; i < 26; i++)                sfreq[i] = 0;
+  for (i = 0; i < text_size; i += jump)   sfreq[CHARNUM(*(text + i))] += 1;
+  for (i = 0; i < 26; i++)                j += sfreq[i] * (sfreq[i] - 1);
+  for (i = 0; i < 26; i++)                t += sfreq[i];
+
+  j = j / (t * (t - 1) / 26);
+
+  return j;
 }
 
 
