@@ -648,7 +648,6 @@ int action_shift(int argc, char **argv)
         else if (!SPACE_CH(ch))
         {
           printf(action_shift_usage);
-          free(shift);
           return CFSH_COMMAND_HARDFAIL;
         }
       }
