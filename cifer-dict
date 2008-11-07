@@ -1,0 +1,63 @@
+#!/bin/bash
+
+set -e
+args=("$@");
+
+[ $# -lt 2 ] && { echo "Usage: cifer-dict indict1 [indict2] ... outdict"; exit 1; }
+
+let OUTFILEN=$#-1
+INFILE=0
+
+OUTFILE=${args[$OUTFILEN]}
+TMPFILE=/tmp/cifer-dict-tmp
+TMPFILE2=/tmp/cifer-dict-tmp2
+
+echo "cifer-dict started with $OUTFILEN infiles... "
+
+echo -n "Clearing Tempfiles... "
+echo -n > $TMPFILE
+echo -n > $TMPFILE2
+echo "Done"
+
+for ((INFILE=0;INFILE<$OUTFILEN;INFILE++)); do
+        echo -n "Adding ${args[$INFILE]}... " 
+        cat "${args[$INFILE]}" >> $TMPFILE
+        echo "Done"
+
+	ADDED=`wc -l "${args[$INFILE]}" | egrep -o "^[0-9]+"`
+	RTOTAL=`wc -l "$TMPFILE" | egrep -o "^[0-9]+"`
+	echo "$ADDED words added, new total $RTOTAL"
+done
+
+echo -n "Converting non ascii chars (iconv TRANSLIT)... "
+cat $TMPFILE | iconv --from-code ISO_8859-1 --to-code ASCII//TRANSLIT > $TMPFILE2
+echo "Done"
+
+echo -n "Stripping non Alpha characters (sed)... "
+cat $TMPFILE2 | sed s/[^a-zA-Z]//g > $TMPFILE
+echo "Done"
+
+echo -n "Converting to lowercase (dd)... "
+dd conv=lcase if=$TMPFILE of=$TMPFILE2 2> /dev/null
+echo "Done"
+
+echo -n "Sorting dictionary a-z (sort)... "
+cat $TMPFILE2 | sort > $TMPFILE
+echo "Done"
+
+echo -n "Removing duplicate entries (uniq)... "
+cat $TMPFILE | uniq > $OUTFILE
+echo "Done"
+
+OTOT=`wc -l $TMPFILE | egrep -o "^[0-9]+"`
+NTOT=`wc -l "$OUTFILE" | egrep -o "^[0-9]+"`
+let LOST=$OTOT-$NTOT
+echo "$LOST words removed, new total $NTOT"
+
+echo -n "Removing Tmpfiles... "
+rm $TMPFILE
+rm $TMPFILE2
+echo "Done"
+
+echo cifer-dict finished
+

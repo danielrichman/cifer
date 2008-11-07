@@ -21,16 +21,6 @@ CC=gcc
 CFLAGS=-Wall
 
 rm = rm -rf
-cat = cat
-iconv = iconv
-iconv_options = --from-code ISO_8859-1 --to-code ASCII//TRANSLIT 
-sed = sed
-sed_options = s/[^a-zA-Z]//g
-sorter = sort
-uniq = uniq
-dd = dd
-dd_options = conv=lcase
-
 ctags = ctags
 ctags_name = tags
 
@@ -43,6 +33,7 @@ bin_norm_name      = cifer
 bin_debug_name     = cifer-debug
 bin_opt_name       = cifer-opt
 bin_opt_debug_name = cifer-opt-debug
+cifer_dict         = cifer-dict
 bin_all_name       = $(bin_norm_name) $(bin_debug_name) $(bin_opt_name) \
                      $(bin_opt_debug_name)
 
@@ -151,8 +142,12 @@ src/utility.o                   : $(headers)
 src/vigenere.o                  : $(headers)
 src/vowel_mash.o                : $(headers)
 
-$(dict_name) :
-	$(cat) $(dict_file) | $(iconv) $(iconv_options) | $(sed) $(sed_options) | $(dd) $(dd_options) | $(sorter) | $(uniq) > $@
+$(dict_name) : $(cifer_dict)
+	chmod +x cifer-dict
+	./$(cifer_dict) $(dict_file) $(dict_name)
+
+$(cifer_dict) :
+	chmod +x cifer-dict
 
 $(ctags_name):
 	$(ctags) -f $@ $(cfiles) $(headers)
