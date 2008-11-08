@@ -464,9 +464,11 @@ int action_loaddict(int argc, char **argv)
 int action_dictlocation(int argc, char **argv)
 {
   actionu_argchk(1, action_dictlocation_usage);
-  dict_location = malloc_good(strlen(*(argv)) + 1);
+
+  dict_location = realloc_good(dict_location, strlen(*(argv)) + 1);
   memcpy(dict_location, *(argv), strlen(*(argv)));
   *(dict_location + strlen(*(argv))) = 0;
+
   printf("dictlocation: set dict_location to be '%s'\n", dict_location);
   return CFSH_OK;
 }

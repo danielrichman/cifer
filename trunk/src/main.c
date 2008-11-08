@@ -28,9 +28,7 @@ int main(int argc, char **argv)
    *   -f is a synonym for just using the script instruction on its own
    *   -q means that any file executed shouldn't be wholly parsed first
    *   -s means that soft-fails will cause an exit, not just hard-fails
-   * then treat the rest as a shell command. 
-   * For scripting mode, the "rest" could be the "script" instruction to run
-   * the contents of that file. (Different to -i in that it exits when done.) */
+   * then treat the rest as a shell command.  */
 
   int i, j, noauto, init, file, quick, soft;
   cfsh_execinfo execinfo;
