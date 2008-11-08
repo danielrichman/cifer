@@ -1,0 +1,68 @@
+.TH CIFER 1
+.SH NAME
+cifer \- multipurpose classical cryptanalysis and code-breaking tool
+.SH SYNOPSIS
+\fBcifer\fR [-finqs] [command]
+.SH DESCRIPTION
+\fBCifer\fR provides many functions designed to aid in cracking classical
+ciphers; a group of ciphers used historically, but which
+have now fallen into disuse because of their suceptability to ciphertext-only
+attacks. In general, they were designed and implemented by hand, and operate
+on an alphabet of letters (such as [A-Z]).
+.PP
+\fBCifer\fR is implemented as an interactive shell, with support for scripting.
+All of its commands are documented via the `usage' command. For instance, type
+`usage load_dict' for information on the 'dict' command.
+.PP
+The shell uses the concept of a 'buffer' to store a string of text, which most
+comands read from as input, and write to as output. Unless run with the
+\fB-n\fR option, \fBcifer\fR will automatically create 10 buffers at startup.
+Buffers are referred to in the form, 'buffer_#', where '#' is substituted with
+the buffer's index number. For more information on buffers, see the `usage'
+for:
+.PP
+.BR "buffers " "(allocates or destroys buffers)"
+
+.BR "resize " "(modifies the size of a buffer)"
+
+.BR "clear " "(sets every byte of a buffer to \e0)"
+.PP
+What follows is a high-level description of \fBcifer\fR's abilities, with
+references to specific commands that can be applied.
+.PP
+.SS Frequency Analysis
+Frequency analysis is the study of the frequency of symbols, or groups of
+symbols in a ciphertext. It aids in cracking monoalphabetic substition schemes.
+Frequency analysis works upon the principle that, in any given sample of
+written language, certain characters and groups of characters will occur more
+often than others. Furthermore, the distribution of those frequencies will be
+roughly the same for all samples of that written language. For instance, in any
+section of English language, the character 'E' appears far more often than 'X'.
+Likewise, the pair of letters 'TH' is very common, whilst 'XY' is very rare. In
+monoalphabetic substitution schemes, these patterns are preserved and it is
+possible to determine certain mapppings of letters from ciphertext->plaintext
+from the frequencies alone. As more and more characters are converted, it
+becomes easy to guess the remaining ones to form words in the target language.
+.PP
+Perhaps the most tedious part of this method is the actual counting of the
+symbols themselves. Thus, \fBCifer\fR provides 
+.SH EXAMPLES
+.SH BUGS
+Please report any bugs by sending email to either <DRebellion1@googlemail.com>
+or <danieljonathanrichman@googlemail.com>.
+.SH AUTHORS
+Daniel Richman <danieljonathanrichman@googlemail.com>,
+Simrun Basuita <DRebellion1@googlemail.com>
+.SH COPYRIGHT
+This manual page is Copyright 2008 Simrun Basuita and Daniel Richman.
+.PP
+This manual page was written by Simrun Basuita <DRebellion1@googlemail.com>
+and Daniel Richman <danieljonathanrichman@googlemail.com>.
+Permission is granted to copy, distribute and/or modify this document under the
+terms of the GNU General Public License, Version 3 or any later version
+published by the Free Software Foundation.
+.PP
+On Debian systems, the complete text of the GNU General Public License can be
+found in \fI/usr/share/common-licenses/GPL\fR.
+.SH "SEE ALSO"
+.BR cifer-dict (1)
