@@ -115,6 +115,12 @@
       resizebuffer(o, get_buffer_real_size(i));                              \
     }
 
+#define actionu_copysize(i, o)                                               \
+    {                                                                        \
+      *(get_buffer(o) + get_buffer_real_size(i)) = 0;                        \
+      setbuffernull(o);                                                      \
+    }
+
 #define actionu_dictcheck()                                                  \
     if (dict == NULL)                                                        \
     {                                                                        \
@@ -481,8 +487,10 @@ int action_affine(int argc, char **argv)
   actionu_bufferparse(*(argv + 1), buffer_out, action_affine_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_affine_usage);
   actionu_bufferschk(buffer_in, buffer_out,    action_affine_usage);
+  actionu_copysize(buffer_in, buffer_out);
   crack_affine(get_buffer(buffer_in), get_buffer_real_size(buffer_in), 
                get_buffer(buffer_out));
+  actionu_copysize(buffer_in, buffer_out);
   return CFSH_OK;
 }
 
@@ -507,8 +515,10 @@ int action_affinebf(int argc, char **argv)
   actionu_bufferparse(*(argv + 1), buffer_out, action_affinebf_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_affinebf_usage);
   actionu_bufferschk(buffer_in, buffer_out,    action_affinebf_usage);
+  actionu_copysize(buffer_in, buffer_out);
   affine_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
             get_buffer(buffer_out));
+  actionu_copysize(buffer_in, buffer_out);
   return CFSH_OK;
 }
 
@@ -528,6 +538,7 @@ int action_affineencode(int argc, char **argv)
 
   affine_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                 get_buffer(buffer_out), a, b);
+  actionu_copysize(buffer_in, buffer_out);
 
   printf("affineencode: encrypting using the affine cipher, %ix + %i\n\n", 
                     a, b);
@@ -545,13 +556,14 @@ int action_affinedecode(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in,  action_affinedecode_usage);
   actionu_bufferparse(*(argv + 1), buffer_out, action_affinedecode_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_affinedecode_usage);
-  actionu_bufferschk(buffer_in, buffer_out,    action_affinedecdoe_usage);
+  actionu_bufferschk(buffer_in, buffer_out,    action_affinedecode_usage);
 
   actionu_intparse(   *(argv + 2), a,          action_affinedecode_usage);
   actionu_intparse(   *(argv + 3), b,          action_affinedecode_usage);
 
   affine_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                 get_buffer(buffer_out), a, b);
+  actionu_copysize(buffer_in, buffer_out);
 
   printf("affinedecode: decrypting using the affine cipher, %ix + %i\n\n",
                     a, b);
@@ -574,7 +586,6 @@ int action_baconencode(int argc, char **argv)
                  buffer_out, get_buffer_real_size(buffer_in) * 5);
     resizebuffer(buffer_out, get_buffer_real_size(buffer_in) * 5);
   }
-
 
   bacon_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                get_buffer(buffer_out));
@@ -692,6 +703,7 @@ int action_shift(int argc, char **argv)
                                      get_buffer_real_size(buffer_in), 
                                      get_buffer(buffer_out), 
                                      shift, j);
+  actionu_copysize(buffer_in, buffer_out);
 
   printf("shift: shifting %s by %c", dirstr, NUMCHAR(*(shift)));
   for (i = 1; i < j; i++) printf("%c", NUMCHAR(*(shift + i)));
@@ -719,6 +731,70 @@ int action_deltaic(int argc, char **argv)
 
 int action_monoalph(int argc, char **argv)
 {
+  int i, j, l, ch, buffer_in, buffer_out, szc, direction;
+  int translation[26];
+  char *dirstr;
+
+  actionu_argchk(4,                            action_monoalph_usage);
+  actionu_bufferparse(*(argv),     buffer_in,  action_monoalph_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_monoalph_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_monoalph_usage);
+  actionu_bufferschk(buffer_in, buffer_out,    action_monoalph_usage);
+
+  if (strcasecmp(*(argv + 2), "encrypt") == 0 ||
+      strcasecmp(*(argv + 2), "e") == 0)
+  {
+    direction = 1;
+    dirstr = "encrypting";
+  }
+  else if (strcasecmp(*(argv + 2), "decrypt") == 0 ||
+           strcasecmp(*(argv + 2), "d") == 0)
+  {
+    direction = 0;
+    dirstr = "decrypting";
+  }
+  else
+  {
+    printf(action_monoalph_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  szc = strlen(*(argv + 3));
+  if (strtlens(*(argv + 3), szc) != 26)
+  {
+    printf("monoalphabetic translation alphabet should be 26 chars long\n");
+    printf(action_monoalph_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  for (i = 0; i < 26; i++) translation[i] = -1;
+
+  j = (szc - strrights(*(argv + 3), szc));
+  for (i = strlefts(*(argv + 3), szc), l = 0; i < j; i++, l++)
+  {
+    ch = CHARNUM(*(*(argv + 3) + i));
+    if (ch == -1)  break;
+
+    if (direction) translation[l]  = ch;
+    else           translation[ch] = l;
+  }
+
+  for (i = 0; i < 26; i++) if (translation[i] == -1)
+  {
+    printf("invalid character in monoalphabetic translation alphabet");
+    printf(action_monoalph_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  printf("monoalph: %s with the translation alphabet ", dirstr);
+  for (i = 0; i < 26; i++) printf("%c", NUMCHAR(translation[i]));
+  printf("\n\n");
+
+  monoalph_substitute(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                      get_buffer(buffer_out), translation);
+  actionu_copysize(buffer_in, buffer_out);
+
+  printf("%s\n\n", get_buffer(buffer_out));
   return CFSH_OK;
 }
 

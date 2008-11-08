@@ -49,8 +49,8 @@
 #define action_shift_usage "usage: shift buffer_# buffer_# forwards|backwards shift \n\
   (input, output, encode|decode - direction, shift(s) in alpha or num)\n"
 #define action_deltaic_usage "usage: deltai buffer_#\n"
-#define action_monoalph_usage "usage: monoalph buffer_# buffer_# ctext_chars \n\
-  (input, output, ctext_targets for abcd....xyz (alpha size 26))\n"
+#define action_monoalph_usage "usage: monoalph buffer_# buffer_# encrypt|decrypt ctext_targets \n\
+  (input, output, cipher mode, ctext_targets for abcd....xyz (alpha size 26))\n"
 #define action_ctrans_usage "usage: ctrans buffer_# buffer_# type mode extras \n\
   (input, output, col2col|row2col|col2row, bruteforce|decode|flipdecode,\n\
    extras: for [flip]decode, extras is the numeric or alpha keyword )\n\
