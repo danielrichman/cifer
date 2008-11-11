@@ -9,9 +9,9 @@ Ciphers we need to crack (cross them off):
 [X] Multiplicative           (Just use --affine)
 [X] Keyword                  OWNED
 [X] Bacon                    Smushed.
-[X] Polybius Square          Taken to pieces.
+[ ] Polybius Square          Taken to pieces.
 [X] Columnar Transposition   Speedy (!) - see below
-[ ] Rail Fence               (DRebellion shotgun Sun, 28 Sep 2008 :P)
+[X] Rail Fence               (DRebellion shotgun Sun, 28 Sep 2008 :P)
 [ ] Morse Code
 [ ] Playfair
 [ ] Double Playfair
