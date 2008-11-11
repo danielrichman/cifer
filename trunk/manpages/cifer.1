@@ -11,24 +11,40 @@ attacks. In general, they were designed and implemented by hand, and operate
 on an alphabet of letters (such as [A-Z]).
 .PP
 \fBCifer\fR is implemented as an interactive shell, with support for scripting.
-All of its commands are documented via the `usage' command. For instance, type
-`usage load_dict' for information on the 'dict' command.
+All of its commands are documented via the \fBusage\fR command. For instance,
+type \fBusage load_dict\fR for information on the \fBload_dict\fR command.
 .PP
-The shell uses the concept of a 'buffer' to store a string of text, which most
-comands read from as input, and write to as output. Unless run with the
+The shell uses the concept of a \fBbuffer\fR to store a string of text, which
+most comands read from as input, and write to as output. Unless run with the
 \fB-n\fR option, \fBcifer\fR will automatically create 10 buffers at startup.
-Buffers are referred to in the form, 'buffer_#', where '#' is substituted with
-the buffer's index number. For more information on buffers, see the `usage'
-for:
+Buffers are referred to in the form, \fBbuffer_#\fR, where \fB#\fR is
+substituted with the buffer's index number. For more information on buffers,
+see the \fBusage\fR for:
+.BR buffers ,
+.BR resize ,
+.BR clear ,
+.BR copy ,
+.BR load ,
+.BR write ,
+.BR read ,
+.BR bufferinfo ", and"
+.BR nullbuffer .
 .PP
-.BR "buffers " "(allocates or destroys buffers)"
-
-.BR "resize " "(modifies the size of a buffer)"
-
-.BR "clear " "(sets every byte of a buffer to \e0)"
+Filters can be used to manipulate the set of characters in a buffer, for
+example making all characters uppercase, or removing all whitespace. For more
+information on filters, see the \fBusage\fR of \fBfilter\fR.
+.PP
+Some of \fBcifer\fR's functions require a specially formatted 'dictionary',
+which takes the basic form of a list of words. The utility \fBcifer-dict\fR(1)
+can be used to create these dictionaries. Unless auto-init is disabled with the
+\fB-n\fR option, \fBcifer\fR looks for (and loads if found) a dictionary at
+startup in the current working directory, under the name \fIdict\fR. It is also
+possible to load any arbitrary dictionary using the shell commands:
+\fBload_dict\fR and \fBdict_location\fR.
 .PP
 What follows is a high-level description of \fBcifer\fR's abilities, with
-references to specific commands that can be applied.
+references to specific commands that can be employed to accomplish certain
+tasks.
 .PP
 .SS Frequency Analysis
 Frequency analysis is the study of the frequency of symbols, or groups of
@@ -45,11 +61,75 @@ from the frequencies alone. As more and more characters are converted, it
 becomes easy to guess the remaining ones to form words in the target language.
 .PP
 Perhaps the most tedious part of this method is the actual counting of the
-symbols themselves. Thus, \fBCifer\fR provides 
+symbols themselves. Thus, \fBCifer\fR provides functions to count characters,
+digrams (pairs of characters), and trigrams (triplets of characters). It can
+also use frequency analyis to guess ciphertext->plaintext mappings for the
+English language. For more information, see the \fBusage\fR for:
+.BR frequency_guesses ,
+.BR identity_frequency_graph ,
+.BR frequency_analysis ,
+.BR count_digrams ", and"
+.BR count_trigrams .
+.SS Affine Ciphers
+An affine cipher is a type of monoalphabetic substitution cipher. In order to
+implement an affine cipher, one would assign each character of the chosen
+alphabet a number, for example, a = 0; b = 1; c = 2; etc. Then for each letter
+of the plaintext, put it through the encryption function:
+.PP
+.B e(x) = (ax + b) (mod m)
+.PP
+Where \fBx\fR is the plaintext character's assigned number, \fBa\fR and \fBm\fR
+are coprime and \fBm\fR is the size of the alphabet. The ciphertext character
+for this plaintext character is the character assigned to the number
+\fBe(x)\fR.
+.PP
+Cifer provides functions to both encrypt and decrypt affine ciphers as well
+as crack affine ciphers using frequency analysis or brute force. Note that
+cifer is currently only able to deal with affine ciphers where \fBm = 26\fR.
+For more information, see the \fBusage\fR for:
+.BR affinesolve ,
+.BR affinebf ,
+.BR affineencode ,
+.BR affinedecode ", and"
+.BR mmi .
+.SS Vigenere Ciphers
+The Vigenere cipher is a form of polyalphabetic substitution consisting of
+several Caesar ciphers in sequence with differing shift values, which vary
+according to a repeating keyword. \fBCifer\fR provides the function
+\fBvigenere_crack\fR, which employs a brute-force (for each possible keyword
+length) frequency analysis method in order to find the keyword, and crack the
+cipher. Note that this function currently only supports cracking of English
+plaintexts.
+.SS Keyword Ciphers
+A keyword cipher is a type of monoalphabetic substitution in which the mapping
+of plaintext characters to ciphertext characters is affected by the inclusion
+of a 'keyword'. \fBCifer\fR provides the function \fBkeyword_bruteforce\fR
+which attempts to find the correct keyword by going through a 'dictionary' of
+possible words and trying each one in turn, then selecting the best solution
+by matching words in the solution to those in the dictionary. If the keyword
+to a ciphertext is already known, it can be decoded using the
+\fBkeyword_decode\fR command.
+.SS Bacon Ciphers
+A bacon cipher is a method of stenography, in which a message is concealed in
+the presentation of text, rather than its content. The ciphertext consists of
+any message (again, the language has no impact on the concealed plaintext) in
+which each character can be categorised into one of two distinct groups, we call
+these 'A' and 'B'. This distinction may be made in any number of predetermined
+ways, such as two typefaces, or other indicators. In order to decode the cipher
+one replaces groups of 5 As and Bs with their corresponding plaintext character,
+as dictated by the Baconian alphabet (however, be aware that it would be
+trivial for the two communicating parties to create their own 'custom' version
+of the Baconian alphabet). To encode a plaintext, the reverse operation is
+performed.
+.PP
+A Bacon cipher can be easily encoded/decoded, and \fBcifer\fR provides the
+functions \fBbacon_encode\fR and \fBbacon_decode\fR to achieve this. They use
+a buffer of As and Bs as input and output
 .SH EXAMPLES
 .SH BUGS
-Please report any bugs by sending email to either <DRebellion1@googlemail.com>
-or <danieljonathanrichman@googlemail.com>.
+Please report any bugs by sending email to either Simrun Basuita
+<DRebellion1@googlemail.com> or Daniel Richman
+<danieljonathanrichman@googlemail.com>.
 .SH AUTHORS
 Daniel Richman <danieljonathanrichman@googlemail.com>,
 Simrun Basuita <DRebellion1@googlemail.com>
