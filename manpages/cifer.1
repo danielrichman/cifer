@@ -13,7 +13,7 @@ on an alphabet of letters (such as [A-Z]).
 \fBCifer\fR is implemented as an interactive shell, with support for scripting.
 All of its commands are documented via the \fBusage\fR command. For instance,
 type \fBusage load_dict\fR for information on the \fBload_dict\fR command.
-.PP
+.SS Buffers and Filters
 The shell uses the concept of a \fBbuffer\fR to store a string of text, which
 most comands read from as input, and write to as output. Unless run with the
 \fB-n\fR option, \fBcifer\fR will automatically create 10 buffers at startup.
@@ -33,7 +33,7 @@ see the \fBusage\fR for:
 Filters can be used to manipulate the set of characters in a buffer, for
 example making all characters uppercase, or removing all whitespace. For more
 information on filters, see the \fBusage\fR of \fBfilter\fR.
-.PP
+.SS Dictionaries
 Some of \fBcifer\fR's functions require a specially formatted 'dictionary',
 which takes the basic form of a list of words. The utility \fBcifer-dict\fR(1)
 can be used to create these dictionaries. Unless auto-init is disabled with the
@@ -41,11 +41,6 @@ can be used to create these dictionaries. Unless auto-init is disabled with the
 startup in the current working directory, under the name \fIdict\fR. It is also
 possible to load any arbitrary dictionary using the shell commands:
 \fBload_dict\fR and \fBdict_location\fR.
-.PP
-What follows is a high-level description of \fBcifer\fR's abilities, with
-references to specific commands that can be employed to accomplish certain
-tasks.
-.PP
 .SS Frequency Analysis
 Frequency analysis is the study of the frequency of symbols, or groups of
 symbols in a ciphertext. It aids in cracking monoalphabetic substition schemes.
@@ -98,8 +93,7 @@ several Caesar ciphers in sequence with differing shift values, which vary
 according to a repeating keyword. \fBCifer\fR provides the function
 \fBvigenere_crack\fR, which employs a brute-force (for each possible keyword
 length) frequency analysis method in order to find the keyword, and crack the
-cipher. Note that this function currently only supports cracking of English
-plaintexts.
+cipher.
 .SS Keyword Ciphers
 A keyword cipher is a type of monoalphabetic substitution in which the mapping
 of plaintext characters to ciphertext characters is affected by the inclusion
@@ -124,8 +118,33 @@ performed.
 .PP
 A Bacon cipher can be easily encoded/decoded, and \fBcifer\fR provides the
 functions \fBbacon_encode\fR and \fBbacon_decode\fR to achieve this. They use
-a buffer of As and Bs as input and output
-.SH EXAMPLES
+a buffer of As and Bs as input and output, and thus any ciphertext that needs
+to be decoded must first be turned into As and Bs. Before the plaintext is
+loaded, it should be modified so that upper and lower case characters
+belong to the A and B groups, respectively. Then, the \fBcasebacon\fR filter
+can be applied to convert the upper and lower case characters in the buffer
+to As and Bs. There is also a \fBbacon\fR filter, which removes all characters
+which are not 'A' or 'B'.
+.SS Rail Fence Ciphers
+The rail fence cipher is a form of transposition cipher, which gets its name
+from the way the plaintext is written alternatively downwards and upwards
+diagonally on 'rails', before being read off as the ciphertext in rows.
+.PP
+\fBCifer\fR provides the function \fBrfbf\fR to crack rail fence ciphers using
+a brute force method and checking for solutions using a dictionary.
+.SH OPTIONS
+.TP
+.BR \-n
+Disable auto-init.
+.TP
+.BR \-i
+Execute the script file and then go to interactive mode
+.TP
+.BR \-q
+Do not fully parse file before execution
+.TP
+.BR \-s
+Exit on soft-fails, not just hard-fails
 .SH BUGS
 Please report any bugs by sending email to either Simrun Basuita
 <DRebellion1@googlemail.com> or Daniel Richman
