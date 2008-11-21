@@ -29,7 +29,15 @@ datarootdir = $(prefix)/share
 mandir = $(datarootdir)/man
 man1dir = $(mandir)/man1
 
+INSTALL = install
+INSTALL_PROGRAM = $(INSTALL) -m 755
+INSTALL_DATA = $(INSTALL) -m 644
+
+srcmandir = manpages/
+
 rm = rm -rf
+
+mkdir = mkdir
 
 opt_lvl = 2
 
@@ -144,38 +152,99 @@ src/vigenere.o                  : $(headers)
 src/vowel_mash.o                : $(headers)
 
 .PHONY : all \
+	\
 	dist \
+	\
 	install \
+	install-man \
 	install-norm \
 	install-debug \
 	install-opt \
 	install-opt-debug \
+	install-bin-norm \
+	install-bin-debug \
+	install-bin-opt \
+	install-bin-opt-debug \
+	\
 	uninstall \
+	uninstall-man \
+	uninstall-norm \
+	uninstall-debug \
+	uninstall-opt \
+	uninstall-opt-debug \
+	uninstall-bin-norm \
+	uninstall-bin-debug \
+	uninstall-bin-opt \
+	uninstall-bin-opt-debug \
+	\
 	clean \
 	distclean \
-	clean-objects \
+	\
 	dist
 
 all : $(bin_norm_name)
 
+
 install : install-norm
 
-install-norm :
+install-man :
+	$(INSTALL_DATA) $(srcmandir)/cifer.1 \
+	$(DESTDIR)$(man1dir)/cifer.1
+	$(INSTALL_DATA) $(srcmandir)/cifer-dict.1 \
+	$(DESTDIR)$(man1dir)/cifer-dict.1
 
-install-debug :
+install-norm : install-bin-norm install-man
 
-install-opt :
+install-debug : install-bin-debug install-man
 
-install-opt-debug :
+install-opt : install-bin-opt install-man
 
-uninstall :
+install-opt-debug : install-bin-opt-debug install-man
+
+install-bin-norm : $(bin_norm_name)
+	$(INSTALL_PROGRAM) $(bin_norm_name) $(DESTDIR)$(bindir)/$(bin_norm_name)
+
+install-bin-debug : $(bin_debug_name)
+	$(INSTALL_PROGRAM) $(bin_debug_name) $(DESTDIR)$(bindir)/$(bin_debug_name)
+
+install-bin-opt : $(bin_opt_name)
+	$(INSTALL_PROGRAM) $(bin_opt_name) $(DESTDIR)$(bindir)/$(bin_opt_name)
+
+install-bin-opt-debug : $(bin_opt_debug_name)
+	$(INSTALL_PROGRAM) $(bin_opt_debug_name) $(DESTDIR)$(bindir)/$(bin_opt_debug_name)
+
+
+uninstall: uninstall-norm
+
+uninstall-man :
+	$(rm) $(DESTDIR)$(man1dir)/cifer.1
+	$(rm) $(DESTDIR)$(man1dir)/cifer-dict.1
+
+uninstall-norm : uninstall-bin-norm uninstall-man
+
+uninstall-debug : uninstall-bin-debug uninstall-man
+
+uninstall-opt : uninstall-bin-opt uninstall-man
+
+uninstall-opt-debug : uninstall-bin-opt-debug uninstall-man
+
+uninstall-bin-norm :
+	$(rm) $(DESTDIR)$(bindir)/$(bin_norm_name)
+
+uninstall-bin-debug :
+	$(rm) $(DESTDIR)$(bindir)/$(bin_debug_name)
+
+uninstall-bin-opt :
+	$(rm) $(DESTDIR)$(bindir)/$(bin_opt_name)
+
+uninstall-bin-opt-debug :
+	$(DESTDIR)$(bindir)/$(bin_opt_debug_name)
+
 
 clean :
 	$(rm) $(bin_all_name) $(objects)
 
 distclean : clean
 
-clean-objects :
-	$(rm) $(objects)
 
 dist :
