@@ -37,6 +37,7 @@ typedef struct {
 } score_text_pro_state;
 
 void init_dict(void);
+void unload_dict(int notice);
 void load_dict(void);
 int score_text_dict_fast(char *text, int size);
 void score_text_dict_spaces(char *text, int size, int *space_array);

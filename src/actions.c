@@ -456,11 +456,7 @@ int action_wordwrap(int argc, char **argv)
 int action_loaddict(int argc, char **argv)
 {
   actionu_argless(action_loaddict_usage);
-  if (dict != NULL)
-  {
-    printf("loaddict: dictionary already loaded.\n");
-    return CFSH_COMMAND_SOFTFAIL;
-  }
+  if (dict != NULL)  unload_dict(1);
 
   load_dict();
   if (dict != NULL)  return CFSH_OK;

@@ -1,0 +1,52 @@
+ columnar transposition is a complex beast, with many variants.              
+ In all variants of columnar transposition, the encryption process starts out 
+ by writing the text out in a table. This table is defined by its width, and  
+ this width is also the length of the keyword.                                
+                                                                              
+ Depending on the variant, the ciphertext might be written into the table     
+ from left to right and then re ordered, and finally read off left to right   
+ again. Alternativly, it could be written into the table top to bottom and    
+ read off left to right, or even written in left to right and read off        
+ top to bottom!                                                               
+                                                                              
+ The keyword can be specified in numeric or alpha form. In numeric form,      
+ each digit must only be used once and there must be enough digits to         
+ form a full key (Ie. for a key length 4 all of the digits 0, 1, 2, 3 must    
+ be used.)                                                                    
+ An alphabetic keyword, such as 'tomato', first has duplicate letters removed 
+ and then a numeric version deduced by each letter's position in the alphabet,
+ If you were encrypting by hand, you would write out 'aple' on top of your    
+ table and then move the columns around until the top is in alphabetic order, 
+ ie. aelp. Therefore, aple has the numeric keyword equivilant of 0 3 2 1      
+                                                                              
+ Example: Visual Keyword reordering                                           
+        Alpha keyword       Numeric keyword                                   
+            apple                                                             
+            aple               0 3 2 1                                        
+            aelp               0 1 2 3                                        
+ See how the number refers to its target position?                            
+                                                                              
+ Flipping a keyword is the process of creating a keyword that when used as    
+ if it was an encryption keyword, infacts reverses the original, like an      
+ inverse matrix. Flipping a keyword is done by                                
+   for (i = 0; i < keyword_length; i++)      For every element                
+              new_keyword[keyword[i]] = i;   Swap values and keys             
+ The flipped keyword of 1 3 0 2 is 2 0 3 1                                    
+                                                                              
+ Cifer's keyword functions provide utilities to automate all these variants.  
+ There are nine commands, c2c_encode, c2c_decode, c2c_bruteforce,             
+                          r2c_encode, r2c_decode, r2c_bruteforce,             
+                          c2r_encode, c2r_decode, c2r_bruteforce              
+                                                                              
+ The first three letters are short for column to column, column to row and    
+ row to column; these refer to the different ways that you can read off the   
+ table (see second paragraph).                                                
+                                                                              
+ In encode mode, the keyword is taken as a parameter and straightforward      
+ columnar transposition performed.                                            
+ In decode mode, the keyword is taken, flipped, and then passed to the encode 
+ routine.                                                                     
+ In bruteforce mode, cifer tries all permutations of increasing key lengths   
+ in an attempt to find the real keyword. To score its progress, it uses the   
+ dictionary.                                                                  
+
