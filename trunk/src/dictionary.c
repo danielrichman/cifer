@@ -345,6 +345,19 @@ void init_dict(void)
   *(dict_location + strlen(DICTIONARY)) = 0;
 }
 
+void unload_dict(int notice)
+{
+  if (notice != 1) printf(dict_not_loaded);
+
+  if (dict != NULL)             free(dict);
+  if (dict_pointer != NULL)     free(dict_pointer);
+  if (dict_pointer_end != NULL) free(dict_pointer_end);
+
+  dict = NULL;
+  dict_pointer = NULL;
+  dict_pointer_end = NULL;
+}
+
 void load_dict(void)
 {
   FILE *dictf;
@@ -367,8 +380,7 @@ void load_dict(void)
   if (dictf == NULL)
   {
     perror("load_dict: fopen");
-    printf(dict_not_loaded);
-    dict = NULL;
+    unload_dict(0);
     return;
   }
 
@@ -386,8 +398,7 @@ void load_dict(void)
       if (buf_size >= WORD_BUF_SIZE)
       {
         printf("Error: A Word busted WORD_BUF_SIZE %i\n", WORD_BUF_SIZE);
-        printf(dict_not_loaded);
-        dict = NULL;
+        unload_dict(0);
         return;
       }
     }
@@ -434,13 +445,7 @@ void load_dict(void)
         {
           printf("\n");
           printf("*dict overflow at %i (Attempted to add %i)\n", i, buf_size);
-          printf(dict_not_loaded);
-
-          free(dict);
-          free(dict_pointer);
-          free(dict_pointer_end);
-
-          dict = NULL;
+          unload_dict(0);
           return;
         }
 
@@ -484,13 +489,7 @@ void load_dict(void)
     if (j <= MIN_WORD_SIZE)
     {
       printf("Word length is %i (< %i), dict load fail.\n", j, MIN_WORD_SIZE);
-      printf(dict_not_loaded);
-
-      free(dict);
-      free(dict_pointer);
-      free(dict_pointer_end);
-
-      dict = NULL;
+      unload_dict(0);
       return;
     }
     else
