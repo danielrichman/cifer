@@ -124,7 +124,7 @@
 #define action_rfbf_use "rfbf bruteforces a railfence cipher\n"
 #define action_vigenere_use "vigenere uses deltaic and frequency analysis to crack a vigenere cipher\n"
 #define action_mmi_use "mmi computes the modular multiplicative inverse, used in affine ciphers\n"
-#define action_gcd_use "gcd computes the greatest common denominator\n"
+#define action_gcd_use "gcd computes the greatest common denominator of any number of integers\n"
 #define action_coprime_use "coprime determines if two integers are coprime\n"
 #define action_charinfo_use "charinfo print information about a character\n"
 #define action_usage_use "usage prints the syntax of a function\n"

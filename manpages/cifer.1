@@ -137,6 +137,9 @@ a brute force method and checking for solutions using a dictionary.
 .BR \-n
 Disable auto-init.
 .TP
+.BR \-f
+Execute the commands in the (script) file specified, then exit
+.TP
 .BR \-i
 Execute the script file and then go to interactive mode
 .TP
@@ -144,7 +147,11 @@ Execute the script file and then go to interactive mode
 Do not fully parse file before execution
 .TP
 .BR \-s
-Exit on soft-fails, not just hard-fails
+Exit on soft-fails, not just hard-fails (for script execution)
+.PP
+Any text found after the options will be interpreted as a command to the shell;
+Please note that you cannot specify a command if either \fB\-i\fR or \fB\-f\fR 
+are used, and that \fB\-q\fR and \fB\-s\fR only apply to \fB\-f\fR or \fB\-i\fR.
 .SH BUGS
 Please report any bugs by sending email to either Simrun Basuita
 <DRebellion1@googlemail.com> or Daniel Richman

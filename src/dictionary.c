@@ -22,6 +22,9 @@
 
 #include "stdinc.h"
 
+// TODO: Add Unload_dict & action (or add to load_dict) so that dictionaries can
+// be swapped, ie, user wants something different to default dictionary
+
 char *dict;
 char *dict_location;
 char **dict_pointer;
