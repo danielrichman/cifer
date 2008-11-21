@@ -794,7 +794,47 @@ int action_monoalph(int argc, char **argv)
   return CFSH_OK;
 }
 
-int action_ctrans(int argc, char **argv)
+int action_c2c_encode(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_c2c_decode(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_c2c_bruteforce(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_r2c_encode(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_r2c_decode(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_r2c_bruteforce(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_c2r_encode(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_c2r_decode(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_c2r_bruteforce(int argc, char **argv)
 {
   return CFSH_OK;
 }
