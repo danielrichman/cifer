@@ -51,6 +51,7 @@
 #define action_deltaic_usage "usage: deltai buffer_#\n"
 #define action_monoalph_usage "usage: monoalph buffer_# buffer_# encrypt|decrypt ctext_targets \n\
   (input, output, cipher mode, ctext_targets for abcd....xyz (alpha size 26))\n"
+#define action_ctrans_keyinfo_usage "usage: keyword (in alpha (eg. tomato) or numbers (1 3 2 0) \n"
 #define action_c2c_encode_usage "usage: c2c_encode buffer_# buffer_# keyword\n\
   (input, output, keyword in alpha (eg. tomato) or numbers (1 3 2 0) \n"
 #define action_r2c_encode_usage "usage: r2c_encode buffer_# buffer_# keyword\n\
@@ -122,6 +123,7 @@
 #define action_shift_use "shift takes a buffer and performs a vigenere style shift on it\n"
 #define action_deltaic_use "deltaic computes the index of coincidence on a buffer\n"
 #define action_monoalph_use "monoalph translates a buffer using monoalphabetic substitution\n"
+#define action_ctrans_keyinfo_use "ctrans_keyinfo gives information on a columnar transposition key\n"
 #define action_c2c_encode_use "c2c_encode encrypts using column to column transposition\n"
 #define action_c2c_decode_use "c2c_decode decrypts using column to coulmn transposition\n"
 #define action_c2c_bruteforce_use "c2c_bruteforce bruteforces the key for column to column transposition\n"

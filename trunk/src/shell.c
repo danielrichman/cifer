@@ -28,10 +28,8 @@ void cfsh_init()
 void cfsh_autoinit()
 {
   /* Automatic "we guessed you wanted this" stuff:
-   *  Make 10 Buffers,
-   *  Load the Dictionary */ 
+   *  Make 10 Buffers */
   create_buffers(10);
-  load_dict();
   printf("\n");
 }
 

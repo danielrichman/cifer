@@ -54,6 +54,7 @@ int action_bacondecode(int argc, char **argv);
 int action_shift(int argc, char **argv);
 int action_deltaic(int argc, char **argv);
 int action_monoalph(int argc, char **argv);
+int action_ctrans_keyinfo(int argc, char **argv);
 int action_c2c_encode(int argc, char **argv);
 int action_c2c_decode(int argc, char **argv);
 int action_c2c_bruteforce(int argc, char **argv);

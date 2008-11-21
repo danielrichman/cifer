@@ -34,4 +34,5 @@ void columnar_transposition_flip_key(int *key, int key_size);
 void columnar_transposition_keyinfo(int *key, int key_size);
 void columnar_transposition_text2key(char *text, int text_size, 
                                      int **key, int *new_key_size);
+int columnar_transposition_verify_key(int *key, int key_size);
 

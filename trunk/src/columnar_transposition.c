@@ -144,17 +144,9 @@ void columnar_transposition_keyinfo(int *key, int key_size)
 {
   int i;
 
-  printf("Reverse/decode key (used to crack): ");
-  for (i = 0; i < key_size; i++) printf("%i|", key[i]);
+  printf("key[%i]: %i", key_size, key[0]);
+  for (i = 1; i < key_size; i++) printf(" %i", key[i]);
   printf("\n");
-
-  columnar_transposition_flip_key(key, key_size);
-
-  printf("Forward key (used for initial encode): ");
-  for (i = 0; i < key_size; i++) printf("%i|", key[i]);
-  printf("\n\n");
-
-  columnar_transposition_flip_key(key, key_size);
 }
 
 /* Reads off into columns KEY_SIZE, reorders as per key, reads off
@@ -274,7 +266,7 @@ void columnar_transposition_text2key(char *text, int text_size,
 
     if (used[c] == -1)
     {
-      used[c] = i;
+      used[c] = j;
       j++;
     }
   }
@@ -305,5 +297,32 @@ void columnar_transposition_text2key(char *text, int text_size,
       /* Hope that makes sense */
     }
   }
+}
+
+int columnar_transposition_verify_key(int *key, int key_size)
+{
+  int i, *used;
+
+  /* First checks */
+  if (key_size < 2)  return -1;
+
+  /* Allocate */
+  used = malloc_good( sizeof(int) * key_size );
+
+  /* Initialise */
+  for (i = 0; i < key_size; i++) used[i] = 0;
+
+  /* For each key value, check that it fits and then
+   *  increment the value's use count */
+  for (i = 0; i < key_size; i++) 
+    if (key[i] >= 0 && key[i] < key_size) 
+      used[key[i]]++;
+
+  /* For anything that hasn't been used once, 
+   * only once (ie. not too much, not too little) fail */
+  for (i = 0; i < key_size; i++) if (used[i] != 1) return -1;
+
+  /* Otherwise success */
+  return 0;
 }
 
