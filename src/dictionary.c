@@ -22,9 +22,6 @@
 
 #include "stdinc.h"
 
-// TODO: Add Unload_dict & action (or add to load_dict) so that dictionaries can
-// be swapped, ie, user wants something different to default dictionary
-
 char *dict;
 char *dict_location;
 char **dict_pointer;
@@ -338,16 +335,12 @@ void init_dict(void)
   dict = NULL;
   dict_pointer = NULL;
   dict_pointer_end = NULL;
-
-  /* Set default location */
-  dict_location = malloc_good(strlen(DICTIONARY) + 1);
-  memcpy(dict_location, DICTIONARY, strlen(DICTIONARY));
-  *(dict_location + strlen(DICTIONARY)) = 0;
+  dict_location = NULL;
 }
 
 void unload_dict(int notice)
 {
-  if (notice != 1) printf(dict_not_loaded);
+  if (notice != 1)  printf(dict_not_loaded);
 
   if (dict != NULL)             free(dict);
   if (dict_pointer != NULL)     free(dict_pointer);
@@ -374,7 +367,14 @@ void load_dict(void)
   int searching;
 
   /* Check */
-  if (dict != NULL)  return;
+  if (dict_location == NULL)
+  {
+    printf("load_dict: please specify a dict_location\n");
+    unload_dict(0);
+    return;
+  }
+
+  if (dict != NULL)   unload_dict(1);
 
   dictf = fopen(dict_location, "r");
   if (dictf == NULL)

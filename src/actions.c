@@ -21,6 +21,8 @@
 /*     CFSH_OK                     0
  *     CFSH_BREAK_LOOP             99 */
 
+/* Incoming preprocessor abuse. */
+
 #define actionu_argchk(i, u)                                                 \
     if (argc != (i))                                                         \
     {                                                                        \
@@ -456,7 +458,6 @@ int action_wordwrap(int argc, char **argv)
 int action_loaddict(int argc, char **argv)
 {
   actionu_argless(action_loaddict_usage);
-  if (dict != NULL)  unload_dict(1);
 
   load_dict();
   if (dict != NULL)  return CFSH_OK;
@@ -794,13 +795,123 @@ int action_monoalph(int argc, char **argv)
   return CFSH_OK;
 }
 
+#define actionu_ctrans_setup()                                                \
+    size_t ctrans_sz;                                                         \
+    char *ctrans_char;                                                        \
+    int ctrans_i, ctrans_key_size;                                            \
+    int *ctrans_key;                                                          
+
+#define actionu_ctrans_keyword_parse(argc, argv, u)                           \
+    {                                                                         \
+      /* Start by trying to find out if it is a number key or an alpha one */ \
+      ctrans_sz = strlen(*(argv));                                            \
+      ctrans_char = (*(argv) + strlefts(*(argv), ctrans_sz));                 \
+      if (NUMBER_CH(*ctrans_char))                                            \
+      {                                                                       \
+        /* Then we can try and parse the whole thing into a key */            \
+        ctrans_key_size = argc;                                               \
+        ctrans_key = malloc_good( sizeof(int) * ctrans_key_size);             \
+                                                                              \
+        for (ctrans_i = 0; ctrans_i < ctrans_key_size; ctrans_i++)            \
+        {                                                                     \
+          actionu_intparsef(*(argv + ctrans_i), *(ctrans_key + ctrans_i),     \
+                                                             u, ctrans_key);  \
+        }                                                                     \
+      }                                                                       \
+      else                                                                    \
+      {                                                                       \
+        /* Check that its the only argument; it should be */                  \
+        if (argc != 1)                                                        \
+        {                                                                     \
+          printf(u);                                                          \
+          return CFSH_COMMAND_HARDFAIL;                                       \
+        }                                                                     \
+                                                                              \
+        /* Easy stuff... */                                                   \
+        columnar_transposition_text2key(ctrans_char,                          \
+                                        strtlens(*(argv), ctrans_sz),         \
+                                        &ctrans_key, &ctrans_key_size);       \
+                                                                              \
+        if (ctrans_key == NULL || ctrans_key_size == 0)                       \
+        {                                                                     \
+          printf(u);                                                          \
+          return CFSH_COMMAND_HARDFAIL;                                       \
+        }                                                                     \
+      }                                                                       \
+                                                                              \
+      if (columnar_transposition_verify_key(ctrans_key, ctrans_key_size)      \
+                                                                    == -1)    \
+      {                                                                       \
+        printf("bad key (repeated numbers or out of range)\n");               \
+        printf(u);                                                            \
+        return CFSH_COMMAND_HARDFAIL;                                         \
+      }                                                                       \
+    }
+
+#define actionu_ctrans_default(argc, argv, u)                                 \
+      int buffer_in, buffer_out;                                              \
+      actionu_intparse_setup();                                               \
+      actionu_ctrans_setup();                                                 \
+                                                                              \
+      if (argc < 3)                                                           \
+      {                                                                       \
+        printf(u);                                                            \
+        return CFSH_COMMAND_HARDFAIL;                                         \
+      }                                                                       \
+                                                                              \
+      actionu_bufferparse(*(argv),     buffer_in,  u);                        \
+      actionu_bufferparse(*(argv + 1), buffer_out, u);                        \
+      actionu_bufferchk(buffer_in, buffer_out,     u);                        \
+      actionu_bufferschk(buffer_in, buffer_out,    u);                        \
+                                                                              \
+      actionu_ctrans_keyword_parse(argc - 2, argv + 2, u);
+
+#define actionu_ctrans_invoke(type, dir)                                      \
+      columnar_transposition_ ## type (get_buffer(buffer_in),                 \
+                                       get_buffer_real_size(buffer_in),       \
+                                       get_buffer(buffer_out),                \
+                                       ctrans_key,                            \
+                                       ctrans_key_size);                      \
+      actionu_copysize(buffer_in, buffer_out);                                \
+                                                                              \
+      printf("columnar transposition: " #dir " using " #type ": \n");         \
+      columnar_transposition_keyinfo(ctrans_key, ctrans_key_size);            \
+      printf("%s\n\n", get_buffer(buffer_out));
+
+int action_ctrans_keyinfo(int argc, char **argv)
+{
+  actionu_intparse_setup();
+  actionu_ctrans_setup();
+
+  if (argc == 0)
+  {
+    printf(action_ctrans_keyinfo_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  actionu_ctrans_keyword_parse(argc, argv, action_ctrans_keyinfo_usage);
+
+  columnar_transposition_keyinfo(ctrans_key, ctrans_key_size);
+
+  columnar_transposition_flip_key(ctrans_key, ctrans_key_size);
+  printf("flipped ");
+  columnar_transposition_keyinfo(ctrans_key, ctrans_key_size);
+
+  return CFSH_OK;
+}
+
 int action_c2c_encode(int argc, char **argv)
 {
+  actionu_ctrans_default(argc, argv, action_c2c_encode_usage);
+  actionu_ctrans_invoke(col2col, encode);
   return CFSH_OK;
 }
 
 int action_c2c_decode(int argc, char **argv)
 {
+  actionu_ctrans_default(argc, argv, action_c2c_decode_usage);
+  columnar_transposition_flip_key(ctrans_key, ctrans_key_size);
+  actionu_ctrans_invoke(col2col, decode);
   return CFSH_OK;
 }
 
@@ -811,11 +922,16 @@ int action_c2c_bruteforce(int argc, char **argv)
 
 int action_r2c_encode(int argc, char **argv)
 {
+  actionu_ctrans_default(argc, argv, action_r2c_encode_usage);
+  actionu_ctrans_invoke(row2col, encode);
   return CFSH_OK;
 }
 
 int action_r2c_decode(int argc, char **argv)
 {
+  actionu_ctrans_default(argc, argv, action_r2c_decode_usage);
+  columnar_transposition_flip_key(ctrans_key, ctrans_key_size);
+  actionu_ctrans_invoke(row2col, decode);
   return CFSH_OK;
 }
 
@@ -826,11 +942,16 @@ int action_r2c_bruteforce(int argc, char **argv)
 
 int action_c2r_encode(int argc, char **argv)
 {
+  actionu_ctrans_default(argc, argv, action_c2r_encode_usage);
+  actionu_ctrans_invoke(col2row, encode);
   return CFSH_OK;
 }
 
 int action_c2r_decode(int argc, char **argv)
 {
+  actionu_ctrans_default(argc, argv, action_c2r_decode_usage);
+  columnar_transposition_flip_key(ctrans_key, ctrans_key_size);
+  actionu_ctrans_invoke(col2row, decode);
   return CFSH_OK;
 }
 

@@ -55,6 +55,8 @@
   cfsh_func("deltaic"                     , action_deltaic)
   cfsh_func("delta_ic"                    , action_deltaic)
   cfsh_func("monoalph"                    , action_monoalph)
+  cfsh_func("ctrans_keyinfo"              , action_ctrans_keyinfo)
+  cfsh_func("keyinfo"                     , action_ctrans_keyinfo)
   cfsh_func("c2c_encode"                  , action_c2c_encode)
   cfsh_func("c2c_decode"                  , action_c2c_decode)
   cfsh_func("c2c_bruteforce"              , action_c2c_bruteforce)
