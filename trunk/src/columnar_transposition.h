@@ -16,18 +16,22 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-typedef void(*columnar_transposition_function)(char *text, char *outtext, 
-                           int text_size, int *key, int key_size);
-                           
+typedef void(*columnar_transposition_function)(char *intext, int text_size,
+                           char *outtext, int *key, int key_size);
 
-void columnar_transposition_col2col(char *text, char *outtext, 
-                           int text_size, int *key, int key_size);
-void columnar_transposition_col2row(char *text, char *outtext, 
-                           int text_size, int *key, int key_size);
-void columnar_transposition_row2col(char *text, char *outtext, 
-                           int text_size, int *key, int key_size);
+void columnar_transposition_col2col(char *intext, int text_size,
+                           char *outtext, int *key, int key_size);
+void columnar_transposition_col2row(char *intext, int text_size,
+                           char *outtext, int *key, int key_size);
+void columnar_transposition_row2col(char *intext, int text_size,
+                           char *outtext, int *key, int key_size);
+
+void columnar_transposition_bruteforce(char *intext, int intext_size,
+         char *outtext, int key_min, int key_max, 
+         columnar_transposition_function routine);
+
 void columnar_transposition_flip_key(int *key, int key_size);
-void columnar_transposition_bruteforce(char *text, int text_size,
-          int key_min, int key_max, columnar_transposition_function routine);
-
 void columnar_transposition_keyinfo(int *key, int key_size);
+void columnar_transposition_text2key(char *text, int text_size, 
+                                     int **key, int *new_key_size);
+

@@ -23,13 +23,13 @@
  * encodes; to decode you have to flip the key first =) (there's a 
  * function below to do that). The key must be starting at 0. */
 
-void columnar_transposition_bruteforce(char *text, int text_size,
-          int key_min, int key_max, columnar_transposition_function routine)
+void columnar_transposition_bruteforce(char *intext, int intext_size, 
+         char *outtext, int key_min, int key_max, 
+         columnar_transposition_function routine)
 {
   int key_size, i, j, k, h, factorial, np, npi, score, best_score, best_size;
   int temp_text_size;
   int *key, *key_best;
-  char *text_tmp;
   score_text_pro_state pro_state;
 
   /* Allocate to the maximum size, that's means we only have to alloc once */
@@ -37,11 +37,11 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   key_best = malloc_good(sizeof(int) * key_max);
 
   /* Clip the size of the temporary text to make it quicker */
-  temp_text_size = min(300, text_size);
+  temp_text_size = min(300, intext_size);
 
-  /* Create our temporary space - we still need text_tmp at full size */
-  text_tmp       = malloc_good(text_size + 1);
-  *(text_tmp + temp_text_size) = 0;
+  /* We'll use the outtext as temporary space as well, so lets shove a 
+   * null in the right place to be sure */
+  *(outtext + temp_text_size) = 0;
 
   /* Prepare */
   best_score = -1;
@@ -88,10 +88,10 @@ void columnar_transposition_bruteforce(char *text, int text_size,
       }
 
       /* Try it */
-      (*routine)(text, text_tmp, temp_text_size, key, key_size);
+      (*routine)(intext, temp_text_size, outtext, key, key_size);
 
       /* Score it */
-      score = score_text_pro(text_tmp, &pro_state);
+      score = score_text_pro(outtext, &pro_state);
 
       if (score > best_score)
       {
@@ -120,12 +120,11 @@ void columnar_transposition_bruteforce(char *text, int text_size,
   score_text_pro_print_stats("columnar-transposition", &pro_state);
 
   /* Do it for real and save the result (doing for real WITH numbers) */
-  (*routine)(text, text_tmp, text_size, key_best, best_size);
-  memcpy(text, text_tmp, text_size);
+  (*routine)(intext, intext_size, outtext, key_best, best_size);
 
   /* Be sure about null pointers */
-  *(text_tmp + text_size) = 0;
-  *(text + text_size) = 0;
+  *(outtext + intext_size) = 0;
+  *(intext + intext_size) = 0;
 
   /* Results */
   printf("Columnar Transposition Bruteforce: best_score %i; key size %i\n",
@@ -133,12 +132,11 @@ void columnar_transposition_bruteforce(char *text, int text_size,
 
   columnar_transposition_keyinfo(key_best, best_size);
 
-  printf("%*s\n\n", text_size, text);
+  printf("%s\n\n", outtext);
 
   /* Free up */
   free(key);
   free(key_best);
-  free(text_tmp);
   score_text_pro_cleanup(&pro_state);
 }
 
@@ -162,8 +160,8 @@ void columnar_transposition_keyinfo(int *key, int key_size)
 /* Reads off into columns KEY_SIZE, reorders as per key, reads off
  * in columns - the key is array[source] => target */
 /* THE INPUT TEXT AND THE OUTPUT TEXT MUST BE SEPARATE STRINGS */
-void columnar_transposition_col2col(char *text, char *outtext, 
-                           int text_size, int *key, int key_size)
+void columnar_transposition_col2col(char *intext, int text_size,
+                           char *outtext, int *key, int key_size)
 {
   int i, chunk_start, key_item, target;
 
@@ -175,13 +173,13 @@ void columnar_transposition_col2col(char *text, char *outtext,
     if (chunk_start + key_size >= text_size) break;
     target = chunk_start + key[key_item];
 
-    *(outtext + target) = *(text + i);
+    *(outtext + target) = *(intext + i);
   }
 
   /* Any remainter should just be copied from a => b */
   while (i < text_size)
   {
-    *(outtext + i) = *(text + i);
+    *(outtext + i) = *(intext + i);
     i++;
   }
 }
@@ -189,8 +187,8 @@ void columnar_transposition_col2col(char *text, char *outtext,
 /* Essentially writes out the text in cols (top to bottom then 
  * reads off in rows (left to right). This  is a DECODER,
  * however it requires a flipped key. */
-void columnar_transposition_col2row(char *text, char *outtext, 
-                           int text_size, int *key, int key_size)
+void columnar_transposition_col2row(char *intext, int text_size,
+                           char *outtext, int *key, int key_size)
 {
   int i, col_start, col_end, col_num, col_std_length, cols_incomplete, target;
 
@@ -209,13 +207,13 @@ void columnar_transposition_col2row(char *text, char *outtext,
     }
 
     target = key[col_num] + ((i - col_start) * key_size);
-    *(outtext + target) = *(text + i);
+    *(outtext + target) = *(intext + i);
   }
 }
 
 /* Encodes, writes out in rows (l => r) and reads off in columns. */
-void columnar_transposition_row2col(char *text, char *outtext, 
-                           int text_size, int *key, int key_size)
+void columnar_transposition_row2col(char *intext, int text_size,
+                           char *outtext, int *key, int key_size)
 {
   int i, cols_incomplete, col_std_length, col_num, col_start, col_pos;
 
@@ -233,7 +231,7 @@ void columnar_transposition_row2col(char *text, char *outtext,
     for (i = col_num; i < text_size; i += key_size, col_pos++)
     {
       /* Source = i, target = col_start + col_pos */
-      *(outtext + col_start + col_pos) = *(text + i);
+      *(outtext + col_start + col_pos) = *(intext + i);
     } 
   }
 }
@@ -250,5 +248,62 @@ void columnar_transposition_flip_key(int *key, int key_size)
 
   /* Free up */
   free(temp);
+}
+
+void columnar_transposition_text2key(char *text, int text_size, 
+                                     int **key, int *new_key_size)
+{
+  int i, j, c;
+  int used[26];
+
+  /* Used variable cries out for initialisation */
+  for (i = 0; i < 26; i++) used[i] = -1;
+
+  /* Pass 1, count letters (into variable j) */
+  for (i = 0, j = 0; i < text_size; i++)
+  {
+    c = CHARNUM( *(text + i) );
+
+    if (c == -1)
+    {
+      /* Fail */
+      *key = NULL;
+      *new_key_size = 0;
+      return;
+    }
+
+    if (used[c] == -1)
+    {
+      used[c] = i;
+      j++;
+    }
+  }
+
+  /* Now allocate */
+  *key = malloc_good( sizeof(int) * j );
+  *new_key_size = j;
+
+  #define targkey  (*key)
+
+  /* Pass 2: Using the used array, we can work out each items 
+   * position in the alphabet relative to this key... */
+  for (i = 0, j = 0; i < 26; i++)
+  {
+    if (used[i] != -1)
+    {
+      /* because we're now going through by used[i] insted of text[i] we're 
+       * going in alphabetical order.
+       *  used[i] contains a reference to the character in which it occured.
+       * We want to filter unused characters
+       * And so J goes up each time we get a match, so the first alphabetic
+       * character order has 0.
+       * And we used the reference in used[i] to just save it into the key! */
+
+      targkey[used[i]] = j;
+      j++;
+
+      /* Hope that makes sense */
+    }
+  }
 }
 
