@@ -37,7 +37,7 @@ srcmandir = manpages/
 
 rm = rm -rf
 
-mkdir = mkdir
+mkdir = mkdir -p
 
 opt_lvl = 2
 
@@ -187,7 +187,13 @@ all : $(bin_norm_name)
 
 install : install-norm
 
-install-man :
+install-dir-man :
+	[ -d $(DESTDIR)$(man1dir) ] || $(mkdir) $(DESTDIR)$(man1dir)
+
+install-dir-bin :
+	[ -d $(DESTDIR)$(bindir) ] || $(mkdir) $(DESTDIR)$(bindir)
+
+install-man : install-dir-man
 	$(INSTALL_DATA) $(srcmandir)/cifer.1 \
 	$(DESTDIR)$(man1dir)/cifer.1
 	$(INSTALL_DATA) $(srcmandir)/cifer-dict.1 \
@@ -201,16 +207,16 @@ install-opt : install-bin-opt install-man
 
 install-opt-debug : install-bin-opt-debug install-man
 
-install-bin-norm : $(bin_norm_name)
+install-bin-norm : $(bin_norm_name) install-dir-bin
 	$(INSTALL_PROGRAM) $(bin_norm_name) $(DESTDIR)$(bindir)/$(bin_norm_name)
 
-install-bin-debug : $(bin_debug_name)
+install-bin-debug : $(bin_debug_name) install-dir-bin
 	$(INSTALL_PROGRAM) $(bin_debug_name) $(DESTDIR)$(bindir)/$(bin_debug_name)
 
-install-bin-opt : $(bin_opt_name)
+install-bin-opt : $(bin_opt_name) install-dir-bin
 	$(INSTALL_PROGRAM) $(bin_opt_name) $(DESTDIR)$(bindir)/$(bin_opt_name)
 
-install-bin-opt-debug : $(bin_opt_debug_name)
+install-bin-opt-debug : $(bin_opt_debug_name) install-dir-bin
 	$(INSTALL_PROGRAM) $(bin_opt_debug_name) $(DESTDIR)$(bindir)/$(bin_opt_debug_name)
 
 
