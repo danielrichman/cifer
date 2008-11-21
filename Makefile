@@ -17,32 +17,35 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 
-CC=gcc
-CFLAGS=-Wall
+SHELL = /bin/sh
+
+CC = gcc
+CFLAGS = -Wall
+
+prefix = /usr/local
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+datarootdir = $(prefix)/share
+mandir = $(datarootdir)/man
+man1dir = $(mandir)/man1
 
 rm = rm -rf
-ctags = ctags
-ctags_name = tags
 
 opt_lvl = 2
-
-dict_name = dict
-dict_file = /usr/share/dict/*-english
 
 bin_norm_name      = cifer
 bin_debug_name     = cifer-debug
 bin_opt_name       = cifer-opt
 bin_opt_debug_name = cifer-opt-debug
-cifer_dict         = cifer-dict
-bin_all_name       = $(bin_norm_name) $(bin_debug_name) $(bin_opt_name) \
-                     $(bin_opt_debug_name)
+bin_all_name       = $(bin_norm_name) \
+	$(bin_debug_name) \
+	$(bin_opt_name) \
+	$(bin_opt_debug_name)
 
 cflags_norm  = 
 cflags_debug = -pg -g
 cflags_opt   = -O$(opt_lvl)
 cflags_opt_debug = $(cflags_opt) -pg -g
-
-gprof_files = gmon.out
 
 objects = src/actions.o \
 	src/affine.o \
@@ -99,28 +102,26 @@ headers = src/actions.h \
 	src/keyword.h \
 	src/macros.h \
 	src/polybius.h \
-	src/rf.h \
 	src/settings.h \
 	src/shell.h \
 	src/stdinc.h \
 	src/utility.h \
 	src/vigenere.h \
 	src/vowel_mash.h \
-	\
 	src/utility.i \
 	src/command.i
 
-$(bin_norm_name) : $(objects) $(dict_name)
-	$(CC) $(CFLAGS) $(cflags_norm)       -o $@ $(objects)
+$(bin_norm_name) : $(objects)
+	$(CC) $(cflags_norm) $(CFLAGS)       -o $@ $(objects)
 
-$(bin_debug_name) : $(dict_name) $(cfiles)
-	$(CC) $(CFLAGS) $(cflags_debug)      -o $@ $(cfiles)
+$(bin_debug_name) : $(cfiles)
+	$(CC) $(cflags_debug) $(CFLAGS)      -o $@ $(cfiles)
 
-$(bin_opt_name) : $(dict_name) $(cfiles)
-	$(CC) $(CFLAGS) $(cflags_opt)        -o $@ $(cfiles)
+$(bin_opt_name) : $(cfiles)
+	$(CC) $(cflags_opt) $(CFLAGS)        -o $@ $(cfiles)
 
-$(bin_opt_debug_name) : $(dict_name) $(cfiles)
-	$(CC) $(CFLAGS) $(cflags_opt_debug)  -o $@ $(cfiles)
+$(bin_opt_debug_name) : $(cfiles)
+	$(CC) $(cflags_opt_debug) $(CFLAGS)  -o $@ $(cfiles)
 
 src/affine.o                    : $(headers)
 src/bacon.o                     : $(headers)
@@ -142,20 +143,39 @@ src/utility.o                   : $(headers)
 src/vigenere.o                  : $(headers)
 src/vowel_mash.o                : $(headers)
 
-$(dict_name) : $(cifer_dict)
-	chmod +x cifer-dict
-	./$(cifer_dict) $(dict_file) $(dict_name)
+.PHONY : all \
+	dist \
+	install \
+	install-norm \
+	install-debug \
+	install-opt \
+	install-opt-debug \
+	uninstall \
+	clean \
+	distclean \
+	clean-objects \
+	dist
 
-$(cifer_dict) :
-	chmod +x cifer-dict
+all : $(bin_norm_name)
 
-$(ctags_name):
-	$(ctags) -f $@ $(cfiles) $(headers)
+install : install-norm
 
-.PHONY : clean clean-objects
+install-norm :
+
+install-debug :
+
+install-opt :
+
+install-opt-debug :
+
+uninstall :
 
 clean :
-	$(rm) $(bin_all_name) $(dict_name) $(objects) $(gprof_files) $(ctags_name)
+	$(rm) $(bin_all_name) $(objects)
+
+distclean : clean
 
 clean-objects :
 	$(rm) $(objects)
+
+dist :
