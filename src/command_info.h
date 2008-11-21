@@ -1,58 +1,6 @@
 
 #define dict_not_loaded "dictionary not loaded: type `usage load_dict' for more info\n"
 
-#define ctrans_explain_text "columnar transposition is a complex beast, with many variants. \n\
- In all variants of columnar transposition, the encryption process starts out \n\
- by writing the text out in a table. This table is defined by its width, and  \n\
- this width is also the length of the keyword.                                \n\
-                                                                              \n\
- Depending on the variant, the ciphertext might be written into the table     \n\
- from left to right and then re ordered, and finally read off left to right   \n\
- again. Alternativly, it could be written into the table top to bottom and    \n\
- read off left to right, or even written in left to right and read off        \n\
- top to bottom!                                                               \n\
-                                                                              \n\
- The keyword can be specified in numeric or alpha form. In numeric form,      \n\
- each digit must only be used once and there must be enough digits to         \n\
- form a full key (Ie. for a key length 4 all of the digits 0, 1, 2, 3 must    \n\
- be used.)                                                                    \n\
- An alphabetic keyword, such as 'tomato', first has duplicate letters removed \n\
- and then a numeric version deduced by each letter's position in the alphabet,\n\
- If you were encrypting by hand, you would write out 'aple' on top of your    \n\
- table and then move the columns around until the top is in alphabetic order, \n\
- ie. aelp. Therefore, aple has the numeric keyword equivilant of 0 3 2 1      \n\
-                                                                              \n\
- Example: Visual Keyword reordering                                           \n\
-        Alpha keyword       Numeric keyword                                   \n\
-            apple                                                             \n\
-            aple               0 3 2 1                                        \n\
-            aelp               0 1 2 3                                        \n\
- See how the number refers to its target position?                            \n\
-                                                                              \n\
- Flipping a keyword is the process of creating a keyword that when used as    \n\
- if it was an encryption keyword, infacts reverses the original, like an      \n\
- inverse matrix. Flipping a keyword is done by                                \n\
-   for (i = 0; i < keyword_length; i++)      For every element                \n\
-              new_keyword[keyword[i]] = i;   Swap values and keys             \n\
- The flipped keyword of 1 3 0 2 is 2 0 3 1                                    \n\
-                                                                              \n\
- Cifer's keyword functions provide utilities to automate all these variants.  \n\
- There are nine commands, c2c_encode, c2c_decode, c2c_bruteforce,             \n\
-                          r2c_encode, r2c_decode, r2c_bruteforce,             \n\
-                          c2r_encode, c2r_decode, c2r_bruteforce              \n\
-                                                                              \n\
- The first three letters are short for column to column, column to row and    \n\
- row to column; these refer to the different ways that you can read off the   \n\
- table (see second paragraph).                                                \n\
-                                                                              \n\
- In encode mode, the keyword is taken as a parameter and straightforward      \n\
- columnar transposition performed.                                            \n\
- In decode mode, the keyword is taken, flipped, and then passed to the encode \n\
- routine.                                                                     \n\
- In bruteforce mode, cifer tries all permutations of increasing key lengths   \n\
- in an attempt to find the real keyword. To score its progress, it uses the   \n\
- dictionary.                                                                  \n
-
 #define action_default_usage "usage: help (to list all commands) or usage <command name>";
 #define action_default_use "no such command";
 
@@ -103,7 +51,6 @@
 #define action_deltaic_usage "usage: deltai buffer_#\n"
 #define action_monoalph_usage "usage: monoalph buffer_# buffer_# encrypt|decrypt ctext_targets \n\
   (input, output, cipher mode, ctext_targets for abcd....xyz (alpha size 26))\n"
-#define action_ctrans_usage "usage: ctrans <no args> \n"
 #define action_c2c_encode_usage "usage: c2c_encode buffer_# buffer_# keyword\n\
   (input, output, keyword in alpha (eg. tomato) or numbers (1 3 2 0) \n"
 #define action_r2c_encode_usage "usage: r2c_encode buffer_# buffer_# keyword\n\
@@ -175,7 +122,6 @@
 #define action_shift_use "shift takes a buffer and performs a vigenere style shift on it\n"
 #define action_deltaic_use "deltaic computes the index of coincidence on a buffer\n"
 #define action_monoalph_use "monoalph translates a buffer using monoalphabetic substitution\n"
-#define action_ctrans_use "ctrans explains columnar transposition and the roles of c2c, r2c and c2r\n"
 #define action_c2c_encode_use "c2c_encode encrypts using column to column transposition\n"
 #define action_c2c_decode_use "c2c_decode decrypts using column to coulmn transposition\n"
 #define action_c2c_bruteforce_use "c2c_bruteforce bruteforces the key for column to column transposition\n"
