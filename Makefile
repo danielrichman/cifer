@@ -36,33 +36,15 @@ INSTALL_DATA = $(INSTALL) -m 644
 srcmandir = manpages/
 
 rm = rm -rf
-
 mkdir = mkdir -p
 
-objects = src/actions.o \
-	src/affine.o \
-	src/bacon.o \
-	src/ciphers.o \
-	src/columnar_transposition.o \
-	src/command.o \
-	src/dictionary.o \
-	src/frequency_analysis.o \
-	src/frequency_data.o \
-	src/interface.o \
-	src/io.o \
-	src/keyword.o \
-	src/main.o \
-	src/polybius.o \
-	src/rf.o \
-	src/shell.o \
-	src/utility.o \
-	src/vigenere.o \
-	src/vowel_mash.o
-
+objects := $(patsubst %.c,%.o,$(wildcard src/*.c))
 headers := $(wildcard src/*.h src/*.i)
+
 
 cifer : $(objects)
 	$(CC) $(CFLAGS) -o $@ $(objects)
+
 
 src/affine.o                    : $(headers)
 src/bacon.o                     : $(headers)
@@ -84,6 +66,7 @@ src/utility.o                   : $(headers)
 src/vigenere.o                  : $(headers)
 src/vowel_mash.o                : $(headers)
 
+
 .PHONY : all \
 	\
 	dist \
@@ -102,6 +85,7 @@ src/vowel_mash.o                : $(headers)
 	distclean \
 	\
 	dist
+
 
 all : cifer
 
