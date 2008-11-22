@@ -871,7 +871,16 @@ int action_monoalph(int argc, char **argv)
       actionu_bufferchk(buffer_in, buffer_out,     u);                        \
       actionu_bufferschk(buffer_in, buffer_out,    u);                        \
                                                                               \
-      actionu_ctrans_keyword_parse(argc - 2, argv + 2, u);
+      actionu_ctrans_keyword_parse(argc - 2, argv + 2, u);                    \
+                                                                              \
+      if (get_buffer_filter(buffer_in) == BUFFER_FILTER_NONE ||               \
+          get_buffer_filter(buffer_in) == BUFFER_FILTER_ESP  ||               \
+          get_buffer_filter(buffer_in) == BUFFER_FILTER_ENL)                  \
+      {                                                                       \
+        printf("warning: columnar transposition works on raw characters, \n"  \
+ "and so any unfiltered newlines or whitespace will be translated as well \n" \
+ "You may want to use the filter command \n");                                \
+      }
 
 #define actionu_ctrans_invoke(type, dir)                                      \
       columnar_transposition_ ## type (get_buffer(buffer_in),                 \
@@ -1168,6 +1177,27 @@ int action_pct(int argc, char **argv)
 
 int action_keyb(int argc, char **argv)
 {
+  int buffer_in, buffer_out;
+
+  actionu_argchk(2,                            action_keyb_usage);
+  actionu_bufferparse(*(argv),     buffer_in,  action_keyb_usage);
+  actionu_bufferparse(*(argv + 1), buffer_out, action_keyb_usage);
+  actionu_bufferchk(buffer_in, buffer_out,     action_keyb_usage);
+  actionu_bufferschk(buffer_in, buffer_out,    action_keyb_usage);
+
+  keyword_bruteforce(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                     get_buffer(buffer_out));
+
+  return CFSH_OK;
+}
+
+int action_keye(int argc, char **argv)
+{
+  return CFSH_OK;
+}
+
+int action_keyd(int argc, char **argv)
+{
   return CFSH_OK;
 }
 
@@ -1177,11 +1207,6 @@ int action_keyt(int argc, char **argv)
 }
 
 int action_keytf(int argc, char **argv)
-{
-  return CFSH_OK;
-}
-
-int action_keyd(int argc, char **argv)
 {
   return CFSH_OK;
 }

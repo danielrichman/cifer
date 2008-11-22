@@ -16,15 +16,15 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-void keyword_bruteforce(char *text, int text_size);
+void keyword_bruteforce(char *intext, int intext_size, char *outtext);
 void keyword_table(char *keyword, int keyword_length, int *table);
 void keyword_table_preflipped(char *keyword, int keyword_length, int *table);
 void keyword_table_flip(int *table);
-void keyword_decode(char *text, char *outtext, int text_size, int *table);
+void keyword_translate(char *intext, int text_size, char *outtext, int *table);
 void keyword_table_copy(int *dest, int *source);
-void keyword_decode_print(char *text, int text_size, 
-                          char *keyword, int key_size);
-void keyword_print_info(char *text, int text_size, 
-                         char *keyword, int key_size, int *table);
+void keyword_single(char *intext, int intext_size, char *outtext,
+                    char *keyword, int key_size, int flip);
+void keyword_print_info(char *text, char *keyword, int key_size,
+                        int *table, char *dirstring);
 int keyword_check(char *keyword, int key_size);
 
