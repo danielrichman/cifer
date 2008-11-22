@@ -20,7 +20,9 @@
 SHELL = /bin/sh
 
 CC = gcc
-CFLAGS = -Wall -pedantic
+VERSION = `cat VERSION`
+CFLAGS_EXTRA = 
+CFLAGS = -Wall -pedantic -DVERSION="\"$(VERSION)\"" $(CFLAGS_EXTRA)
 
 prefix = /usr/local
 exec_prefix = $(prefix)

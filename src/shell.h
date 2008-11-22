@@ -33,6 +33,7 @@ void cfsh_autoinit();
 int cfsh_read(FILE *read, int mode);
 void cfsh_scriptfile(char *name, int preparse, int softfail);
 int cfsh_line(char *input, int mode);
+void cifer_header();
 
 #define cfsh_interactive()  cfsh_read(stdin, CFSH_READ_MODE_INTERACTIVE)
 

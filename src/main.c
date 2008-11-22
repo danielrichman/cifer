@@ -30,7 +30,7 @@ int main(int argc, char **argv)
    *   -s means that soft-fails will cause an exit, not just hard-fails
    * then treat the rest as a shell command.  */
 
-  int i, j, noauto, init, file, quick, soft;
+  int i, j, noauto, init, file, quick, soft, mute;
   cfsh_execinfo execinfo;
 
   noauto = 0;
@@ -38,6 +38,7 @@ int main(int argc, char **argv)
   file   = 0;
   quick  = 0;
   soft   = 0;
+  mute   = 0;
 
   /* Unavoidable startup. Initialises global pointers and sets
    * default dictionary location */
@@ -55,11 +56,15 @@ int main(int argc, char **argv)
     {
       for (i = 1; i < strlen(*(argv + 1)); i++) switch (*(*(argv + 1) + i))
       {
-        case 'n':   noauto = 1;  break;
-        case 'i':   init   = 1;  break;
-        case 'f':   file   = 1;  break;
-        case 'q':   quick  = 1;  break;
-        case 's':   soft   = 1;  break;
+        case 'n':   noauto = 1;                                     break;
+        case 'i':   init   = 1;                                     break;
+        case 'f':   file   = 1;                                     break;
+        case 'q':   quick  = 1;                                     break;
+        case 's':   soft   = 1;                                     break;
+        case 'm':   mute   = 1 ;                                    break;
+        default :   printf("Unrecognised switch %c.\n",
+                                 (*(*(argv + 1) + i)));
+                    return 1;                                       break;
       }
     }
 
@@ -71,7 +76,13 @@ int main(int argc, char **argv)
 
     if ((quick || soft) && !(init || file))
     {
-      printf("cifer (main): quick || soft specified but no init or file.\n");
+      printf("cifer (main): quick|soft can only be used with init|file.\n");
+      return 1;
+    }
+
+    if (mute && !file)
+    {
+      printf("cifer (main): mute can only be used with file.\n");
       return 1;
     }
 
@@ -91,6 +102,9 @@ int main(int argc, char **argv)
         printf("cifer (main): please specify a file.\n");
         return 1;
       }
+
+      if (file) close(0);  /* Input not needed */
+      if (mute) close(1);  /* Stop any output to stdout */
 
       if (!noauto) cfsh_autoinit();
       cfsh_scriptfile(*(argv + 2), !quick, soft);
