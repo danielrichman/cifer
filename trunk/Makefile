@@ -20,7 +20,7 @@
 SHELL = /bin/sh
 
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -pedantic
 
 prefix = /usr/local
 exec_prefix = $(prefix)
@@ -31,6 +31,7 @@ man1dir = $(mandir)/man1
 
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL) -m 755
+INSTALL_PROGRAM_STRIP = $(INSTALL_PROGRAM) -s
 INSTALL_DATA = $(INSTALL) -m 644
 
 srcmandir = manpages/
@@ -42,29 +43,14 @@ objects := $(patsubst %.c,%.o,$(wildcard src/*.c))
 headers := $(wildcard src/*.h src/*.i)
 
 
+all : cifer
+
+
 cifer : $(objects)
 	$(CC) $(CFLAGS) -o $@ $(objects)
 
 
-src/affine.o                    : $(headers)
-src/bacon.o                     : $(headers)
-src/ciphers.o                   : $(headers)
-src/columnar_transposition.o    : $(headers)
-src/command.o                   : $(headers)
-src/dictionary.o                : $(headers)
-src/frequency_analysis.o        : $(headers)
-src/frequency_data.o            : $(headers)
-src/interface.o                 : $(headers)
-src/io.o                        : $(headers)
-src/keyword.o                   : $(headers)
-src/main.o                      : $(headers)
-src/polybius.o                  : $(headers)
-src/rf.o                        : $(headers)
-src/shell.o                     : $(headers)
-src/urandom_access.o            : $(headers)
-src/utility.o                   : $(headers)
-src/vigenere.o                  : $(headers)
-src/vowel_mash.o                : $(headers)
+$(objects) : $(headers)
 
 
 .PHONY : all \
@@ -87,9 +73,6 @@ src/vowel_mash.o                : $(headers)
 	dist
 
 
-all : cifer
-
-
 install : install-man install-bin
 
 install-dir-man :
@@ -105,7 +88,8 @@ install-man : install-dir-man
 	$(DESTDIR)$(man1dir)/cifer-dict.1
 
 install-bin : all install-dir-bin
-	$(INSTALL_PROGRAM) cifer $(DESTDIR)$(bindir)/cifer
+	$(INSTALL_PROGRAM_STRIP) cifer $(DESTDIR)$(bindir)/cifer
+	$(INSTALL_PROGRAM) cifer-dict $(DESTDIR)$(bindir)/cifer-dict
 
 
 uninstall: uninstall-man uninstall-bin
@@ -116,12 +100,13 @@ uninstall-man :
 
 uninstall-bin :
 	$(rm) $(DESTDIR)$(bindir)/cifer
+	$(rm) $(DESTDIR)$(bindir)/cifer-dict
 
 
 clean :
-	$(rm) $(bin_all_name) $(objects)
+	$(rm) cifer $(objects)
 
 distclean : clean
 
 
-dist :
+dist : ;
