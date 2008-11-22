@@ -54,7 +54,7 @@ all : cifer
 
 
 cifer : $(objects)
-	$(CC) $(CFLAGS) -o $@ $(objects)
+	$(CC) $(CFLAGS)      -o $@ $(objects)
 
 
 $(objects) : $(headers)
