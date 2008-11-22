@@ -59,7 +59,7 @@ objects = src/actions.o \
 	src/vigenere.o \
 	src/vowel_mash.o
 
-headers = src/*.h src/*.i
+headers := $(wildcard src/*.h src/*.i)
 
 cifer : $(objects)
 	$(CC) $(CFLAGS) -o $@ $(objects)
