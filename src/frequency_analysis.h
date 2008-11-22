@@ -25,7 +25,8 @@ typedef struct {
 void random_frequency_match(int *frequency_graph,
                             int *identity_frequency_graph,
                             int *table);
-void frequency_guesses(char *text, int text_size);
+void frequency_guesses(char *intext, int intext_size, 
+                       char *outtext, int do_decrypt);
 int frequency_analysis(char *text, int text_size, int jump);
 double delta_ic (char *text, int text_size, int jump);
 

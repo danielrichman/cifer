@@ -74,15 +74,23 @@ void random_frequency_match(int *frequency_graph,
   /* Done */
 }
 
-void frequency_guesses(char *text, int text_size)
+void frequency_guesses(char *intext, int intext_size, 
+                       char *outtext, int do_decrypt)
 {
   int frequency_graph[26], identity_frequency_graph[26], gid_freq[26];
   int table[26], rtable[26], width[26];
-  int i, m;
+  int i, m, t, c;
+  char o;
 
   /* Count */
-  count_freq(text, text_size, frequency_graph);
-  create_identity_frequency_graph(identity_frequency_graph, text_size);
+  count_freq(intext, intext_size, frequency_graph);
+
+  /* Because its alpha chars only, we need a new total */
+  t = 0;
+  for (i = 0; i < 26; i++) t += frequency_graph[i];
+
+  /* Now identity frequency graph time */
+  create_identity_frequency_graph(identity_frequency_graph, t);
 
   /* Process */
   random_frequency_match(frequency_graph, identity_frequency_graph, table);
@@ -142,14 +150,23 @@ void frequency_guesses(char *text, int text_size)
   for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(rtable[i]));
   printf("\n\n");
 
-  printf("*Possible* but unlikely decrypt based purely on letters: \n");
-
-  for (i = 0; i < text_size; i++)
+  if (do_decrypt)
   {
-    printf("%c", NUMCHAR(table[CHARNUM(*(text + i))]));
-  }
+    printf("*Possible* but unlikely decrypt based purely on letters: \n");
 
-  printf("\n\n");
+    for (i = 0; i < intext_size; i++)
+    {
+      o = *(intext + i);
+      c = CHARNUM(o);
+
+      if (c != -1)           o = NUMCHAR(table[c]);
+      if (outtext != NULL)   *(outtext + i) = o;
+
+      printf("%c", o);
+    }
+
+    printf("\n\n");
+  }
 }
 
 /* This frequency counter & analyser is different in that it incorporates
