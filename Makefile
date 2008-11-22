@@ -39,22 +39,6 @@ rm = rm -rf
 
 mkdir = mkdir -p
 
-opt_lvl = 2
-
-bin_norm_name      = cifer
-bin_debug_name     = cifer-debug
-bin_opt_name       = cifer-opt
-bin_opt_debug_name = cifer-opt-debug
-bin_all_name       = $(bin_norm_name) \
-	$(bin_debug_name) \
-	$(bin_opt_name) \
-	$(bin_opt_debug_name)
-
-cflags_norm  = 
-cflags_debug = -pg -g
-cflags_opt   = -O$(opt_lvl)
-cflags_opt_debug = $(cflags_opt) -pg -g
-
 objects = src/actions.o \
 	src/affine.o \
 	src/bacon.o \
@@ -75,61 +59,10 @@ objects = src/actions.o \
 	src/vigenere.o \
 	src/vowel_mash.o
 
-cfiles = src/actions.c \
-	src/affine.c \
-	src/bacon.c \
-	src/ciphers.c \
-	src/columnar_transposition.c \
-	src/command.c \
-	src/dictionary.c \
-	src/frequency_analysis.c \
-	src/frequency_data.c \
-	src/interface.c \
-	src/io.c \
-	src/keyword.c \
-	src/main.c \
-	src/polybius.c \
-	src/rf.c \
-	src/shell.c \
-	src/utility.c \
-	src/vigenere.c \
-	src/vowel_mash.c
+headers = src/*.h src/*.i
 
-headers = src/actions.h \
-	src/affine.h \
-	src/bacon.h \
-	src/ciphers.h \
-	src/columnar_transposition.h \
-	src/command.h \
-	src/command_info.h \
-	src/dictionary.h \
-	src/frequency_analysis.h \
-	src/frequency_data.h \
-	src/interface.h \
-	src/io.h \
-	src/keyword.h \
-	src/macros.h \
-	src/polybius.h \
-	src/settings.h \
-	src/shell.h \
-	src/stdinc.h \
-	src/utility.h \
-	src/vigenere.h \
-	src/vowel_mash.h \
-	src/utility.i \
-	src/command.i
-
-$(bin_norm_name) : $(objects)
-	$(CC) $(cflags_norm) $(CFLAGS)       -o $@ $(objects)
-
-$(bin_debug_name) : $(cfiles)
-	$(CC) $(cflags_debug) $(CFLAGS)      -o $@ $(cfiles)
-
-$(bin_opt_name) : $(cfiles)
-	$(CC) $(cflags_opt) $(CFLAGS)        -o $@ $(cfiles)
-
-$(bin_opt_debug_name) : $(cfiles)
-	$(CC) $(cflags_opt_debug) $(CFLAGS)  -o $@ $(cfiles)
+cifer : $(objects)
+	$(CC) $(CFLAGS) -o $@ $(objects)
 
 src/affine.o                    : $(headers)
 src/bacon.o                     : $(headers)
@@ -157,35 +90,23 @@ src/vowel_mash.o                : $(headers)
 	\
 	install \
 	install-man \
-	install-norm \
-	install-debug \
-	install-opt \
-	install-opt-debug \
-	install-bin-norm \
-	install-bin-debug \
-	install-bin-opt \
-	install-bin-opt-debug \
+	install-bin \
+	install-dir-man \
+	install-dir-bin \
 	\
 	uninstall \
 	uninstall-man \
-	uninstall-norm \
-	uninstall-debug \
-	uninstall-opt \
-	uninstall-opt-debug \
-	uninstall-bin-norm \
-	uninstall-bin-debug \
-	uninstall-bin-opt \
-	uninstall-bin-opt-debug \
+	uinstall-bin \
 	\
 	clean \
 	distclean \
 	\
 	dist
 
-all : $(bin_norm_name)
+all : cifer
 
 
-install : install-norm
+install : install-man install-bin
 
 install-dir-man :
 	[ -d $(DESTDIR)$(man1dir) ] || $(mkdir) $(DESTDIR)$(man1dir)
@@ -199,52 +120,18 @@ install-man : install-dir-man
 	$(INSTALL_DATA) $(srcmandir)/cifer-dict.1 \
 	$(DESTDIR)$(man1dir)/cifer-dict.1
 
-install-norm : install-bin-norm install-man
-
-install-debug : install-bin-debug install-man
-
-install-opt : install-bin-opt install-man
-
-install-opt-debug : install-bin-opt-debug install-man
-
-install-bin-norm : $(bin_norm_name) install-dir-bin
-	$(INSTALL_PROGRAM) $(bin_norm_name) $(DESTDIR)$(bindir)/$(bin_norm_name)
-
-install-bin-debug : $(bin_debug_name) install-dir-bin
-	$(INSTALL_PROGRAM) $(bin_debug_name) $(DESTDIR)$(bindir)/$(bin_debug_name)
-
-install-bin-opt : $(bin_opt_name) install-dir-bin
-	$(INSTALL_PROGRAM) $(bin_opt_name) $(DESTDIR)$(bindir)/$(bin_opt_name)
-
-install-bin-opt-debug : $(bin_opt_debug_name) install-dir-bin
-	$(INSTALL_PROGRAM) $(bin_opt_debug_name) $(DESTDIR)$(bindir)/$(bin_opt_debug_name)
+install-bin : all install-dir-bin
+	$(INSTALL_PROGRAM) cifer $(DESTDIR)$(bindir)/cifer
 
 
-uninstall: uninstall-norm
+uninstall: uninstall-man uninstall-bin
 
 uninstall-man :
 	$(rm) $(DESTDIR)$(man1dir)/cifer.1
 	$(rm) $(DESTDIR)$(man1dir)/cifer-dict.1
 
-uninstall-norm : uninstall-bin-norm uninstall-man
-
-uninstall-debug : uninstall-bin-debug uninstall-man
-
-uninstall-opt : uninstall-bin-opt uninstall-man
-
-uninstall-opt-debug : uninstall-bin-opt-debug uninstall-man
-
-uninstall-bin-norm :
-	$(rm) $(DESTDIR)$(bindir)/$(bin_norm_name)
-
-uninstall-bin-debug :
-	$(rm) $(DESTDIR)$(bindir)/$(bin_debug_name)
-
-uninstall-bin-opt :
-	$(rm) $(DESTDIR)$(bindir)/$(bin_opt_name)
-
-uninstall-bin-opt-debug :
-	$(DESTDIR)$(bindir)/$(bin_opt_debug_name)
+uninstall-bin :
+	$(rm) $(DESTDIR)$(bindir)/cifer
 
 
 clean :
