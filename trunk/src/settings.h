@@ -25,6 +25,7 @@
 #define WORD_BUF_SIZE          1024
 #define MIN_WORD_SIZE          2
 
+#define DESIGNLANG             "English"
 #define OPTIMAL_DELTA_IC       1.73  /* Static data on English */ 
 
 #define AFFINE_WAIT            1     /* How long affine waits before \

@@ -23,6 +23,22 @@ void cfsh_init()
   /* Crucial startup routines. Basically initialises global variables. */
   buffers_init();
   init_dict();
+  cifer_header();
+}
+
+void cifer_header()
+{
+  printf("                --- Cifer " VERSION " ---    \n");
+  printf("Copyright 2008 Simrun Basuita & Daniel Richman\n");
+  printf("License GPLv3+: GNU GPL version 3 or later "
+            "<http://gnu.org/licenses/gpl.html>\n");
+  printf("This is free software: you are free to change "
+            "and redistribute it.\n");
+  printf("There is NO WARRANTY, to the extent permitted by law.\n\n");
+  printf("Compiled with:   Cipher cracking lanuage: " DESIGNLANG "\n");
+  printf("                 Optimal Delta IC :       %f\n", OPTIMAL_DELTA_IC);
+  printf("                 Dictionary max wordlen:  %i\n", WORD_BUF_SIZE);
+  printf("                 Dictionary min wordlen:  %i\n\n", MIN_WORD_SIZE);
 }
 
 void cfsh_autoinit()
