@@ -18,11 +18,11 @@
 
 #include "stdinc.h"
 
-void keyword_bruteforce(char *text, int text_size)
+void keyword_bruteforce(char *intext, int intext_size, char *outtext)
 {
-  char *j, *e, *best, *text_tmp, statusbuf[75];
+  char *j, *e, *best, statusbuf[75];
   int len, score, best_score, temp_table[26];
-  int p, lastp, l, lastl, lastplen;
+  int i, p, lastp, l, lastl, lastplen;
   struct timeval seltime;
   fd_set stdset, stdset_temp;
   score_text_pro_state pro_state;
@@ -40,14 +40,11 @@ void keyword_bruteforce(char *text, int text_size)
   /* Dict will have been opened by action.c */
   e = *(dict_pointer + (26 * 26));  /* The end of the dictionary */
 
-  /* Setup text_temp */
-  text_tmp = malloc_good(text_size + 1);
-
   /* Setup Dictionary_pro */
-  score_text_pro_start(text_size, &pro_state);
+  score_text_pro_start(intext_size, &pro_state);
 
   /* Null termination */
-  *(text_tmp + text_size) = 0;
+  *(outtext + intext_size) = 0;
 
   /* Prepare */
   best = 0;
@@ -72,11 +69,16 @@ void keyword_bruteforce(char *text, int text_size)
       {
         keyword_table(best, strlen(best), temp_table);
         keyword_table_flip(temp_table);
-        keyword_decode(text, text_tmp, text_size, temp_table);
+        keyword_translate(intext, intext_size, outtext, temp_table);
 
         /* We have 80 - lastplen chars left. Spare 5 for ... \0, \n and ) */
         snprintf(statusbuf, 75 - lastplen, " (best so far: %i, %s: %s",
-                  best_score, best,  text_tmp);
+                  best_score, best,  outtext);
+
+        /* Filter anything that will break our formatting */
+        for (i = 0; i < (75 - lastplen); i++)
+          if (XSPACE_CH(*(statusbuf + i)))
+            *(statusbuf + i) = ' ';
 
         /* Write out the now trimmed string (with the suffix blah...) \n */
         printf("%s...)", statusbuf);
@@ -103,8 +105,8 @@ void keyword_bruteforce(char *text, int text_size)
 
     keyword_table(j, len, temp_table);
     keyword_table_flip(temp_table);
-    keyword_decode(text, text_tmp, text_size, temp_table);
-    score = score_text_pro(text_tmp, &pro_state);
+    keyword_translate(intext, intext_size, outtext, temp_table);
+    score = score_text_pro(outtext, &pro_state);
 
     if (score > best_score)
     {
@@ -116,9 +118,6 @@ void keyword_bruteforce(char *text, int text_size)
   /* Finish off the final bar */
   printf("\n\n");
 
-  /* Free up */
-  free(text_tmp);
-
   /* Some Pro_check finish, stats and cleanup */
   score_text_pro_print_stats("keyword bruteforce", &pro_state);
   score_text_pro_cleanup(&pro_state);
@@ -126,9 +125,10 @@ void keyword_bruteforce(char *text, int text_size)
   /* Now retrieve best */
   keyword_table(best, strlen(best), temp_table);
   keyword_table_flip(temp_table);
-  keyword_decode(text, text, text_size, temp_table);
+  keyword_translate(intext, intext_size, outtext, temp_table);
   keyword_table_flip(temp_table);
-  keyword_print_info(text, text_size, best, strlen(best), temp_table);
+  keyword_print_info(outtext, best, strlen(best), 
+                     temp_table, "(bruteforce) decode");
 }
 
 /* This function fills out an int array[26] from the keyword */
@@ -243,14 +243,19 @@ int keyword_check(char *keyword, int key_size)
  * Note the intext and outtext, that's because we have to bruteforce
  * this routine and memcpy or a restoring-text for_loop would take
  * about 80% of the time up!!! (atleast on my pc) */
-void keyword_decode(char *text, char *outtext, int text_size, int *table)
+void keyword_translate(char *intext, int intext_size, char *outtext, int *table)
 {
-  int i;
+  int i, c;
+  char o;
 
   /* Translate... */
-  for (i = 0; i < text_size; i++)
+  for (i = 0; i < intext_size; i++)
   {
-    *(outtext + i) = NUMCHAR( table[CHARNUM(*(text + i))] );
+    o = *(intext + i);
+    c = CHARNUM(o);
+
+    if (c != -1) o = NUMCHAR( table[c] );
+    *(outtext + i) = o;
   }
 }
 
@@ -260,26 +265,22 @@ void keyword_table_copy(int *dest, int *source)
   for (i = 0; i < 26; i++) dest[i] = source[i];
 }
 
-void keyword_decode_print(char *text, int text_size, 
-                          char *keyword, int key_size)
+void keyword_single(char *intext, int intext_size, char *outtext,
+                    char *keyword, int key_size, int flip)
 {
   int table[26], otable[26];
 
-  if (!keyword_check(keyword, key_size))
-  {
-    printf("Keyword Decode: Malformed keyword?\n\n");
-    return;
-  }
-
   keyword_table(keyword, key_size, table);
   keyword_table_copy(otable, table);
-  keyword_table_flip(table);
-  keyword_decode(text, text, text_size, table);
-  keyword_print_info(text, text_size, keyword, key_size, otable);
+  if (flip) keyword_table_flip(table);
+  keyword_translate(intext, intext_size, outtext, table);
+  *(outtext + intext_size) = 0;
+  keyword_print_info(outtext, keyword, key_size, otable,
+                              (flip ? "decode" : "encode"));
 }
 
-void keyword_print_info(char *text, int text_size, 
-                         char *keyword, int key_size, int *table)
+void keyword_print_info(char *text, char *keyword, int key_size, 
+                        int *table, char *dirstring)
 {
   int m, i, width[26];
 
@@ -288,7 +289,7 @@ void keyword_print_info(char *text, int text_size,
   print_count_width(table, width, &m);
   print_finalise_width(width, &m);
 
-  printf("Keyword Cipher Decode using keyword %s: \n\n", keyword);
+  printf("Keyword Cipher %s using keyword %s: \n\n", dirstring, keyword);
   printf("Plaintext Char | PCharNum | Ciphertext Char | CCharNum\n");
 
   printf("P|");
@@ -307,5 +308,5 @@ void keyword_print_info(char *text, int text_size,
   for (i = 0; i < 26; i++) printf("%*i|", width[i], table[i]);
   printf("\n\n");
 
-  printf("%*s\n\n", text_size, text);
+  printf("%s\n\n", text);
 }
