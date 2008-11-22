@@ -22,6 +22,6 @@
  * See ncc/3b/ for an example */
 
 
-// TODO: complete me and perahps rename to deform.c and add multiple
-// ctext => ptext mappings
+/* TODO: complete me and perahps rename to deform.c and add multiple
+  ctext => ptext mappings */
 

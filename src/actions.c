@@ -162,7 +162,7 @@ int actionu_bufferparsef(char *str)
 int action_buffers(int argc, char **argv)
 {
   int num;
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
 
   actionu_argchk(1,              action_buffers_usage);
   actionu_intparse(*(argv), num, action_buffers_usage);
@@ -186,7 +186,7 @@ int action_quit(int argc, char **argv)
 int action_resize(int argc, char **argv)
 {
   int newsize, buffer_id;
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
 
   actionu_argchk(2,                       action_resize_usage);
   actionu_intparse(*(argv + 1), newsize,  action_resize_usage);
@@ -501,7 +501,7 @@ int action_affine(int argc, char **argv)
 int action_affinesolve(int argc, char **argv)
 {
   int ct1, pt1, ct2, pt2, a, b;
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
   actionu_argchk(4,                         action_affinesolve_usage);
   actionu_intparse_char( *(argv)     , ct1, action_affinesolve_usage);
   actionu_intparse_char( *(argv + 1) , pt1, action_affinesolve_usage);
@@ -529,7 +529,7 @@ int action_affinebf(int argc, char **argv)
 int action_affineencode(int argc, char **argv)
 {
   int buffer_in, buffer_out, a, b;
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
   actionu_argchk(4,                            action_affineencode_usage);
 
   actionu_bufferparse(*(argv),     buffer_in,  action_affineencode_usage);
@@ -554,7 +554,7 @@ int action_affineencode(int argc, char **argv)
 int action_affinedecode(int argc, char **argv)
 {
   int buffer_in, buffer_out, a, b;
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
   actionu_argchk(4,                            action_affinedecode_usage);
 
   actionu_bufferparse(*(argv),     buffer_in,  action_affinedecode_usage);
@@ -622,7 +622,7 @@ int action_shift(int argc, char **argv)
   char ch;
   int *shift;
   char *dirstr;
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
 
   if (argc < 4)
   {
@@ -857,8 +857,8 @@ int action_monoalph(int argc, char **argv)
 
 #define actionu_ctrans_default(argc, argv, u)                                 \
       int buffer_in, buffer_out;                                              \
-      actionu_intparse_setup();                                               \
-      actionu_ctrans_setup();                                                 \
+      actionu_intparse_setup()                                               \
+      actionu_ctrans_setup()                                                 \
                                                                               \
       if (argc < 3)                                                           \
       {                                                                       \
@@ -896,7 +896,7 @@ int action_monoalph(int argc, char **argv)
 
 #define actionu_ctrans_bruteforce(argc, argv, type, u)                        \
       int buffer_in, buffer_out, minb, maxb;                                  \
-      actionu_intparse_setup();                                               \
+      actionu_intparse_setup()                                                \
                                                                               \
       actionu_argchk(4,                            u);                        \
       actionu_bufferparse(*(argv),     buffer_in,  u);                        \
@@ -922,8 +922,8 @@ int action_monoalph(int argc, char **argv)
 
 int action_ctrans_keyinfo(int argc, char **argv)
 {
-  actionu_intparse_setup();
-  actionu_ctrans_setup();
+  actionu_intparse_setup()
+  actionu_ctrans_setup()
 
   if (argc == 0)
   {
@@ -1033,7 +1033,7 @@ int action_ifg(int argc, char **argv)
 {
   int buffer_id, text_size, i, m;
   int ifg[26], width[26];
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
 
   actionu_argchk(1, action_ifg_usage);
 
@@ -1085,7 +1085,7 @@ int action_digrams(int argc, char **argv)
 {
   int buffer_id, num_to_show, i;
   digram *tgt;
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
 
   actionu_argchk(2,                          action_digrams_usage);
   actionu_bufferparse(*(argv),  buffer_id,   action_digrams_usage);
@@ -1124,7 +1124,7 @@ int action_trigrams(int argc, char **argv)
 {
   int buffer_id, num_to_show, i;
   trigram *tgt;
-  actionu_intparse_setup();
+  actionu_intparse_setup() 
 
   actionu_argchk(2,                          action_trigrams_usage);
   actionu_bufferparse(*(argv),  buffer_id,   action_trigrams_usage);
@@ -1184,6 +1184,7 @@ int action_keyb(int argc, char **argv)
   actionu_bufferparse(*(argv + 1), buffer_out, action_keyb_usage);
   actionu_bufferchk(buffer_in, buffer_out,     action_keyb_usage);
   actionu_bufferschk(buffer_in, buffer_out,    action_keyb_usage);
+  actionu_dictcheck();
 
   keyword_bruteforce(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                      get_buffer(buffer_out));

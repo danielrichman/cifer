@@ -240,6 +240,6 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   free(wl);
   free(repeats);
   free(repeats_rem);
-  //free(ptext);
+  free(ptext);
   free(ptext_best);
 }

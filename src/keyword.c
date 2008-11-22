@@ -48,7 +48,7 @@ void keyword_bruteforce(char *intext, int intext_size, char *outtext)
 
   /* Prepare */
   best = 0;
-  best_score = 0;
+  best_score = -1;
   lastp = -1;
   lastl = -1;
   lastplen = 0;
@@ -67,8 +67,7 @@ void keyword_bruteforce(char *intext, int intext_size, char *outtext)
     {
       if (lastl != -1)
       {
-        keyword_table(best, strlen(best), temp_table);
-        keyword_table_flip(temp_table);
+        keyword_table_preflipped(best, strlen(best), temp_table);
         keyword_translate(intext, intext_size, outtext, temp_table);
 
         /* We have 80 - lastplen chars left. Spare 5 for ... \0, \n and ) */
@@ -76,9 +75,10 @@ void keyword_bruteforce(char *intext, int intext_size, char *outtext)
                   best_score, best,  outtext);
 
         /* Filter anything that will break our formatting */
-        for (i = 0; i < (75 - lastplen); i++)
+        for (i = 0; i < (74 - lastplen); i++)
           if (XSPACE_CH(*(statusbuf + i)))
             *(statusbuf + i) = ' ';
+        *(statusbuf + 75 - lastplen) = 0;
 
         /* Write out the now trimmed string (with the suffix blah...) \n */
         printf("%s...)", statusbuf);
@@ -103,8 +103,7 @@ void keyword_bruteforce(char *intext, int intext_size, char *outtext)
     lastl = l;
     lastp = p;
 
-    keyword_table(j, len, temp_table);
-    keyword_table_flip(temp_table);
+    keyword_table_preflipped(j, len, temp_table);
     keyword_translate(intext, intext_size, outtext, temp_table);
     score = score_text_pro(outtext, &pro_state);
 
@@ -123,8 +122,7 @@ void keyword_bruteforce(char *intext, int intext_size, char *outtext)
   score_text_pro_cleanup(&pro_state);
 
   /* Now retrieve best */
-  keyword_table(best, strlen(best), temp_table);
-  keyword_table_flip(temp_table);
+  keyword_table_preflipped(best, strlen(best), temp_table);
   keyword_translate(intext, intext_size, outtext, temp_table);
   keyword_table_flip(temp_table);
   keyword_print_info(outtext, best, strlen(best), 
@@ -282,31 +280,18 @@ void keyword_single(char *intext, int intext_size, char *outtext,
 void keyword_print_info(char *text, char *keyword, int key_size, 
                         int *table, char *dirstring)
 {
-  int m, i, width[26];
-
-  /* The width should just end up as 2 everywhere */
-  print_setup_width(width, &m);
-  print_count_width(table, width, &m);
-  print_finalise_width(width, &m);
+  int i;
 
   printf("Keyword Cipher %s using keyword %s: \n\n", dirstring, keyword);
-  printf("Plaintext Char | PCharNum | Ciphertext Char | CCharNum\n");
+  printf("Plaintext Char | Ciphertext Char\n");
 
   printf("P|");
-  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(i));
-  printf("\n");
-
-  printf("N|");
-  for (i = 0; i < 26; i++) printf("%*i|", width[i], i);
+  for (i = 0; i < 26; i++) printf("%2c|", NUMCHAR(i));
   printf("\n");
 
   printf("C|");
-  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(table[i]));
+  for (i = 0; i < 26; i++) printf("%2c|", NUMCHAR(table[i]));
   printf("\n");
-
-  printf("N|");
-  for (i = 0; i < 26; i++) printf("%*i|", width[i], table[i]);
-  printf("\n\n");
 
   printf("%s\n\n", text);
 }
