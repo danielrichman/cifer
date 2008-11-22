@@ -2,6 +2,9 @@
 
 buffers 3
 
+dict_location ./dict
+loaddict
+
 load tests/ctext_affine buffer_0
 
 copy buffer_0 buffer_2
