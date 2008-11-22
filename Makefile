@@ -36,11 +36,16 @@ INSTALL_DATA = $(INSTALL) -m 644
 
 srcmandir = manpages/
 
-rm = rm -rf
+rm = rm -f
+rmdir = rm -rf
 mkdir = mkdir -p
 
 objects := $(patsubst %.c,%.o,$(wildcard src/*.c))
 headers := $(wildcard src/*.h src/*.i)
+
+version := $(shell cat VERSION)
+
+afiles := $(shell ls)
 
 
 all : cifer
@@ -109,4 +114,18 @@ clean :
 distclean : clean
 
 
-dist : ;
+dist : clean
+	$(mkdir) cifer-$(version)
+	for i in $(afiles); do \
+	  cp --recursive $$i cifer-$(version); \
+	done
+	
+	$(rm) cifer-$(version)/copy-header \
+	cifer-$(version)/notes \
+	cifer-$(version)/notes\:functions \
+	
+	tar cf - cifer-$(version) | \
+	gzip -9f > \
+	cifer-$(version).tar.gz
+	
+	$(rmdir) cifer-$(version)
