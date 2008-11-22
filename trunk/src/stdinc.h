@@ -54,7 +54,6 @@
 #include "polybius.h"
 #include "rf.h"
 #include "vigenere.h"
-#include "vowel_mash.h"
 
 #include "dictionary.h"
 #include "interface.h"
