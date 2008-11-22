@@ -283,18 +283,6 @@ void copybuffer(int buffer_id_1, int buffer_id_2)
 
 void filterbuffer(int buffer_id, int mode)
 {
-  // #define BUFFER_FILTER_NONE       4    /* No filter applied yet */
-  // #define BUFFER_FILTER_ALPHA      5    /* Alpha only, case preserved */
-  // #define BUFFER_FILTER_ALPHANUM   6    /* Alphanumeric only */
-  // #define BUFFER_FILTER_LALPHA     7    /* Alpha only, All lower */
-  // #define BUFFER_FILTER_UALPHA     8    /* Alpha only, All upper */
-  // #define BUFFER_FILTER_FLIPCASE   9    /* Flip Case */
-  // #define BUFFER_FILTER_CASEBACON  10   /* Changes case to ab */
-  // #define BUFFER_FILTER_BACON      11   /* AB only */
-  // #define BUFFER_FILTER_NUM        12   /* Numbers only */
-  // #define BUFFER_FILTER_ESP        13   /* All but spaces & xsp chars */
-  // #define BUFFER_FILTER_ENL        14   /* All but xsp chars (see macros) */
-
   int i, j, t, newsize, newpos;
   char ch;
   char *buf;

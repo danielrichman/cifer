@@ -189,10 +189,13 @@ void affine_bf(char *intext, int intext_size, char *outtext)
   int a, b; /* ax + b */
   int a_best = 0, b_best = 0;
   int score, score_best; /* Dictionary text_tmp scoring */
+  struct timeval seltime;
+  char *text_tmp;
+  fd_set set_stdin, set_stdin_tmp;
+  score_text_pro_state pro_state;
+  time_t t1;
   
   /* Select() stuff */
-  struct timeval seltime;
-  fd_set set_stdin, set_stdin_tmp;
   FD_ZERO(&set_stdin);
   FD_ZERO(&set_stdin_tmp);
   FD_SET(0, &set_stdin); /* 0 is stdin */
@@ -200,17 +203,16 @@ void affine_bf(char *intext, int intext_size, char *outtext)
   seltime.tv_usec = 0;
   
   score_best = -1;
-  score_text_pro_state pro_state;
   score_text_pro_start(intext_size, &pro_state);
 
   /* Temporary location for testing in */
-  char *text_tmp  = malloc_good(sizeof(char) * intext_size + 1);
+  text_tmp = malloc_good(sizeof(char) * intext_size + 1);
   *(text_tmp + intext_size) = 0;
   
   printf("Starting affine brute force, press enter to stop...\n");
   
   /* Timing */
-  time_t t1 = time(NULL);
+  t1 = time(NULL);
   
   for (a = 0; ; a++)
   {

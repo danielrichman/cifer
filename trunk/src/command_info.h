@@ -12,16 +12,16 @@
 #define action_load_usage "usage: load filename buffer_# (src, tgt)\n"
 #define action_write_usage "usage: write filename buffer_# append|overwrite|auto (tgt, src)\n"
 #define action_filter_usage "usage: buffer_# mode where mode is one of:  \n\
-  alpha     - Only alpha (A-Za-z) chars allowed. \n\
-  alphanum  - Only alphanumeric (A-Za-z0-9) chars allowed. \n\
-  lalpha    - Only alpha chars allowed, all changed to lowercase. \n\
-  ualpha    - Only alpha chars allowed, all changed to uppercase. \n\
-  flipcase  - Only alpha chars allowed, upper/lowercase flipped. \n\
-  casebacon - Only alpha, all changed to AB from upper/lower. \n\
-  bacon     - Only A or Bs \n\
-  num       - Only numbers allowed. \n\
-  esp       - Removes all whitespace. \n\
-  enl       - Removes all whitespace except standard ' ' spaces. \n"
+  alpha     - Only alpha chars allowed. \n\
+  alphanum  - Only alphanumeric chars \n\
+  lalpha    - Only alpha chars, all converted to lower case. \n\
+  ualpha    - Only alpha chars, conv. 2 uppercase. \n\
+  flipcase  - Only alpha chars, upper/lower case flipped. \n\
+  casebacon - Only alpha, upper->'A' lower->'B'. \n\
+  bacon     - Only As or Bs \n\
+  num       - Only numbers \n\
+  esp       - Removes all whitespace \n\
+  enl       - Removes all whitespace except spaces. \n"
 #define action_read_usage "usage: read buffer_#\n"
 #define action_bufferinfo_usage "usage: bufferinfo buffer_#\n"
 #define action_nullbuffer_usage "usage: nullbuffer buffer_#\n"

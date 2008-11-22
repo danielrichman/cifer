@@ -32,6 +32,7 @@
   cfsh_func("dict_location"               , action_dictlocation)
   cfsh_func("dictloc"                     , action_dictlocation)
   cfsh_func("dict_loc"                    , action_dictlocation)
+  cfsh_func("dict"                        , action_dictlocation)
   cfsh_func("affine"                      , action_affine)
   cfsh_func("crack_affine"                , action_affine)
   cfsh_func("affinesolve"                 , action_affinesolve)

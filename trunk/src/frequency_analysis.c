@@ -18,11 +18,11 @@
 
 #include "stdinc.h"
 
-// TODO: Make the random frequency match function (bruteforce) try various
-// combinations of suggestions in the sorted array (removing one option,
-// then two, sliding about, etc.) and score the results, for better monoalph
-// craxin
-// Perhaps we could have some genetic algorithm ownage here?
+/* TODO: Make the random frequency match function (bruteforce) try various
+ * combinations of suggestions in the sorted array (removing one option,
+ * then two, sliding about, etc.) and score the results, for better monoalph
+ * craxin
+ * Perhaps we could have some genetic algorithm ownage here? */
 
 /* This function takes two graphs and tries to generate the best match
  * table. (table being array[source] => identity or array[cipher] => plain */

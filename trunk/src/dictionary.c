@@ -84,7 +84,7 @@ int score_text_pro(char *text, score_text_pro_state *state)
   /* This routine is made to quickly discard garbage but generate a better
    * score for real matches */
 
-  if (state->init_check == DICT_INIT_CHECK)  return 0;
+  if (state->init_check != DICT_INIT_CHECK)  return 0;
   state->num_checked ++;
 
   /* Reset the variables */
