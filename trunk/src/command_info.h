@@ -64,12 +64,12 @@
   (input, output, keyword in alpha (eg. tomato) or numbers (1 3 2 0) \n"
 #define action_c2r_decode_usage "usage: c2r_decode buffer_# buffer_# keyword\n\
   (input, output, keyword in alpha (eg. tomato) or numbers (1 3 2 0) \n"
-#define action_c2c_bruteforce_usage "usage: c2c_bruteforce buffer_# buffer_# \n\
-  (input, output) \n"
-#define action_r2c_bruteforce_usage "usage: r2c_bruteforce buffer_# buffer_# \n\
-  (input, output) \n"
-#define action_c2r_bruteforce_usage "usage: c2r_bruteforce buffer_# buffer_# \n\
-  (input, output) \n"
+#define action_c2c_bruteforce_usage "usage: c2c_bruteforce buffer_# buffer_# # # \n\
+  (input, output, min, max) \n"
+#define action_r2c_bruteforce_usage "usage: r2c_bruteforce buffer_# buffer_# # # \n\
+  (input, output, min, max) \n"
+#define action_c2r_bruteforce_usage "usage: c2r_bruteforce buffer_# buffer_# # # \n\
+  (input, output, min, max) \n"
 #define action_fg_usage "usage: fg buffer_# [buffer_#]\n"
 #define action_ifg_usage "usage: ifg text_size|buffer_#\n"
 #define action_fa_usage "usage: fa buffer_#\n"

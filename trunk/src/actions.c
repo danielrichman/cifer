@@ -93,6 +93,13 @@
     }                                                                        \
 
 #define actionu_bufferchk(i, o, u)                                           \
+    if (get_buffer_real_size(i) == 0)                                        \
+    {                                                                        \
+      printf("bad input buffer: no data.\n");                                \
+      printf(u);                                                             \
+      return CFSH_COMMAND_HARDFAIL;                                          \
+    }                                                                        \
+                                                                             \
     if (i == o)                                                              \
     {                                                                        \
       printf("bad output buffer: same as input buffer.\n");                  \
@@ -878,6 +885,32 @@ int action_monoalph(int argc, char **argv)
       columnar_transposition_keyinfo(ctrans_key, ctrans_key_size);            \
       printf("%s\n\n", get_buffer(buffer_out));
 
+#define actionu_ctrans_bruteforce(argc, argv, type, u)                        \
+      int buffer_in, buffer_out, minb, maxb;                                  \
+      actionu_intparse_setup();                                               \
+                                                                              \
+      actionu_argchk(4,                            u);                        \
+      actionu_bufferparse(*(argv),     buffer_in,  u);                        \
+      actionu_bufferparse(*(argv + 1), buffer_out, u);                        \
+      actionu_bufferchk(buffer_in, buffer_out,     u);                        \
+      actionu_bufferschk(buffer_in, buffer_out,    u);                        \
+                                                                              \
+      actionu_intparse(*(argv + 2), minb,          u);                        \
+      actionu_intparse(*(argv + 3), maxb,          u);                        \
+                                                                              \
+      if (maxb - minb < 0)                                                    \
+      {                                                                       \
+        printf(u);                                                            \
+        return CFSH_COMMAND_HARDFAIL;                                         \
+      }                                                                       \
+                                                                              \
+      columnar_transposition_bruteforce(get_buffer(buffer_in),                \
+                                        get_buffer_real_size(buffer_in),      \
+                                        get_buffer(buffer_out),               \
+                                        minb, maxb,                           \
+                                        &(columnar_transposition_ ## type));  \
+      return CFSH_OK;
+
 int action_ctrans_keyinfo(int argc, char **argv)
 {
   actionu_intparse_setup();
@@ -917,7 +950,7 @@ int action_c2c_decode(int argc, char **argv)
 
 int action_c2c_bruteforce(int argc, char **argv)
 {
-  return CFSH_OK;
+  actionu_ctrans_bruteforce(argc, argv, col2col, action_c2c_bruteforce_usage)
 }
 
 int action_r2c_encode(int argc, char **argv)
@@ -937,7 +970,7 @@ int action_r2c_decode(int argc, char **argv)
 
 int action_r2c_bruteforce(int argc, char **argv)
 {
-  return CFSH_OK;
+  actionu_ctrans_bruteforce(argc, argv, row2col, action_r2c_bruteforce_usage)
 }
 
 int action_c2r_encode(int argc, char **argv)
@@ -957,36 +990,179 @@ int action_c2r_decode(int argc, char **argv)
 
 int action_c2r_bruteforce(int argc, char **argv)
 {
-  return CFSH_OK;
+  actionu_ctrans_bruteforce(argc, argv, col2row, action_c2r_bruteforce_usage)
 }
 
 int action_fg(int argc, char **argv)
 {
+  int buffer_in, buffer_out;
+  char *outtext;
+
+  if (argc != 1 && argc != 2)
+  {
+    printf(action_fg_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  actionu_bufferparse(*(argv),       buffer_in,  action_fg_usage);
+  outtext = NULL;
+
+  if (argc == 2)
+  {
+    actionu_bufferparse(*(argv + 1), buffer_out, action_fg_usage);
+    actionu_bufferchk(buffer_in, buffer_out,     action_fg_usage);
+    actionu_bufferschk(buffer_in, buffer_out,    action_fg_usage);
+    outtext = get_buffer(buffer_out);
+  }
+
+  frequency_guesses(get_buffer(buffer_in), get_buffer_real_size(buffer_in), 
+                    outtext, 1);
   return CFSH_OK;
 }
 
 int action_ifg(int argc, char **argv)
 {
+  int buffer_id, text_size, i, m;
+  int ifg[26], width[26];
+  actionu_intparse_setup();
+
+  actionu_argchk(1, action_ifg_usage);
+
+  if (**argv == 'b')
+  {
+    actionu_bufferparse(*argv, buffer_id, action_ifg_usage);
+    text_size = get_buffer_real_size(buffer_id);
+  }
+  else
+  {
+    actionu_intparse(*argv, text_size,    action_ifg_usage);
+  }
+
+  if (text_size < 0) text_size = 0;
+
+  create_identity_frequency_graph(ifg, text_size);
+  printf("Printing identity frequency graph for text_size %i\n", text_size);
+
+  print_setup_width(width, &m);
+  print_count_width(ifg, width, &m);
+  print_finalise_width(width, &m);
+
+  printf("C|");
+  for (i = 0; i < 26; i++) printf("%*c|", width[i], NUMCHAR(i));
+  printf("\n");
+
+  printf("N|");
+  for (i = 0; i < 26; i++) printf("%*i|", width[i], i);
+  printf("\n");
+
+  printf("F|");
+  for (i = 0; i < 26; i++) printf("%*i|", width[i], ifg[i]);
+  printf("\n\n");
+
   return CFSH_OK;
 }
 
 int action_fa(int argc, char **argv)
 {
+  int buffer_id;
+  actionu_argchk(1,                            action_fg_usage);
+  actionu_bufferparse(*(argv),     buffer_id,  action_fg_usage);
+  frequency_guesses(get_buffer(buffer_id), get_buffer_real_size(buffer_id), 
+                    NULL, 0);
   return CFSH_OK;
 }
 
 int action_digrams(int argc, char **argv)
 {
+  int buffer_id, num_to_show, i;
+  digram *tgt;
+  actionu_intparse_setup();
+
+  actionu_argchk(2,                          action_digrams_usage);
+  actionu_bufferparse(*(argv),  buffer_id,   action_digrams_usage);
+  actionu_intparse(*(argv + 1), num_to_show, action_digrams_usage);
+
+  if (get_buffer_real_size(buffer_id) < 2)
+  {
+    printf("Input buffer text too small\n");
+    printf(action_digrams_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  if (num_to_show < 1)          num_to_show = 1;
+  if (num_to_show > (26 * 26))  num_to_show = (26 * 26);
+  tgt = malloc_good( sizeof(digram) * num_to_show );
+  count_digrams(get_buffer(buffer_id), get_buffer_real_size(buffer_id),
+                tgt, num_to_show);
+
+  printf("Showing top %i digram%c..%c\n", num_to_show,
+                (num_to_show == 1 ? '.' : 's'),
+                (num_to_show == 1 ? ' ' : '.'));
+
+  for (i = 0; i < num_to_show; i++)
+  {
+    printf("Rank %i)  \t %c%c\n", i, NUMCHAR(tgt[i].digram_ch1),
+                                     NUMCHAR(tgt[i].digram_ch2)  );
+  }
+
+  printf("\n");
+
+  free(tgt);
   return CFSH_OK;
 }
 
 int action_trigrams(int argc, char **argv)
 {
+  int buffer_id, num_to_show, i;
+  trigram *tgt;
+  actionu_intparse_setup();
+
+  actionu_argchk(2,                          action_trigrams_usage);
+  actionu_bufferparse(*(argv),  buffer_id,   action_trigrams_usage);
+  actionu_intparse(*(argv + 1), num_to_show, action_trigrams_usage);
+
+  if (get_buffer_real_size(buffer_id) < 3)
+  {
+    printf("Input buffer text too small\n");
+    printf(action_trigrams_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  if (num_to_show < 1)          num_to_show = 1;
+  if (num_to_show > (26 * 26))  num_to_show = (26 * 26);
+  tgt = malloc_good( sizeof(trigram) * num_to_show );
+  count_trigrams(get_buffer(buffer_id), get_buffer_real_size(buffer_id),
+                tgt, num_to_show);
+
+  printf("Showing top %i trigram%c..%c\n", num_to_show,
+                (num_to_show == 1 ? '.' : 's'),
+                (num_to_show == 1 ? ' ' : '.'));
+
+  for (i = 0; i < num_to_show; i++)
+  {
+    printf("Rank %i)  \t %c%c%c\n", i, NUMCHAR(tgt[i].trigram_ch1),
+                                       NUMCHAR(tgt[i].trigram_ch2),
+                                       NUMCHAR(tgt[i].trigram_ch3)  );
+  }
+
+  printf("\n");
+
+  free(tgt);
   return CFSH_OK;
 }
 
 int action_pct(int argc, char **argv)
 {
+  int i;
+
+  printf("C|");
+  for (i = 0; i < 26; i++) printf("%2c|", NUMCHAR(i));
+  printf("\n");
+
+  printf("N|");
+  for (i = 0; i < 26; i++) printf("%2i|", i);
+  printf("\n\n");
+
   return CFSH_OK;
 }
 
