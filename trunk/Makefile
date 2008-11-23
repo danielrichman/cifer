@@ -117,7 +117,7 @@ distclean : clean
 
 dist : clean
 	$(mkdir) cifer-$(version)
-	for i in $(afiles); do \
+	for i in $(allfiles); do \
 	  cp --recursive $$i cifer-$(version); \
 	done
 	
