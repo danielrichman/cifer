@@ -19,10 +19,11 @@
 
 SHELL = /bin/sh
 
+version := $(shell cat VERSION)
+
 CC = gcc
-VERSION = `cat VERSION`
-CFLAGS_EXTRA = 
-CFLAGS = -Wall -pedantic -DVERSION="\"$(VERSION)\"" $(CFLAGS_EXTRA)
+CFLAGS_EXTRA =
+CFLAGS = -Wall -pedantic -DVERSION="\"$(version)\"" $(CFLAGS_EXTRA)
 
 prefix = /usr/local
 exec_prefix = $(prefix)
@@ -45,9 +46,7 @@ mkdir = mkdir -p
 objects := $(patsubst %.c,%.o,$(wildcard src/*.c))
 headers := $(wildcard src/*.h src/*.i)
 
-version := $(shell cat VERSION)
-
-afiles := $(shell ls)
+allfiles := $(shell ls)
 
 
 all : cifer
