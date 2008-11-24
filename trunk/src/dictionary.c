@@ -23,7 +23,6 @@
 #include "stdinc.h"
 
 char *dict;
-char *dict_location;
 char **dict_pointer;
 char **dict_pointer_end;
 
@@ -335,7 +334,6 @@ void init_dict(void)
   dict = NULL;
   dict_pointer = NULL;
   dict_pointer_end = NULL;
-  dict_location = NULL;
 }
 
 void unload_dict(int notice)
@@ -351,7 +349,7 @@ void unload_dict(int notice)
   dict_pointer_end = NULL;
 }
 
-void load_dict(void)
+void load_dict(char *location)
 {
   FILE *dictf;
 
@@ -367,16 +365,16 @@ void load_dict(void)
   int searching;
 
   /* Check */
-  if (dict_location == NULL)
+  if (location == NULL || strtlen(location) == 0)
   {
-    printf("load_dict: please specify a dict_location\n");
+    printf("load_dict: please specify a dict location\n");
     unload_dict(0);
     return;
   }
 
   if (dict != NULL)   unload_dict(1);
 
-  dictf = fopen(dict_location, "r");
+  dictf = fopen(location, "r");
   if (dictf == NULL)
   {
     perror("load_dict: fopen");

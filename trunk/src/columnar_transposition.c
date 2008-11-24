@@ -16,6 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* TODO: Look at r2c c2r reoordering is happening on rows not columns */
+
 #include "stdinc.h"
 
 /* KEY FORMAT: int array of size "key size", no recurring numbers
