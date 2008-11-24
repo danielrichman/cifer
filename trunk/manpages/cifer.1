@@ -36,11 +36,8 @@ information on filters, see the \fBusage\fR of \fBfilter\fR.
 .SS Dictionaries
 Some of \fBcifer\fR's functions require a specially formatted 'dictionary',
 which takes the basic form of a list of words. The utility \fBcifer-dict\fR(1)
-can be used to create these dictionaries. Unless auto-init is disabled with the
-\fB-n\fR option, \fBcifer\fR looks for (and loads if found) a dictionary at
-startup in the current working directory, under the name \fIdict\fR. It is also
-possible to load any arbitrary dictionary using the shell commands:
-\fBload_dict\fR and \fBdict_location\fR.
+can be used to create these dictionaries. The \fBloaddict\fR command is used
+to load a dictionary for use.
 .SS Frequency Analysis
 Frequency analysis is the study of the frequency of symbols, or groups of
 symbols in a ciphertext. It aids in cracking monoalphabetic substition schemes.
@@ -132,6 +129,44 @@ diagonally on 'rails', before being read off as the ciphertext in rows.
 .PP
 \fBCifer\fR provides the function \fBrfbf\fR to crack rail fence ciphers using
 a brute force method and checking for solutions using a dictionary.
+.SS Columnar Transposition
+Columnar transposition is a relatively complex form of cipher, with many
+variants. The basic process of encoding using this method involves first
+writing the plaintext out in a table defined by its width (which is also the
+length of the keyword). Then, depending on the variant, the ciphertext is
+written and read out of the table in any number of different ways.
+.PP
+The keyword can be specified in numeric or alphabetic form. In the former, each
+digit must only be used once and there must be enough digits to form a full
+key (ie. for a key length 4, all the digits [0,1,2,3] must be used). An
+alphabetic keyword, such as 'apple', first has duplicate letters removed. This
+gives us 'aple'. If you were encrypting by hand, you would write out 'aple'
+at the top of your table, and them move the columns around until the keyword
+is in alphabetic order, ie. 'aelp'.
+.PP
+In order to decrypt a ciphertext, we first 'flip' the keyword, turning 'aelp'
+into 'plea'. We can then use this keyword as if we were encrypting, and the
+process will reverse the original function to give us the plaintext.
+.PP
+\fBCifer\fR's keyword functions provide utilities to automate many variants.
+There are nine commands: \fBc2c_encode\fR, \fBc2c_decode\fR,
+\fBc2c_bruteforce\fR, \fBr2c_encode\fR, \fBr2c_decode\fR, \fBr2c_bruteforce\fR,
+\fBc2r_encode\fR, \fBc2r_decode\fR and \fBc2r_bruteforce\fR.
+.PP
+The first three letters of each command are short for: 'column to column',
+\'column to row' and 'row to column'; these refer to different ways in
+which the ciphertext can be read off the table. In \fBc2c\fR, the table is
+written from
+left to right, re-ordered and read off left to right again. In \fBr2c\fR, the
+table is written from top to bottom, re-ordered and then read off from left to
+right. Finally, in
+\fBc2r\fR the table is written left to right, re-ordered and read off from top
+to bottom.
+.PP
+\'Encode' and 'decode' mode both take a keyword and work as one would expect.
+In 'bruteforce' mode, \fBcifer\fR tries all permutations of increasing key
+lengths in an attempt to find the real keyword. It tests possible solutions by
+matching words in the dictionary.
 .SH OPTIONS
 .TP
 .BR \-n
