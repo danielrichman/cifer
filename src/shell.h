@@ -28,6 +28,8 @@
 #define CFSH_OK                     0
 #define CFSH_BREAK_LOOP             99
 
+extern char *cfsh_commandline;
+
 void cfsh_init();
 void cfsh_autoinit();
 int cfsh_read(FILE *read, int mode);

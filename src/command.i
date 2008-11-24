@@ -106,6 +106,8 @@
   cfsh_func("help"                        , action_help)
   cfsh_func("system"                      , action_system)
   cfsh_func("exec"                        , action_system)
+  cfsh_func("-"                           , action_system)
+  cfsh_func(";"                           , action_system)
   cfsh_func("cd"                          , action_cd)
   cfsh_func("cwd"                         , action_cd)
   cfsh_func("ls"                          , action_ls)

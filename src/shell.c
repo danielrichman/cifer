@@ -18,12 +18,17 @@
 
 #include "stdinc.h"
 
+char *cfsh_commandline;
+
 void cfsh_init()
 {
   /* Crucial startup routines. Basically initialises global variables. */
   buffers_init();
   init_dict();
   cifer_header();
+
+  /* Simple nulling */
+  cfsh_commandline = NULL;
 }
 
 void cifer_header()
@@ -52,7 +57,7 @@ void cfsh_autoinit()
 int cfsh_read(FILE *read, int mode)
 {
   /* Enter the Loop, accepting stuff from read and passing to cfsh_line */
-  int result, looping, linesize, i, num, have_nl;
+  int result, looping, linesize, i, num, have_nl, szc;
   char *line;
 
   /* Start out at 512 chars */
@@ -96,7 +101,8 @@ int cfsh_read(FILE *read, int mode)
 
     /* If it is > than 0 length and its not a #comment... */
     /* To ensure we can test the first char, we do this */
-    if (strtlen(line) != 0) if (*(line) != '#')
+    szc = strlen(line);
+    if (strtlens(line, szc) != 0) if (*(line) != '#')
     {
       /* If its not from stdin, then echo it out */
       if (mode != CFSH_READ_MODE_INTERACTIVE && 
@@ -107,7 +113,12 @@ int cfsh_read(FILE *read, int mode)
        * needed for niceness */
       if (mode == CFSH_READ_MODE_INTERACTIVE && feof(read) != 0) printf("\n");
 
-      /* Execute/parse and update loop status from that */
+      /* Pop it into here, an untainted copy */
+      cfsh_commandline = realloc_good(cfsh_commandline, szc + 1);
+      memcpy(cfsh_commandline, line, szc);
+      *(cfsh_commandline + szc) = 0;
+
+      /* Execute/parse and update loop status from mode */
       switch (mode)
       {
         case CFSH_READ_MODE_PARSECHECK:
