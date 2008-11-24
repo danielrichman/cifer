@@ -1290,16 +1290,45 @@ int action_help(int argc, char **argv)
 
 int action_system(int argc, char **argv)
 {
-  return CFSH_OK;
+  int ret, retr;
+  char *cmd;
+
+  /* TODO: this whole thing is an ugly hack, cfsh_commandline and all */
+  /* Use the untainted copy but cut off the first bit */
+  cmd = cfsh_commandline;
+
+  /* If argc is -1, its one of the ones below calling me,
+   * so don't trim the first bit */
+  if (argc != -1)  while (*cmd != ' ' && *cmd != '\0')  cmd++;
+
+  if (cmd == '\0' || strtlen(cmd) == 0) 
+  {
+    printf("no command specified for system\n");
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  ret = system(cmd);
+
+  /* Todo, fixme! (System spesific) */
+  retr = (ret >> 8) & 0xFF;
+
+  if (ret == -1)  printf("system returned -1, failed.\n");
+  else            printf("shell exited %i\n", retr);
+
+  return (ret == 0 ? CFSH_OK : CFSH_COMMAND_SOFTFAIL);
 }
 
 int action_cd(int argc, char **argv)
 {
+  /* Just send to system ;) */
+  action_system(-1, NULL);
   return CFSH_OK;
 }
 
 int action_ls(int argc, char **argv)
 {
+  /* Just send to system ;) */
+  action_system(-1, NULL);
   return CFSH_OK;
 }
 
