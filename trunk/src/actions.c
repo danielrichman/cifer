@@ -18,6 +18,15 @@
 
 #include "stdinc.h"
 
+/* TODO: Fix argv. We should really put the command name in [0] and then 
+ * start at [1]. */
+/* TODO: better _system tact */
+/* TODO: Split into many files? */
+/* TODO: Review HARDFAIL and SOFTFAIL; perhaps only hardfail if it affects a 
+ * buffer, so for action_gcd (for example) it could softfail as that only
+ * prints info */
+/* TODO: Proper Preparsing */
+
 /*     CFSH_OK                     0
  *     CFSH_BREAK_LOOP             99 */
 
@@ -31,7 +40,7 @@
     }
 
 #define actionu_argless(u)     actionu_argchk(0, u)
-#define actionu_intparse_setup()                                             \
+#define actionu_intparse_setup                                               \
       size_t intparse_sz;                                                    \
       char *intparse_validator;                                              \
 
@@ -162,7 +171,7 @@ int actionu_bufferparsef(char *str)
 int action_buffers(int argc, char **argv)
 {
   int num;
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
 
   actionu_argchk(1,              action_buffers_usage);
   actionu_intparse(*(argv), num, action_buffers_usage);
@@ -186,7 +195,7 @@ int action_quit(int argc, char **argv)
 int action_resize(int argc, char **argv)
 {
   int newsize, buffer_id;
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
 
   actionu_argchk(2,                       action_resize_usage);
   actionu_intparse(*(argv + 1), newsize,  action_resize_usage);
@@ -490,7 +499,7 @@ int action_affine(int argc, char **argv)
 int action_affinesolve(int argc, char **argv)
 {
   int ct1, pt1, ct2, pt2, a, b;
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
   actionu_argchk(4,                         action_affinesolve_usage);
   actionu_intparse_char( *(argv)     , ct1, action_affinesolve_usage);
   actionu_intparse_char( *(argv + 1) , pt1, action_affinesolve_usage);
@@ -518,7 +527,7 @@ int action_affinebf(int argc, char **argv)
 int action_affineencode(int argc, char **argv)
 {
   int buffer_in, buffer_out, a, b;
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
   actionu_argchk(4,                            action_affineencode_usage);
 
   actionu_bufferparse(*(argv),     buffer_in,  action_affineencode_usage);
@@ -543,7 +552,7 @@ int action_affineencode(int argc, char **argv)
 int action_affinedecode(int argc, char **argv)
 {
   int buffer_in, buffer_out, a, b;
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
   actionu_argchk(4,                            action_affinedecode_usage);
 
   actionu_bufferparse(*(argv),     buffer_in,  action_affinedecode_usage);
@@ -611,7 +620,7 @@ int action_shift(int argc, char **argv)
   char ch;
   int *shift;
   char *dirstr;
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
 
   if (argc < 4)
   {
@@ -791,7 +800,7 @@ int action_monoalph(int argc, char **argv)
   return CFSH_OK;
 }
 
-#define actionu_ctrans_setup()                                                \
+#define actionu_ctrans_setup                                                  \
     size_t ctrans_sz;                                                         \
     char *ctrans_char;                                                        \
     int ctrans_i, ctrans_key_size;                                            \
@@ -846,8 +855,8 @@ int action_monoalph(int argc, char **argv)
 
 #define actionu_ctrans_default(argc, argv, u)                                 \
       int buffer_in, buffer_out;                                              \
-      actionu_intparse_setup()                                               \
-      actionu_ctrans_setup()                                                 \
+      actionu_intparse_setup                                                 \
+      actionu_ctrans_setup                                                   \
                                                                               \
       if (argc < 3)                                                           \
       {                                                                       \
@@ -885,7 +894,7 @@ int action_monoalph(int argc, char **argv)
 
 #define actionu_ctrans_bruteforce(argc, argv, type, u)                        \
       int buffer_in, buffer_out, minb, maxb;                                  \
-      actionu_intparse_setup()                                                \
+      actionu_intparse_setup                                                  \
                                                                               \
       actionu_argchk(4,                            u);                        \
       actionu_bufferparse(*(argv),     buffer_in,  u);                        \
@@ -911,8 +920,8 @@ int action_monoalph(int argc, char **argv)
 
 int action_ctrans_keyinfo(int argc, char **argv)
 {
-  actionu_intparse_setup()
-  actionu_ctrans_setup()
+  actionu_intparse_setup  
+  actionu_ctrans_setup  
 
   if (argc == 0)
   {
@@ -1022,7 +1031,7 @@ int action_ifg(int argc, char **argv)
 {
   int buffer_id, text_size, i, m;
   int ifg[26], width[26];
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
 
   actionu_argchk(1, action_ifg_usage);
 
@@ -1074,7 +1083,7 @@ int action_digrams(int argc, char **argv)
 {
   int buffer_id, num_to_show, i;
   digram *tgt;
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
 
   actionu_argchk(2,                          action_digrams_usage);
   actionu_bufferparse(*(argv),  buffer_id,   action_digrams_usage);
@@ -1113,7 +1122,7 @@ int action_trigrams(int argc, char **argv)
 {
   int buffer_id, num_to_show, i;
   trigram *tgt;
-  actionu_intparse_setup() 
+  actionu_intparse_setup   
 
   actionu_argchk(2,                          action_trigrams_usage);
   actionu_bufferparse(*(argv),  buffer_id,   action_trigrams_usage);
@@ -1218,21 +1227,176 @@ int action_vigenere(int argc, char **argv)
 
 int action_mmi(int argc, char **argv)
 {
+  int i, value, mod, modo, result, vgcd;
+  actionu_intparse_setup  
+
+  actionu_argchk(2,                    action_mmi_usage);
+  actionu_intparse(*(argv)    , value, action_mmi_usage);
+  actionu_intparse(*(argv + 1), mod,   action_mmi_usage);
+
+  if (value < 1 || mod < 1)
+  {
+    printf(action_mmi_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  vgcd = gcd(value, mod);
+  modo = mod;
+
+  if (vgcd != 1)
+  {
+    printf("Warning: Cannot MMI if the GCD(value, mod) is not 1. \n");
+    printf("Taking factor of %i out of args.\n\n", vgcd);
+  }
+
+  printf("MMI:   %i (mod %i) \n", value, mod);
+
+  if (vgcd != 1)
+  {
+    value = value / vgcd;
+    mod = mod / vgcd;
+    printf("GCD:   %i (mod %i) \n", value, mod);
+  }
+
+  result = modular_multiplicative_inverse(value, mod);
+
+  printf("Answer:   %i\n", result);
+  printf("So        %i * %i == %i (mod %i) \n", value, result, 
+                                     modn(value * result, mod), mod);
+
+  if (vgcd != 1)
+  {
+    for (i = 0; i < mod; i += modo)
+      printf("=>        %i * %i == %i (mod %i) \n", value + i, result, 
+                                     modn(value * result, modo), modo);
+  }
+
   return CFSH_OK;
 }
 
 int action_gcd(int argc, char **argv)
 {
+  int i, running;
+  int *numbers;
+  actionu_intparse_setup
+
+  if (argc < 2)
+  {
+    printf(action_gcd_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  numbers = malloc_good( sizeof(int) * argc );
+
+  for (i = 0; i < argc; i++)
+  {
+    actionu_intparsef(*(argv + i), *(numbers + i), action_gcd_usage, numbers);
+
+    if (*(numbers + i) == 0)
+    {
+      printf(action_gcd_usage);
+      return CFSH_COMMAND_HARDFAIL;
+    }
+  }
+
+  printf("GCD of %i", *(numbers));
+  running = *(numbers);
+
+  for (i = 1; i < argc; i++)
+  {
+    printf(", %i", *(numbers + i));
+    running = gcd(running, *(numbers + i));
+  }
+
+  printf(" is %i \n", running);
+
   return CFSH_OK;
 }
 
 int action_coprime(int argc, char **argv)
 {
+  int a, b, r;
+  actionu_intparse_setup
+
+  actionu_argchk(2,                action_coprime_usage);
+  actionu_intparse(*(argv)    , a, action_coprime_usage);
+  actionu_intparse(*(argv + 1), b, action_coprime_usage);
+
+  if (a < 1 || b < 1)
+  {
+    printf(action_coprime_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  r = gcd(a, b);
+
+  if (r == 1)  printf("%i and %i are coprime. \n", a, b);
+  else         printf("%i and %i are not coprime (gcd %i) \n", a, b, r);
+
   return CFSH_OK;
 }
 
 int action_charinfo(int argc, char **argv)
 {
+  char ch;
+  int num;
+  actionu_intparse_setup
+
+  actionu_argchk(1, action_charinfo_usage);
+  if (strlen(*argv) != 0)
+  {
+    printf(action_charinfo_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  if (NUMBER_CH(**argv))
+  {
+    actionu_intparse(*argv, num, action_charinfo_usage);
+
+    if (num > 26 || num < 0)
+    {
+      printf("mod(%i, 26) = %i \n", num, modn(num, 26));
+      num = modn(num, 26);
+    }
+
+    ch = ALPHA_TOLOWER(NUMCHAR(num));
+    printf("The number %i translates to the character %c%c \n", num,
+            ALPHA_TOUPPER(ch), ch);
+  }
+  else if (strlen(*argv) == 1 && ALPHA_CH(**argv))
+  {
+    ch = ALPHA_TOLOWER(**argv);
+    printf("The character %c%c is also number %i in the 0-26 alphabet.\n", 
+            ALPHA_TOUPPER(ch), ch, CHARNUM(ch));
+  }
+  else
+  {
+    printf(action_charinfo_usage);
+    return CFSH_COMMAND_HARDFAIL;
+  }
+
+  /* BEWM! */ 
+  printf("The character %c (lowercase) is ASCII %i (decimal) "
+             "%x (hex) %c%c%c%c%c%c%c%c (binary)\n",
+          ch, ch, ch, 
+          ch & 0x1,  ch & 0x2,  ch & 0x4,  ch & 0x8,
+          ch & 0x16, ch & 0x32, ch & 0x64, ch & 0x128 );
+
+  /* A little shorter */
+  #define uch (ALPHA_TOUPPER(ch))
+
+  /* Hopefully all the ALPHA_TOUPPER spam will be condensed by the
+   * Optimiser */
+  printf("The character %c (uppercase) is ASCII %i (decimal) "
+             "%x (hex) %c%c%c%c%c%c%c%c (binary)\n\n",
+          uch, uch, uch,
+          uch & 0x1,  uch & 0x2,  uch & 0x4,  uch & 0x8,
+          uch & 0x16, uch & 0x32, uch & 0x64, uch & 0x128 );
+
+  printf("In English, the character %c has frequency: \n", ch);
+  printf("    decimal probability:  %f    \n", english_frequency[num] );
+  printf("    percentage:           %.2f  \n", english_frequency[num] * 100);
+
   return CFSH_OK;
 }
 
