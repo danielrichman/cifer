@@ -23,7 +23,7 @@ version := $(shell cat VERSION)
 
 CC = gcc
 CFLAGS_EXTRA =
-CFLAGS = -Wall -pedantic -DVERSION="\"$(version)\"" $(CFLAGS_EXTRA)
+CFLAGS = -Wall -pedantic -DVERSION="\"$(version)\""
 
 prefix = /usr/local
 exec_prefix = $(prefix)
@@ -53,15 +53,13 @@ all : cifer
 
 
 cifer : $(objects)
-	$(CC) $(CFLAGS)      -o $@ $(objects)
+	$(CC) $(CFLAGS) $(CFLAGS_EXTRA)      -o $@ $(objects)
 
 
 $(objects) : $(headers)
 
 
 .PHONY : all \
-	\
-	dist \
 	\
 	install \
 	install-man \

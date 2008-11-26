@@ -1,0 +1,83 @@
+===============================================================================
+  INSTALLATION
+===============================================================================
+
+Quick start:
+
+$ make CFLAGS_EXTRA=-O2 all
+$ sudo make install # (optional)
+
+Detailed instructions:
+
+1) Build cifer. You can specify extra arguments for gcc by setting the variable
+   `CFLAGS_EXTRA'. We recommend you use the `-O2' option to enable optimisation.
+
+   $ make CFLAGS_EXTRA=-O2 all
+
+2) Install cifer (optional). This requires root privileges. Note that if the 
+   cifer binary does not already exist, it will be automatically built.
+   The easiest way to install is by simply calling make with the `install'
+   target:
+   
+   # make install
+   
+   You can set the variables `DESTDIR' and/or `prefix' to change the
+   directories in which the files will be installed. `DESTDIR' specifies the
+   directory that should be treated as the `root', ie. all files will be
+   installed underneath it. `prefix' specifies the location underneath the
+   `root' in which the files will be installed. By default, this is
+   `/usr/local'. This is best explained with an example:
+   
+   # make prefix=/usr install
+   
+   This will install all files to `/usr/bin/*' and `/usr/share/*'. Another
+   example:
+   
+   # make DESTDIR=/home/me/stuff/cifer install
+   
+   This will install all files to `/home/me/stuff/cifer/usr/bin/*' and
+   `/home/me/stuff/cifer/usr/share/*'. Finally, you can combine the two for
+   total control (read: "world domination" ;D):
+   
+   # make prefix=/usr DESTDIR=/var/cifer install
+   
+   This will install all files to `/var/cifer/usr/bin/*' and
+   `/var/cifer/usr/share/*'.
+
+===============================================================================
+  UNINSTALLATION
+===============================================================================
+
+Quick start (end):
+
+$ sudo make uninstall
+
+Detailed instructions:
+
+You can uninstall cifer by calling `make' with the `uninstall' target:
+
+# make uninstall
+
+If you changed the values of `prefix' or `DESTDIR' when you installed cifer
+(see above) then you must provide the same values when you uninstall. For
+example:
+
+# make prefix=/usr DESTDIR=/home/me/stuff/cifer uninstall
+
+===============================================================================
+CLEANING
+===============================================================================
+
+Quick start:
+
+$ make distclean
+
+Detailed instructions:
+
+After building cifer, you will be left with a binary, and lots of object files
+in the src/ directory. If you want to build again, you must first get rid of
+those by calling `make' with the target `clean' or `distclean'. Note that they
+both do exactly the same thing, we just provide two different names to conform
+to Makefile standards.
+
+$ make clean  OR  $ make distclean
