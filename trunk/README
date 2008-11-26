@@ -27,7 +27,8 @@ Simrun Basuita <DRebellion1@googlemail.com>
 Daniel Richman <danieljonathanrichman@googlemail.com>
 
 Feel free to mail us with bugs, feature requests, or even if you found our
-software useful!
+software useful! It's always nice to know that our hard work has helped
+somebody out ;)
 
 ===============================================================================
   INFO
@@ -55,9 +56,10 @@ $ man manpages/cifer-dict.1
 
 Quick start:
 
-$ make CFLAGS_EXTRA=-O2
+$ make CFLAGS_EXTRA=-O2 all
 $ sudo make install
 
-For more detailed instructions, see the file INSTALL.
+For more detailed instructions on building, installing, cleaning and other
+Makefile usage, see the file INSTALL.
 
 ===============================================================================
