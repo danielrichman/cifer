@@ -16,6 +16,8 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+extern char *bacon_alphabet[26];
+
 void bacon_encode(char *intext, int intext_size, char *outtext);
 void bacon_decode(char *intext, int intext_size, char *outtext);
 
