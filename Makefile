@@ -120,8 +120,7 @@ dist : clean
 	done
 	
 	$(rm) cifer-$(version)/copy-header \
-	cifer-$(version)/notes \
-	cifer-$(version)/notes\:functions \
+	cifer-$(version)/notes
 	
 	tar cf - cifer-$(version) | \
 	gzip -9f > \
