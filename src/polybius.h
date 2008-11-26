@@ -19,3 +19,5 @@
 /* Decrypt polybius cipher */
 void polybius_dec(char *text, int text_size, int *new_size);
 
+extern int polybius_grid_25_int[26];
+

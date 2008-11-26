@@ -27,6 +27,8 @@
  * prints info */
 /* TODO: Proper Preparsing */
 
+/* MEGA TODO: Convert the below to functions. !!!! */
+
 /*     CFSH_OK                     0
  *     CFSH_BREAK_LOOP             99 */
 
@@ -1227,7 +1229,7 @@ int action_vigenere(int argc, char **argv)
 
 int action_mmi(int argc, char **argv)
 {
-  int i, value, mod, modo, result, vgcd;
+  int value, mod, modo, result, vgcd;
   actionu_intparse_setup  
 
   actionu_argchk(2,                    action_mmi_usage);
@@ -1264,13 +1266,6 @@ int action_mmi(int argc, char **argv)
   printf("So        %i * %i == %i (mod %i) \n", value, result, 
                                      modn(value * result, mod), mod);
 
-  if (vgcd != 1)
-  {
-    for (i = 0; i < mod; i += modo)
-      printf("=>        %i * %i == %i (mod %i) \n", value + i, result, 
-                                     modn(value * result, modo), modo);
-  }
-
   return CFSH_OK;
 }
 
@@ -1292,7 +1287,7 @@ int action_gcd(int argc, char **argv)
   {
     actionu_intparsef(*(argv + i), *(numbers + i), action_gcd_usage, numbers);
 
-    if (*(numbers + i) == 0)
+    if (*(numbers + i) < 1)
     {
       printf(action_gcd_usage);
       return CFSH_COMMAND_HARDFAIL;
@@ -1343,7 +1338,7 @@ int action_charinfo(int argc, char **argv)
   actionu_intparse_setup
 
   actionu_argchk(1, action_charinfo_usage);
-  if (strlen(*argv) != 0)
+  if (strlen(*argv) == 0)
   {
     printf(action_charinfo_usage);
     return CFSH_COMMAND_HARDFAIL;
@@ -1366,8 +1361,9 @@ int action_charinfo(int argc, char **argv)
   else if (strlen(*argv) == 1 && ALPHA_CH(**argv))
   {
     ch = ALPHA_TOLOWER(**argv);
+    num = CHARNUM(ch);
     printf("The character %c%c is also number %i in the 0-26 alphabet.\n", 
-            ALPHA_TOUPPER(ch), ch, CHARNUM(ch));
+            ALPHA_TOUPPER(ch), ch, num);
   }
   else
   {
@@ -1375,27 +1371,32 @@ int action_charinfo(int argc, char **argv)
     return CFSH_COMMAND_HARDFAIL;
   }
 
+  /* Not sure if this is system spesific, or is there a nicer
+   * way to do this? */
+  #define binp(a, n)  ( ((a) & (n)) == 0 ? '0' : '1' )
+  #define binap(a) binp(a, 128), binp(a, 64), binp(a, 32), binp(a, 16), \
+                   binp(a, 8),   binp(a, 4),  binp(a, 2),  binp(a, 1)
+
   /* BEWM! */ 
-  printf("The character %c (lowercase) is ASCII %i (decimal) "
-             "%x (hex) %c%c%c%c%c%c%c%c (binary)\n",
-          ch, ch, ch, 
-          ch & 0x1,  ch & 0x2,  ch & 0x4,  ch & 0x8,
-          ch & 0x16, ch & 0x32, ch & 0x64, ch & 0x128 );
+  printf("The character %c (lowercase) is ASCII %3i (decimal) "
+             "%2x (hex) %c%c%c%c %c%c%c%c (binary)\n",
+          ch, ch, ch, binap(ch));
 
   /* A little shorter */
   #define uch (ALPHA_TOUPPER(ch))
 
   /* Hopefully all the ALPHA_TOUPPER spam will be condensed by the
    * Optimiser */
-  printf("The character %c (uppercase) is ASCII %i (decimal) "
-             "%x (hex) %c%c%c%c%c%c%c%c (binary)\n\n",
-          uch, uch, uch,
-          uch & 0x1,  uch & 0x2,  uch & 0x4,  uch & 0x8,
-          uch & 0x16, uch & 0x32, uch & 0x64, uch & 0x128 );
+  printf("The character %c (uppercase) is ASCII %3i (decimal) "
+             "%2x (hex) %c%c%c%c %c%c%c%c (binary)\n\n",
+          uch, uch, uch, binap(uch));
 
   printf("In English, the character %c has frequency: \n", ch);
-  printf("    decimal probability:  %f    \n", english_frequency[num] );
-  printf("    percentage:           %.2f  \n", english_frequency[num] * 100);
+  printf("    decimal probability:  %f     \n",   english_frequency[num] );
+  printf("    percentage:           %.2f%% \n\n", english_frequency[num] * 100);
+
+  printf("Bacon    for %c: %s \n",    ch, bacon_alphabet[num]);
+  printf("Polybius for %c: %2i \n\n", ch, polybius_grid_25_int[num]);
 
   return CFSH_OK;
 }
