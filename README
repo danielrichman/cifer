@@ -1,0 +1,63 @@
+===============================================================================
+  LEGAL
+===============================================================================
+
+Cifer is Copyright (C) 2008 Simrun Basuita & Daniel Richman
+
+Cifer is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Cifer is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
+
+===============================================================================
+  AUTHORS
+===============================================================================
+
+Cifer was written by:
+
+Simrun Basuita <DRebellion1@googlemail.com>
+Daniel Richman <danieljonathanrichman@googlemail.com>
+
+Feel free to mail us with bugs, feature requests, or even if you found our
+software useful!
+
+===============================================================================
+  INFO
+===============================================================================
+
+Cifer provides many functions designed to aid in cracking classical
+ciphers; a group of ciphers used historically, but which have now
+fallen into disuse because of their suceptability to ciphertext-only
+attacks. In general, they were designed and implemented by hand, and
+operate on an alphabet of letters (such as [A-Z]).
+
+It operates using text files as input and output, and can perform both brute
+force and other, more sophisticated, attacks against many classic encryption
+schemes. In addition, it provides many utilities such as frequency analysis
+and automated encryption/decryption of texts.
+
+For more information, view the manpages:
+
+$ man manpages/cifer.1
+$ man manpages/cifer-dict.1
+
+===============================================================================
+  INSTALLATION
+===============================================================================
+
+Quick start:
+
+$ make CFLAGS_EXTRA=-O2
+$ sudo make install
+
+For more detailed instructions, see the file INSTALL.
+
+===============================================================================
