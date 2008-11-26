@@ -16,7 +16,7 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-extern int *ch_freq_ar;
+extern double english_frequency[26];
 
 typedef struct {
   int digram_ch1;
