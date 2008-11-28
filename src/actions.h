@@ -21,8 +21,27 @@
  *     CFSH_OK                     0
  *     CFSH_BREAK_LOOP             99 */
 
-#define ACTIONU_BUFFERPARSE_FAIL  -1
-int actionu_bufferparsef(char *str);
+/* TODO: Fix argv. We should really put the command name in [0] and then 
+ * start at [1]. */
+/* TODO: better _system tact */
+/* TODO: Proper Preparsing */
+      
+#include "actions_macros.h"
+
+int actionu_intparse_f(char *str, int *value, int char_mode, void *failfree);
+int actionu_bufferparse_f(char *str);
+int actionu_bufferchk_f(int buffer_in, int buffer_out);
+int actionu_bufferfchk_f(int buffer_id, int filter);
+int actionu_bufferschk_f(int buffer_id, int buffer_out);
+int actionu_copysize(int buffer_in, int buffer_out);
+
+int actionu_ctrans_keyword_parse(int argc, char **argv,
+                                 int **key, int *key_size);
+int actionu_ctrans_default(int argc, char **argv,
+                           int flip, char *dirstring, char *typestring,
+                           columnar_transposition_function routine);
+int actionu_ctrans_bruteforce(int argc, char **argv,
+                              columnar_transposition_function routine);
 
 int action_buffers(int argc, char **argv);
 int action_quit(int argc, char **argv);
