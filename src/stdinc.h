@@ -38,11 +38,6 @@
 #include "macros.h"
 #include "command_info.h"
 
-#include "command.h"
-#include "io.h"
-#include "shell.h"
-#include "actions.h"
-
 #include "frequency_analysis.h"
 #include "frequency_data.h"
 
@@ -54,6 +49,11 @@
 #include "polybius.h"
 #include "rf.h"
 #include "vigenere.h"
+
+#include "command.h"
+#include "io.h"
+#include "shell.h"
+#include "actions.h"
 
 #include "dictionary.h"
 #include "interface.h"

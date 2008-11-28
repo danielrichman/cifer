@@ -58,7 +58,7 @@ int actionu_bufferparse_f(char *str)
   j = strtol(str + strlefts(str, sz) + 7, &validator, 10);
 
   if (validator != (str + sz - strrights(str, sz))) return -1;
-  if (j > cfsh_num_buffers)                         return -1;
+  if (j >= cfsh_num_buffers)                        return -1;
   if (j < 0)                                        return -1;
 
   return j;
@@ -86,26 +86,26 @@ int actionu_bufferfchk_f(int buffer_id, int filter)
   if (get_buffer_filter(buffer_id) != filter)
   {
     printf("bad input buffer: filter type '%s' should be '%s'. \n",
-                     get_buffer_filter_text(b), get_filter_text(f) );
+              get_buffer_filter_text(buffer_id), get_filter_text(filter) );
     return -1;
   }
 
   return 0;
 }
 
-int actionu_bufferschk_f(int buffer_id, int buffer_out)
+void actionu_bufferschk(int buffer_in, int buffer_out)
 {
-  if (get_buffer_real_size(i) > get_buffer_size(o))
+  if (get_buffer_real_size(buffer_in) > get_buffer_size(buffer_out))
   {
-    printf("auto expanding output buffer %i to %i bytes.\n", o,
-                  get_buffer_real_size(i));
-    resizebuffer(o, get_buffer_real_size(i));
+    printf("auto expanding output buffer_%i to %i bytes.\n", buffer_out,
+                  get_buffer_real_size(buffer_in));
+    resizebuffer(buffer_out, get_buffer_real_size(buffer_in));
   }
 }
 
-int actionu_copysize(int buffer_in, int buffer_out)
+void actionu_copysize(int buffer_in, int buffer_out)
 {
-  *(get_buffer(o) + get_buffer_real_size(i)) = 0;
-  setbuffernull(o);
+  *(get_buffer(buffer_out) + get_buffer_real_size(buffer_in)) = 0;
+  setbuffernull(buffer_out);
 }
 

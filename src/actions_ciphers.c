@@ -28,7 +28,7 @@ int action_affine(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in)
   actionu_bufferparse(*(argv + 1), buffer_out)
   actionu_bufferchk(buffer_in, buffer_out)
-  actionu_bufferschk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
 
   actionu_copysize(buffer_in, buffer_out);
   crack_affine(get_buffer(buffer_in), get_buffer_real_size(buffer_in), 
@@ -66,7 +66,7 @@ int action_affinebf(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in)
   actionu_bufferparse(*(argv + 1), buffer_out)
   actionu_bufferchk(buffer_in, buffer_out)
-  actionu_bufferschk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
 
   actionu_copysize(buffer_in, buffer_out);
   affine_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
@@ -87,7 +87,7 @@ int action_affineencode(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in)
   actionu_bufferparse(*(argv + 1), buffer_out)
   actionu_bufferchk(buffer_in, buffer_out)
-  actionu_bufferschk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
 
   actionu_intparse(*(argv + 2), a)
   actionu_intparse(*(argv + 3), b)
@@ -115,7 +115,7 @@ int action_affinedecode(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in)
   actionu_bufferparse(*(argv + 1), buffer_out)
   actionu_bufferchk(buffer_in, buffer_out)
-  actionu_bufferschk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
 
   actionu_intparse(*(argv + 2), a)
   actionu_intparse(*(argv + 3), b)
@@ -196,7 +196,7 @@ int action_shift(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in)
   actionu_bufferparse(*(argv + 1), buffer_out)
   actionu_bufferchk(buffer_in, buffer_out)
-  actionu_bufferschk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
 
   if (strcasecmp(*(argv + 2), "forwards") == 0 ||
       strcasecmp(*(argv + 2), "f") == 0)
@@ -293,7 +293,7 @@ int action_monoalph(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in)
   actionu_bufferparse(*(argv + 1), buffer_out)
   actionu_bufferchk(buffer_in, buffer_out)
-  actionu_bufferschk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
 
   if (strcasecmp(*(argv + 2), "encrypt") == 0 ||
       strcasecmp(*(argv + 2), "e") == 0)
@@ -371,7 +371,7 @@ int actionu_ctrans_keyword_parse(int argc, char **argv,
     *key_size = argc;
     *key = malloc_good(sizeof(int) * argc);
 
-    for (i = 0; i < key_size; i++)
+    for (i = 0; i < argc; i++)
     {
       if (actionu_intparse_f(*(argv + i), *key + i, 0, NULL) == -1)
       {
@@ -394,7 +394,7 @@ int actionu_ctrans_keyword_parse(int argc, char **argv,
     if (key == NULL || key_size == 0) return -1;
   }
 
-  if (columnar_transposition_verify_key(key, key_size) == -1)
+  if (columnar_transposition_verify_key(*key, *key_size) == -1)
   {
     printf("bad key (repeated numbers or out of range)\n");
     free(*key);
@@ -430,8 +430,8 @@ int actionu_ctrans_default(int argc, char **argv,
     return -1;
   }
 
-  if (!(actionu_bufferchk_f(buffer_in, buffer_out)))   return -1;
-  if (!(actionu_bufferschk_f(buffer_in, buffer_out)))  return -1;
+  if (!(actionu_bufferchk_f(buffer_in, buffer_out))) return -1;
+  actionu_bufferschk(buffer_in, buffer_out);
 
   if (actionu_ctrans_keyword_parse(argc - 2, argv + 2, &key, &key_size) == -1)
     return -1;
@@ -453,7 +453,7 @@ int actionu_ctrans_default(int argc, char **argv,
           get_buffer(buffer_out), key, key_size);
 
   printf("columnar transposition: %s using %s: \n", dirstring, typestring);
-  columnatr_transposition_keyinfo(key, key_size);
+  columnar_transposition_keyinfo(key, key_size);
   printf("%s\n\n", get_buffer(buffer_out));
 
   free(key);
@@ -484,7 +484,7 @@ int actionu_ctrans_bruteforce(int argc, char **argv,
   }
 
   if (!(actionu_bufferchk_f(buffer_in, buffer_out)))    return -1;
-  if (!(actionu_bufferschk_f(buffer_in, buffer_out)))   return -1;
+  actionu_bufferschk(buffer_in, buffer_out);
 
   if (!actionu_intparse_f(*(argv + 2), &minb, 0, NULL)) return -1;
   if (!actionu_intparse_f(*(argv + 2), &maxb, 0, NULL)) return -1;
@@ -511,7 +511,7 @@ int actionu_ctrans_bruteforce(int argc, char **argv,
 }
 
 #define actionu_ctrans_auto(flip, dir, type)                                 \
-  actionu_failchk(actionu_ctrans_default(argc, argv, flip, #dir, #type,      \
+  actionu_funcchk(actionu_ctrans_default(argc, argv, flip, #dir, #type,      \
                                         &(columnar_transposition_ ## type))) \
   return CFSH_OK;
 
@@ -519,7 +519,7 @@ int actionu_ctrans_bruteforce(int argc, char **argv,
 #define actionu_ctrans_auto_decode(type)  actionu_ctrans_auto(1, decode, type)
 
 #define actionu_ctrans_bruteforce_auto(type)                                 \
-  actionu_failchk(actionu_ctrans_bruteforce(argc, argv,                      \
+  actionu_funcchk(actionu_ctrans_bruteforce(argc, argv,                      \
                                         &(columnar_transposition_ ## type))) \
   return CFSH_OK;
 
@@ -531,7 +531,7 @@ int action_ctrans_keyinfo(int argc, char **argv)
 
   if (argc == 0) actionu_fail();
 
-  actionu_failchk(actionu_ctrans_keyword_parse(argc, argv, &key, &key_size))
+  actionu_funcchk(actionu_ctrans_keyword_parse(argc, argv, &key, &key_size))
 
   columnar_transposition_keyinfo(key, key_size);
   columnar_transposition_flip_key(key, key_size);
@@ -633,7 +633,7 @@ int action_keyb(int argc, char **argv)
   actionu_bufferparse(*(argv),     buffer_in)
   actionu_bufferparse(*(argv + 1), buffer_out)
   actionu_bufferchk(buffer_in, buffer_out)
-  actionu_bufferschk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
   actionu_dictcheck()
 
   keyword_bruteforce(get_buffer(buffer_in), get_buffer_real_size(buffer_in),

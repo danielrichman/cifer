@@ -19,36 +19,36 @@
 #define actionu_faili()     printf(ACTION_USAGE); return ACTION_FAIL;
 #define actionu_fail()      { actionu_faili() }
 
-#define actionu_failchk(x)   if (!(x))  actionu_fail()
-#define actionu_argchk(i)    actionu_failchk(argc != (i))
+#define actionu_failchk(x)   if (!(x))        actionu_fail()
+#define actionu_funcchk(x)   if ((x) == -1)   actionu_fail()
+#define actionu_argchk(i)    actionu_failchk(argc == (i))
 #define actionu_argless()    actionu_argchk(0)
 
 #define actionu_intparse(s, t)                                               \
-         actionu_failchk(actionu_intparse_f((s), &(t), 0, NULL))
+         actionu_funcchk(actionu_intparse_f((s), &(t), 0, NULL))
 
 #define actionu_intparse_char(s, t)                                          \
-         actionu_failchk(actionu_intparse_f((s), &(t), 1, NULL))
+         actionu_funcchk(actionu_intparse_f((s), &(t), 1, NULL))
 
 #define actionu_intparsef(s, t, f)                                           \
-         actionu_failchk(actionu_intparse_f((s), &(t), 0, (f)))
+         actionu_funcchk(actionu_intparse_f((s), &(t), 0, (f)))
 
 #define actionu_intparsef_char(s, t, f)                                      \
-         actionu_failchk(actionu_intparse_f((s), &(t), 1, (f)))
+         actionu_funcchk(actionu_intparse_f((s), &(t), 1, (f)))
 
 #define actionu_bufferparse(s, t)                                            \
 {                                                                            \
   t = actionu_bufferparse_f((s));                                            \
                                                                              \
-  if (!t)                                                                    \
+  if (t == -1)                                                               \
   {                                                                          \
-    printf(actionu_bufferparse_fail, (s), cfsh_num_buffers);                 \
+    printf(actionu_bufferparse_fail, (s), cfsh_num_buffers - 1);             \
     actionu_faili()                                                          \
   }                                                                          \
 }
 
-#define actionu_bufferchk(i, o)  actionu_failchk(actionu_bufferchk_f((i), (o)))
-#define actionu_bufferfchk(b, f) actionu_failchk(actionu_bufferfchk_f((b), (f)))
-#define actionu_bufferschk(i, o) actionu_failchk(actionu_bufferschk_f((i), (o)))
+#define actionu_bufferchk(i, o)  actionu_funcchk(actionu_bufferchk_f((i), (o)))
+#define actionu_bufferfchk(b, f) actionu_funcchk(actionu_bufferfchk_f((b), (f)))
 
 #define actionu_dictcheck()                                                  \
   if (dict == NULL)                                                          \
