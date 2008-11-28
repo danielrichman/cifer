@@ -18,8 +18,7 @@
 
 #include "stdinc.h"
 
-#define ACTION_USAGE action_deltaic
-#define ACTION_FAIL CFSH_COMMAND_HARDFAIL
+#define ACTION_USAGE action_mmi_usage
 #define ACTION_FAIL CFSH_COMMAND_SOFTFAIL
 int action_mmi(int argc, char **argv)
 {
@@ -60,19 +59,14 @@ int action_mmi(int argc, char **argv)
 #undef ACTION_USAGE
 #undef ACTION_FAIL
 
-#define ACTION_USAGE action_deltaic
-#define ACTION_FAIL CFSH_COMMAND_HARDFAIL
+#define ACTION_USAGE action_gcd_usage
 #define ACTION_FAIL CFSH_COMMAND_SOFTFAIL
 int action_gcd(int argc, char **argv)
 {
   int i, running;
   int *numbers;
 
-  if (argc < 2)
-  {
-    printf(action_gcd_usage);
-    return CFSH_COMMAND_HARDFAIL;
-  }
+  if (argc < 2) actionu_fail()
 
   numbers = malloc_good( sizeof(int) * argc );
 
@@ -103,8 +97,7 @@ int action_gcd(int argc, char **argv)
 #undef ACTION_USAGE
 #undef ACTION_FAIL
 
-#define ACTION_USAGE action_deltaic
-#define ACTION_FAIL CFSH_COMMAND_HARDFAIL
+#define ACTION_USAGE action_coprime_usage
 #define ACTION_FAIL CFSH_COMMAND_SOFTFAIL
 int action_coprime(int argc, char **argv)
 {
@@ -114,11 +107,7 @@ int action_coprime(int argc, char **argv)
   actionu_intparse(*(argv)    , a)
   actionu_intparse(*(argv + 1), b)
 
-  if (a < 1 || b < 1)
-  {
-    printf(action_coprime_usage);
-    return CFSH_COMMAND_HARDFAIL;
-  }
+  if (a < 1 || b < 1) actionu_fail()
 
   r = gcd(a, b);
 
@@ -130,8 +119,7 @@ int action_coprime(int argc, char **argv)
 #undef ACTION_USAGE
 #undef ACTION_FAIL
 
-#define ACTION_USAGE action_deltaic
-#define ACTION_FAIL CFSH_COMMAND_HARDFAIL
+#define ACTION_USAGE action_charinfo_usage
 #define ACTION_FAIL CFSH_COMMAND_SOFTFAIL
 int action_charinfo(int argc, char **argv)
 {
@@ -164,8 +152,7 @@ int action_charinfo(int argc, char **argv)
   }
   else
   {
-    printf(action_charinfo_usage);
-    return CFSH_COMMAND_HARDFAIL;
+    actionu_faili()
   }
 
   /* Not sure if this is system spesific, or is there a nicer

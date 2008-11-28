@@ -4,7 +4,7 @@
 
 Quick start:
 
-$ make CFLAGS_EXTRA=-O2 all
+$ make CFLAGS_EXTRA="-O2" all
 $ sudo make install # (optional)
 
 Detailed instructions:
@@ -12,7 +12,7 @@ Detailed instructions:
 1) Build cifer. You can specify extra arguments for gcc by setting the variable
    `CFLAGS_EXTRA'. We recommend you use the `-O2' option to enable optimisation.
 
-   $ make CFLAGS_EXTRA=-O2 all
+   $ make CFLAGS_EXTRA="-O2" all
 
 2) Install cifer (optional). This requires root privileges. Note that if the 
    cifer binary does not already exist, it will be automatically built.
@@ -75,9 +75,13 @@ $ make distclean
 Detailed instructions:
 
 After building cifer, you will be left with a binary, and lots of object files
-in the src/ directory. If you want to build again, you must first get rid of
-those by calling `make' with the target `clean' or `distclean'. Note that they
-both do exactly the same thing, we just provide two different names to conform
-to Makefile standards.
+in the src/ directory. If you build again, make should only build source files
+that have changed, however, if you would like to just clean up, you can get
+rid of those by calling `make' with the target `clean' or `distclean'.
+If you would like to change the CFLAGS_EXTRA or CFLAGS, you _MUST_ clean as 
+make will not notice the change, and all object files must be rebuilt.
+Note that `clean' and `distclean' both do exactly the same thing, we just 
+provide two different names to conform to Makefile standards.
 
 $ make clean  OR  $ make distclean
+

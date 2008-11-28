@@ -320,7 +320,7 @@ int action_spaces(int argc, char **argv)
 #undef ACTION_USAGE
 #undef ACTION_FAIL
 
-#define ACTION_USAGE action_wordwrap
+#define ACTION_USAGE action_wordwrap_usage
 #define ACTION_FAIL CFSH_COMMAND_HARDFAIL
 int action_wordwrap(int argc, char **argv)
 {

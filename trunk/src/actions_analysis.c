@@ -54,7 +54,7 @@ int action_fg(int argc, char **argv)
   {
     actionu_bufferparse(*(argv + 1), buffer_out)
     actionu_bufferchk(buffer_in, buffer_out)
-    actionu_bufferschk(buffer_in, buffer_out)
+    actionu_bufferschk(buffer_in, buffer_out);
     outtext = get_buffer(buffer_out);
   }
 
@@ -138,7 +138,7 @@ int action_digrams(int argc, char **argv)
   if (get_buffer_real_size(buffer_id) < 2)
   {
     printf("Input buffer text too small\n");
-    action_faili()
+    actionu_faili()
   }
 
   if (num_to_show < 1)          num_to_show = 1;

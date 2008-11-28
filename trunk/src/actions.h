@@ -32,8 +32,8 @@ int actionu_intparse_f(char *str, int *value, int char_mode, void *failfree);
 int actionu_bufferparse_f(char *str);
 int actionu_bufferchk_f(int buffer_in, int buffer_out);
 int actionu_bufferfchk_f(int buffer_id, int filter);
-int actionu_bufferschk_f(int buffer_id, int buffer_out);
-int actionu_copysize(int buffer_in, int buffer_out);
+void actionu_bufferschk(int buffer_id, int buffer_out);
+void actionu_copysize(int buffer_in, int buffer_out);
 
 int actionu_ctrans_keyword_parse(int argc, char **argv,
                                  int **key, int *key_size);
