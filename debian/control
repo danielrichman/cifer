@@ -1,0 +1,24 @@
+Source: cifer
+Section: misc
+Priority: optional
+Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
+XSBC-Original-Maintainer: Simrun Basuita <simrunbasuita@googlemail.com>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.8.0
+Homepage: http://code.google.com/p/cifer/
+
+Package: cifer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: wordlist
+Description: multipurpose classical cryptanalysis and code-breaking tool
+ Cifer provides many functions designed to aid in cracking classical
+ ciphers; a group of ciphers used historically, but which have now
+ fallen into disuse because of their suceptability to ciphertext-only
+ attacks. In general, they were designed and implemented by hand, and
+ operate on an alphabet of letters (such as [A-Z]).
+ .
+ It operates using text files as input and output, and can perform both brute
+ force and other, more sophisticated, attacks against many classic encryption
+ schemes. In addition, it provides many utilities such as frequency analysis
+ and automated encryption/decryption of texts.
