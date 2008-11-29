@@ -1,9 +1,8 @@
-#! ./cifer -f 
+#!/usr/local/bin/cifer -f 
 
 buffers 3
 
-dict_location ./dict
-loaddict
+loaddict dict
 
 load tests/ctext_affine buffer_0
 
