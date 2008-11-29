@@ -119,8 +119,9 @@ dist : clean
 	  cp --recursive $$i cifer-$(version); \
 	done
 	
-	$(rm) cifer-$(version)/copy-header \
-	cifer-$(version)/notes
+	$(rmdir) cifer-$(version)/copy-header \
+	cifer-$(version)/notes \
+	cifer-$(version)/tests
 	
 	tar cf - cifer-$(version) | \
 	gzip -9f > \
