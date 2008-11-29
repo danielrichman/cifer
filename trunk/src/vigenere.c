@@ -44,7 +44,7 @@ void crack_vigenere(char *intext, int intext_size, char *outtext,
   }
 
   /* Setup */
-  column_ic = malloc_good( sizeof(column_ic) * h );
+  column_ic = malloc_good( sizeof(vigenere_column_ic) * h );
   printf("Attempting Vigenere Cipher Crack %i -> %i keylen\n", minb, maxb);
 
   /* Check all column lengths that we are supposed to */
