@@ -125,8 +125,7 @@ void keyword_bruteforce(char *intext, int intext_size, char *outtext)
   keyword_table_preflipped(best, strlen(best), temp_table);
   keyword_translate(intext, intext_size, outtext, temp_table);
   keyword_table_flip(temp_table);
-  keyword_print_info(outtext, best, strlen(best), 
-                     temp_table, "(bruteforce) decode");
+  keyword_print_info(outtext, best, temp_table, "(bruteforce) decode");
 }
 
 /* This function fills out an int array[26] from the keyword */
@@ -230,11 +229,11 @@ int keyword_check(char *keyword, int key_size)
   {
     if (!ALPHA_CH(*(keyword + i)))
     {
-      return 0;
+      return -1;
     }
   }
 
-  return 1;
+  return 0;
 }
 
 /* This function will take a keyword and decode a keyword cipher
@@ -273,25 +272,28 @@ void keyword_single(char *intext, int intext_size, char *outtext,
   if (flip) keyword_table_flip(table);
   keyword_translate(intext, intext_size, outtext, table);
   *(outtext + intext_size) = 0;
-  keyword_print_info(outtext, keyword, key_size, otable,
+  keyword_print_info(outtext, keyword, otable,
                               (flip ? "decode" : "encode"));
 }
 
-void keyword_print_info(char *text, char *keyword, int key_size, 
-                        int *table, char *dirstring)
+void keyword_print_keyinfo(int *table)
 {
   int i;
 
-  printf("Keyword Cipher %s using keyword %s: \n\n", dirstring, keyword);
   printf("Plaintext Char | Ciphertext Char\n");
-
   printf("P|");
   for (i = 0; i < 26; i++) printf("%2c|", NUMCHAR(i));
   printf("\n");
 
   printf("C|");
   for (i = 0; i < 26; i++) printf("%2c|", NUMCHAR(table[i]));
-  printf("\n");
+  printf("\n\n");
+}
 
+void keyword_print_info(char *text, char *keyword,
+                        int *table, char *dirstring)
+{
+  printf("Keyword Cipher %s using keyword %s: \n\n", dirstring, keyword);
+  keyword_print_keyinfo(table);
   printf("%s\n\n", text);
 }

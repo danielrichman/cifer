@@ -205,7 +205,7 @@ void columnar_transposition_col2row(char *intext, int text_size,
   }
 }
 
-/* Encodes, writes out in rows (l => r) and reads off in columns. */
+/* encodes, writes out in rows (l => r) and reads off in columns. */
 void columnar_transposition_row2col(char *intext, int text_size,
                            char *outtext, int *key, int key_size)
 {

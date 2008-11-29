@@ -4,7 +4,7 @@
 
 Quick start:
 
-$ make CFLAGS_EXTRA="-O2" all
+$ make CFLAGS_EXTRA="-O2" -B all
 $ sudo make install # (optional)
 
 Detailed instructions:
@@ -12,7 +12,22 @@ Detailed instructions:
 1) Build cifer. You can specify extra arguments for gcc by setting the variable
    `CFLAGS_EXTRA'. We recommend you use the `-O2' option to enable optimisation.
 
-   $ make CFLAGS_EXTRA="-O2" all
+   $ make CFLAGS_EXTRA="-O2" -B all
+
+   The -B option ensures that every single object file is rebuilt. In normal 
+   operation, make only rebuilds object files (*.o) when the source files
+   (*.c and *.h) change. To clean up any possible problems, we reccomend 
+   that -B is used.
+
+   (Optional) Speedy build.
+   Cifer can handle simultaneous object file builds, and the following command
+   may build cifer faster:
+
+   $ make CFLAGS_EXTRA="-O2" -B -j -l 2.5 all
+
+    -j allows make to run in "jobs" - more than one process at once
+    -l specifies the maximum load, new jobs will only start when the
+       load is less than 2.5
 
 2) Install cifer (optional). This requires root privileges. Note that if the 
    cifer binary does not already exist, it will be automatically built.

@@ -16,5 +16,6 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-void rf_bf(char *text, int text_size, int minrails, int maxrails);
+void rf_bf(char *intext, int intext_size, char *outtext,
+           int minrails, int maxrails);
 

@@ -21,5 +21,6 @@ typedef struct {
   double column_ic_diff;
 } vigenere_column_ic;
 
-void crack_vigenere(char *text, int text_size);
+void crack_vigenere(char *intext, int intext_size, char *outtext,
+                    int minb, int maxb);
 

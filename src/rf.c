@@ -18,12 +18,13 @@
 
 #include "stdinc.h"
 
-void rf_bf(char *text, int text_size, int minrails, int maxrails)
+void rf_bf(char *intext, int intext_size, char *outtext,
+           int minrails, int maxrails)
 {
   int i, j, k, l, m, numloops, currails, currwl, currs, spaces1, spaces2;
   int *wl, *repeats, *repeats_rem, **chcount;
   int score, best_score, best_rails;
-  char *ptext, *ptext_best;
+  char *ptext;
   score_text_pro_state pro_state;
 
   /* Setup */
@@ -41,11 +42,8 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   for (i = 0; i < numloops; i++)
     *(chcount + i) = malloc_good( sizeof(int) * (i + minrails) );
 
-  ptext       = malloc_good( text_size + 1 );
-  ptext_best  = malloc_good( text_size + 1 );
-
-  *(ptext      + text_size) = 0;
-  *(ptext_best + text_size) = 0;
+  ptext       = malloc_good( intext_size + 1 );
+  *(ptext      + intext_size) = 0;
 
   best_rails = 0;
   best_score = -1;
@@ -55,7 +53,7 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   spaces2 = 0;
   currs = 0;
 
-  score_text_pro_start(text_size, &pro_state);
+  score_text_pro_start(intext_size, &pro_state);
   /* End setup */
 
   /* Wavelength, for each rails */
@@ -63,18 +61,29 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
     *(wl + i) = (minrails + i - 1) * 2;
 
   /* Check that its not a too big max_rail */
-  if (*(wl + numloops - 1) > text_size)
+  if (*(wl + numloops - 1) > intext_size)
   {
     printf("Max Rail (%i) wavelength %i is bigger than text size %i!\n",
-                maxrails - 1, *(wl + numloops - 1), text_size);
+                maxrails - 1, *(wl + numloops - 1), intext_size);
+
+    /* Free up */
+    for (i = 0; i < numloops; i++) free( *(chcount + i) );
+    free(chcount);
+    free(wl);
+    free(repeats);
+    free(repeats_rem);
+    free(ptext);
+
+    /* Flee */
+    return;
   }
 
   /* How many times the wave repeats, and the amount of the wave left over,
      for each rails */
   for (i = 0; i < numloops; i++)
   {
-    *(repeats_rem + i) = modp(text_size, *(wl + i));
-    *(repeats + i)     = (text_size - *(repeats_rem + i)) / *(wl + i);
+    *(repeats_rem + i) = modp(intext_size, *(wl + i));
+    *(repeats + i)     = (intext_size - *(repeats_rem + i)) / *(wl + i);
   }
 
   /* chcount holds the count of chars for [currails - minrails][line] */
@@ -121,7 +130,7 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
     k = -1; /* This will be incremented to 0 straight away */
     l = 0;
 
-    while (i < text_size)
+    while (i < intext_size)
     {
       /* This should happen at the end of each rail */
       if (j == i)
@@ -153,10 +162,23 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
       else if (currs == 2)   l += spaces2;
 
       /* Place that ptext char where it belongs! */
-      *(ptext + l) = *(text + i);
-      if (l > text_size) 
+      *(ptext + l) = *(intext + i);
+      if (l > intext_size)
+      {
+        printf("Fatal Error:\n");
         printf("ptext-bust | rail: %i/%i, j: %i, i: %i, l: %i, s: %i\n", 
-                                          k, currails,  j, i, l, text_size);
+                                          k, currails,  j, i, l, intext_size);
+
+        /* Free up */
+        for (i = 0; i < numloops; i++) free( *(chcount + i) );
+        free(chcount);
+        free(wl);
+        free(repeats);
+        free(repeats_rem);
+        free(ptext);
+
+        return;
+      }
 
       /* Setup the next increment: if its spaces2 or none - set it to spaces1; 
        * else make it spaces2 */
@@ -167,7 +189,7 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
     }
 
     /* Just in case */
-    *(ptext + text_size) = 0;
+    *(ptext + intext_size) = 0;
 
     /* Now score that text */
     score = score_text_pro(ptext, &pro_state);
@@ -177,14 +199,10 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
       best_score = score;
       best_rails = currails;
 
-      memcpy(ptext_best, ptext, text_size);
-      *(ptext_best + text_size) = 0;  /* Be sure about \0 */
+      memcpy(outtext, ptext, intext_size);
+      *(outtext + intext_size) = 0;  /* Be sure about \0 */
     }
   }
-
-  /* Save it */
-  memcpy(text, ptext_best, text_size);
-  *(text + text_size) = 0;
 
   /* Print some info */
   currwl = *(wl + best_rails - minrails);
@@ -231,8 +249,8 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   }
 
   printf("\n");
-  printf("ptext_best (saved to intext): \n\n");
-  printf("%*s\n\n", text_size, text);
+  printf("ptext_best: \n\n");
+  printf("%s\n\n", outtext);
 
   /* Free up */
   for (i = 0; i < numloops; i++) free( *(chcount + i) );
@@ -241,5 +259,4 @@ void rf_bf(char *text, int text_size, int minrails, int maxrails)
   free(repeats);
   free(repeats_rem);
   free(ptext);
-  free(ptext_best);
 }

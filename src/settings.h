@@ -16,12 +16,6 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define VIGENERE_MIN_KEYLEN    1
-#define VIGENERE_MAX_KEYLEN    100               /* Fixed */
-
-#define CTRANS_MIN_KEYLEN      4
-#define CTRANS_MAX_KEYLEN      9
-
 #define WORD_BUF_SIZE          1024
 #define MIN_WORD_SIZE          2
 
@@ -31,5 +25,5 @@
 #define AFFINE_WAIT            1     /* How long affine waits before \
                                       * doing utility routines */
 
-#define DEFAULT_BUFFER_SIZE    10000 /* 10k */
+#define DEFAULT_BUFFER_SIZE    10240 /* 10KB */
 

@@ -16,8 +16,9 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Decrypt polybius cipher */
-void polybius_dec(char *text, int text_size, int *new_size);
+void polybius_encode(char *intext, int intext_size, char *outtext);
+void polybius_decode(char *intext, int intext_size, char *outtext);
 
 extern int polybius_grid_25_int[26];
+
 

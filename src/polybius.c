@@ -24,56 +24,90 @@ int polybius_grid_25_int[26] = { 11, 12, 13, 14,     15,
                                  41, 42, 43, 44,     45,
                                  51, 52, 53, 54,     55 };
 
-void polybius_dec(char *text, int text_size, int *new_size)
+void polybius_encode(char *intext, int intext_size, char *outtext)
+{
+  int i, j, ch, pch, d1, d2;
+
+  for (i = 0, j = 0; i < intext_size; i++, j += 2)
+  {
+    /* Grab the charnum and check its alpha ok */
+    ch = CHARNUM(*(intext+ i));
+
+    if (ch == -1)
+    {
+      *(outtext) = 0;
+      return;
+    }
+
+    /* Convert to a polybius number */
+    pch = polybius_grid_25_int[ch];
+
+    /* Work out the digits */
+    d2 = modp(pch, 10);
+    d1 = pch - d2;
+
+    /* Convert to ascii and save */
+    *(outtext + j)     = NUMNUMCHAR(d1);
+    *(outtext + j + 1) = NUMNUMCHAR(d2);
+  }
+
+  /* Null Termination */
+  *(outtext + j) = 0;
+
+  /* Results */
+  printf("Polybius Encrypt:\n\n");
+  printf("%s\n\n", outtext);
+}
+
+void polybius_decode(char *intext, int intext_size, char *outtext)
 {
   int i, n, h, ptext_done;
   char ch1, ch2;
   
-  printf("Doing polybius decrypt... text_size %d, mod 2 %d... \n",
-         text_size, modp(text_size, 2));
-
   /* Prepare */
   ptext_done = 0;
+  *(outtext) = 0;
 
-  /* Must be an even number of characters. */  
-  if (modp(text_size, 2))
-  {
-    printf("   failed, text_size %% 2 == %d (!= 0)!\n", modp(text_size, 2));
-    return;
-  }
+  /* Must be an even number of characters: action_ should check this */  
+  if (modp(intext_size, 2) != 0)   return;
 
   /* Start looping! Take characters two at a time */
-  for (i = 0; i < text_size; i += 2)
+  for (i = 0; i < intext_size; i += 2)
   {
-    ch1 = *(text + i);
-    ch2 = *(text + i + 1);
+    ch1 = *(intext + i);
+    ch2 = *(intext + i + 1);
 
     if (!NUMBER_CH(ch1) || !NUMBER_CH(ch2))
     {
-      printf("  failed, non number char at %i or %i + 1 (%c %c)\n",
-                 i, i, ch1, ch2);
+      *(outtext) = 0;       /* Null the first char, effectivly empties it */
       return;
-    }   
+    }
 
     n = (NUMCHARNUM(ch1) * 10) + NUMCHARNUM(ch2);
-
     for (h = 0; h < 26; h++)
     {
       if (polybius_grid_25_int[h] == n)
       {
         /* Match */
-        *(text + ptext_done) = NUMCHAR(h);
+        *(outtext + ptext_done) = NUMCHAR(h);
         ptext_done++;
         break;
       }
     }
+
+    /* It got to the end!!! Match fail */
+    if (h == 26)
+    {
+      *(outtext) = 0;
+      return;
+    }
   }
 
-  /* Update the sizes and null terminators */
-  *(text + ptext_done) = 0;
-  *new_size = ptext_done;
+  /* Null termination */
+  *(outtext + ptext_done) = 0;
 
   /* Results */
-  printf("   succeeded:\n\n");
-  printf("%*s\n\n", *new_size, text);
+  printf("Polybius Decrypt:\n\n");
+  printf("%s\n\n", outtext);
 }
+

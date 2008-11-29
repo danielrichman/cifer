@@ -1,6 +1,3 @@
- * Finish off final actions
-	grep TODO src/actions_ciphers.c
  * TEST! TEST! TEST! TEST!
    Everything is untested as of latest update.
-
 

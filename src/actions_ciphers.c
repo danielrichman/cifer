@@ -451,6 +451,7 @@ int actionu_ctrans_default(int argc, char **argv,
 
   routine(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
           get_buffer(buffer_out), key, key_size);
+  actionu_copysize(buffer_in, buffer_out);
 
   printf("columnar transposition: %s using %s: \n", dirstring, typestring);
   columnar_transposition_keyinfo(key, key_size);
@@ -506,6 +507,7 @@ int actionu_ctrans_bruteforce(int argc, char **argv,
                                     get_buffer_real_size(buffer_in),
                                     get_buffer(buffer_out),
                                     minb, maxb, routine);
+  actionu_copysize(buffer_in, buffer_out);
 
   return 0;
 }
@@ -638,6 +640,7 @@ int action_keyb(int argc, char **argv)
 
   keyword_bruteforce(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                      get_buffer(buffer_out));
+  actionu_copysize(buffer_in, buffer_out);
 
   return CFSH_OK;
 }
@@ -648,7 +651,24 @@ int action_keyb(int argc, char **argv)
 #define ACTION_FAIL CFSH_COMMAND_HARDFAIL
 int action_keye(int argc, char **argv)
 {
-  /* TODO */
+  int buffer_in, buffer_out, key_size;
+  char *keyword;
+
+  actionu_argchk(3)
+  actionu_bufferparse(*(argv),     buffer_in)
+  actionu_bufferparse(*(argv + 1), buffer_out)
+  actionu_bufferchk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
+
+  keyword = *(argv + 2);
+  keyword += strleft(keyword);
+  key_size = strtlen(keyword);
+
+  actionu_funcchk(keyword_check(keyword, key_size));
+  keyword_single(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                 get_buffer(buffer_out), keyword, key_size, 0);
+  actionu_copysize(buffer_in, buffer_out);
+
   return CFSH_OK;
 }
 #undef ACTION_USAGE
@@ -658,7 +678,24 @@ int action_keye(int argc, char **argv)
 #define ACTION_FAIL CFSH_COMMAND_HARDFAIL
 int action_keyd(int argc, char **argv)
 {
-  /* TODO */
+  int buffer_in, buffer_out, key_size;
+  char *keyword;
+
+  actionu_argchk(3)
+  actionu_bufferparse(*(argv),     buffer_in)
+  actionu_bufferparse(*(argv + 1), buffer_out)
+  actionu_bufferchk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
+
+  keyword = *(argv + 2);
+  keyword += strleft(keyword);
+  key_size = strtlen(keyword);
+
+  actionu_funcchk(keyword_check(keyword, key_size));
+  keyword_single(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                 get_buffer(buffer_out), keyword, key_size, 1);
+  actionu_copysize(buffer_in, buffer_out);
+
   return CFSH_OK;
 }
 #undef ACTION_USAGE
@@ -668,7 +705,22 @@ int action_keyd(int argc, char **argv)
 #define ACTION_FAIL CFSH_COMMAND_SOFTFAIL
 int action_keyt(int argc, char **argv)
 {
-  /* TODO */
+  int key_size;
+  int table[26];
+  char *keyword;
+
+  actionu_argchk(1)
+  keyword = *(argv);
+  keyword += strleft(keyword);
+  key_size = strtlen(keyword);
+  *(keyword + key_size) = 0;
+
+  actionu_funcchk(keyword_check(keyword, key_size));
+  keyword_table(keyword, key_size, table);
+
+  printf("Translation table for keyword '%s': \n", keyword);
+  keyword_print_keyinfo(table);
+
   return CFSH_OK;
 }
 #undef ACTION_USAGE
@@ -678,17 +730,78 @@ int action_keyt(int argc, char **argv)
 #define ACTION_FAIL CFSH_COMMAND_SOFTFAIL
 int action_keytf(int argc, char **argv)
 {
-  /* TODO */
+  int key_size;
+  int table[26];
+  char *keyword;
+
+  actionu_argchk(1)
+  keyword = *(argv);
+  keyword += strleft(keyword);
+  key_size = strtlen(keyword);
+  *(keyword + key_size) = 0;
+
+  actionu_funcchk(keyword_check(keyword, key_size));
+  keyword_table_preflipped(keyword, key_size, table);
+
+  printf("Decode (flipped) translation table for keyword '%s': \n", keyword);
+  keyword_print_keyinfo(table);
+
   return CFSH_OK;
 }
 #undef ACTION_USAGE
 #undef ACTION_FAIL
 
-#define ACTION_USAGE action_polybius_usage
+#define ACTION_USAGE action_polybius_encode_usage
 #define ACTION_FAIL CFSH_COMMAND_HARDFAIL
-int action_polybius(int argc, char **argv)
+int action_polybius_encode(int argc, char **argv)
 {
-  /* TODO */
+  int buffer_in, buffer_out;
+  actionu_argchk(2)
+  actionu_bufferparse(*(argv),     buffer_in)
+  actionu_bufferparse(*(argv + 1), buffer_out)
+  actionu_bufferchk(buffer_in, buffer_out)
+  actionu_bufferfchk(buffer_in, BUFFER_FILTER_ALPHA)
+
+  if (get_buffer_real_size(buffer_in) * 2 > get_buffer_size(buffer_out))
+  {
+    printf("auto expanding output buffer %i to %i bytes (just in case).\n",
+                 buffer_out, get_buffer_real_size(buffer_in) * 2);
+    resizebuffer(buffer_out, get_buffer_real_size(buffer_in) * 2);
+  }
+
+  polybius_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                  get_buffer(buffer_out));
+  return CFSH_OK;
+}
+#undef ACTION_USAGE
+#undef ACTION_FAIL
+
+#define ACTION_USAGE action_polybius_decode_usage
+#define ACTION_FAIL CFSH_COMMAND_HARDFAIL
+int action_polybius_decode(int argc, char **argv)
+{
+  int buffer_in, buffer_out;
+  actionu_argchk(2)
+  actionu_bufferparse(*(argv),     buffer_in)
+  actionu_bufferparse(*(argv + 1), buffer_out)
+  actionu_bufferchk(buffer_in, buffer_out)
+  actionu_bufferfchk(buffer_in, BUFFER_FILTER_NUM)
+
+  if (modp(get_buffer_real_size(buffer_in), 2) == 1)
+  {
+    printf("input buffer doesn't have an even number of characters.");
+    actionu_faili()
+  }
+
+  if ((get_buffer_real_size(buffer_in) / 2) > get_buffer_size(buffer_out))
+  {
+    printf("auto expanding output buffer %i to %i bytes (just in case).\n",
+                 buffer_out, (get_buffer_real_size(buffer_in) / 2));
+    resizebuffer(buffer_out, (get_buffer_real_size(buffer_in) / 2));
+  }
+
+  polybius_decode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                  get_buffer(buffer_out));
   return CFSH_OK;
 }
 #undef ACTION_USAGE
@@ -698,7 +811,21 @@ int action_polybius(int argc, char **argv)
 #define ACTION_FAIL CFSH_COMMAND_HARDFAIL
 int action_rfbf(int argc, char **argv)
 {
-  /* TODO */
+  int buffer_in, buffer_out, minb, maxb;
+
+  actionu_argchk(4)
+  actionu_bufferparse(*(argv),     buffer_in)
+  actionu_bufferparse(*(argv + 1), buffer_out)
+  actionu_bufferchk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
+
+  actionu_intparse(*(argv + 2), minb)
+  actionu_intparse(*(argv + 3), maxb)
+
+  rf_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+        get_buffer(buffer_out), minb, maxb);
+  actionu_copysize(buffer_in, buffer_out);
+
   return CFSH_OK;
 }
 #undef ACTION_USAGE
@@ -708,7 +835,21 @@ int action_rfbf(int argc, char **argv)
 #define ACTION_FAIL CFSH_COMMAND_HARDFAIL
 int action_vigenere(int argc, char **argv)
 {
-  /* TODO */
+  int buffer_in, buffer_out, minb, maxb;
+
+  actionu_argchk(4)
+  actionu_bufferparse(*(argv),     buffer_in)
+  actionu_bufferparse(*(argv + 1), buffer_out)
+  actionu_bufferchk(buffer_in, buffer_out)
+  actionu_bufferschk(buffer_in, buffer_out);
+
+  actionu_intparse(*(argv + 2), minb)
+  actionu_intparse(*(argv + 3), maxb)
+
+  crack_vigenere(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+                 get_buffer(buffer_out), minb, maxb);
+  actionu_copysize(buffer_in, buffer_out);
+
   return CFSH_OK;
 }
 #undef ACTION_USAGE

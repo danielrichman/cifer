@@ -18,45 +18,53 @@
 
 #include "stdinc.h"
 
-/* Attempts to crack text, modifies text at pointer and returns keyword */
-void crack_vigenere(char *text, int text_size)
+void crack_vigenere(char *intext, int intext_size, char *outtext, 
+                    int minb, int maxb)
 {
-  vigenere_column_ic column_ic[VIGENERE_MAX_KEYLEN - VIGENERE_MIN_KEYLEN];
+  vigenere_column_ic *column_ic;
   int i, j, k, h;
   int *shift;
   double d;
 
-  printf("Attempting Vigenere Cipher Crack %i -> %i keylen\n", 
-                VIGENERE_MIN_KEYLEN, VIGENERE_MAX_KEYLEN);
+  /* min/maxb are _inclusive_ */
+  h = maxb - minb + 1;
 
   /* Prepare the loop */
-  h = min(VIGENERE_MAX_KEYLEN, text_size) - VIGENERE_MIN_KEYLEN;
-  if (h <= 0)
+  if (maxb > intext_size)
   {
-    printf("vigenere: no column-lengths to try (h <= 0).\n");
+    printf("Checks of length %i requested but ctext is only %i chars long.\n",
+               maxb, intext_size);
     return;
   }
+
+  if (h <= 0)
+  {
+    printf("vigenere: no column-lengths to try.\n");
+    return;
+  }
+
+  /* Setup */
+  column_ic = malloc_good( sizeof(column_ic) * h );
+  printf("Attempting Vigenere Cipher Crack %i -> %i keylen\n", minb, maxb);
 
   /* Check all column lengths that we are supposed to */
   for (i = 0; i < h; i++)
   {
     column_ic[i].column_ic_diff = 0;
-    k = VIGENERE_MIN_KEYLEN + i;
+    k = minb + i;
 
     for (j = 0; j < k; j++)
     {
-      column_ic[i].column_ic_diff += diff( delta_ic(text + j, text_size - j, k),
-                                           OPTIMAL_DELTA_IC);
+      column_ic[i].column_ic_diff += 
+          diff( delta_ic(intext + j, intext_size - j, k), OPTIMAL_DELTA_IC);
     }
 
     column_ic[i].column_ic_diff = column_ic[i].column_ic_diff / k;
-
     column_ic[i].column_size = k;
   }
 
   /* Sort it */
-  insertion_sort_vigenere_column_ic(column_ic, 
-                 VIGENERE_MAX_KEYLEN - VIGENERE_MIN_KEYLEN);
+  insertion_sort_vigenere_column_ic(column_ic, h);
 
   /* Prepare to decode... */
   h = column_ic[0].column_size;
@@ -65,11 +73,13 @@ void crack_vigenere(char *text, int text_size)
   /* The best match should now be in [0], so freq. analyse the columns */
   for (i = 0; i < h; i++)
   {
-    *(shift + i) = frequency_analysis(text + i, text_size - i, h);
+    *(shift + i) = frequency_analysis(intext + i, intext_size - i, h);
   }
 
   /* Do the magic! */
-  caesar_cipher_dec(text, text_size, text, shift, column_ic[0].column_size);
+  caesar_cipher_dec(intext, intext_size, outtext, 
+                    shift, column_ic[0].column_size);
+  *(outtext + intext_size) = 0;
 
   /* Print out the keyword and deciphered plaintext */
   printf("Keyword: ");
@@ -78,10 +88,11 @@ void crack_vigenere(char *text, int text_size)
   for (i = 0; i < h; i++) printf("%i ", *(shift + i));
   printf("\n");
 
-  d = delta_ic(text, text_size, 1);
+  d = delta_ic(outtext, intext_size, 1);
   printf("Overall Delta IC: %f\n\n", d);
-  printf("%*s\n\n", text_size, text);
+  printf("%s\n\n", outtext);
 
   /* Free up... */
   free(shift);
 }
+

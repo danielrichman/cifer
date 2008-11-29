@@ -24,7 +24,8 @@ void keyword_translate(char *intext, int text_size, char *outtext, int *table);
 void keyword_table_copy(int *dest, int *source);
 void keyword_single(char *intext, int intext_size, char *outtext,
                     char *keyword, int key_size, int flip);
-void keyword_print_info(char *text, char *keyword, int key_size,
+void keyword_print_keyinfo(int *table);
+void keyword_print_info(char *text, char *keyword, 
                         int *table, char *dirstring);
 int keyword_check(char *keyword, int key_size);
 
