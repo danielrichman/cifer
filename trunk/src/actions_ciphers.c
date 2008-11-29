@@ -120,7 +120,7 @@ int action_affinedecode(int argc, char **argv)
   actionu_intparse(*(argv + 2), a)
   actionu_intparse(*(argv + 3), b)
 
-  affine_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
+  affine_decode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                 get_buffer(buffer_out), a, b);
   actionu_copysize(buffer_in, buffer_out);
 
@@ -430,7 +430,7 @@ int actionu_ctrans_default(int argc, char **argv,
     return -1;
   }
 
-  if (!(actionu_bufferchk_f(buffer_in, buffer_out))) return -1;
+  if (actionu_bufferchk_f(buffer_in, buffer_out) == -1) return -1;
   actionu_bufferschk(buffer_in, buffer_out);
 
   if (actionu_ctrans_keyword_parse(argc - 2, argv + 2, &key, &key_size) == -1)
@@ -484,11 +484,11 @@ int actionu_ctrans_bruteforce(int argc, char **argv,
     return -1;
   }
 
-  if (!(actionu_bufferchk_f(buffer_in, buffer_out)))    return -1;
+  if (actionu_bufferchk_f(buffer_in, buffer_out) == -1)      return -1;
   actionu_bufferschk(buffer_in, buffer_out);
 
-  if (!actionu_intparse_f(*(argv + 2), &minb, 0, NULL)) return -1;
-  if (!actionu_intparse_f(*(argv + 2), &maxb, 0, NULL)) return -1;
+  if (actionu_intparse_f(*(argv + 2), &minb, 0, NULL) == -1) return -1;
+  if (actionu_intparse_f(*(argv + 3), &maxb, 0, NULL) == -1) return -1;
 
   if (maxb - minb < 0 || minb < 2) return -1;
 
