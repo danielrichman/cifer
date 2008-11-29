@@ -44,7 +44,7 @@ void polybius_encode(char *intext, int intext_size, char *outtext)
 
     /* Work out the digits */
     d2 = modp(pch, 10);
-    d1 = pch - d2;
+    d1 = (pch - d2) / 10;
 
     /* Convert to ascii and save */
     *(outtext + j)     = NUMNUMCHAR(d1);

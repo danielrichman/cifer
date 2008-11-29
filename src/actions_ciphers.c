@@ -811,7 +811,7 @@ int action_polybius_decode(int argc, char **argv)
 #define ACTION_FAIL CFSH_COMMAND_HARDFAIL
 int action_rfbf(int argc, char **argv)
 {
-  int buffer_in, buffer_out, minb, maxb;
+  int buffer_in, buffer_out, filter, minb, maxb;
 
   actionu_argchk(4)
   actionu_bufferparse(*(argv),     buffer_in)
@@ -822,7 +822,18 @@ int action_rfbf(int argc, char **argv)
   actionu_intparse(*(argv + 2), minb)
   actionu_intparse(*(argv + 3), maxb)
 
-  if (minb < 1 || maxb - minb < 0) actionu_fail()
+  if (minb < 2 || maxb - minb < 0) actionu_fail()
+
+  filter = get_buffer_filter(buffer_in);
+
+  if (filter == BUFFER_FILTER_NONE ||
+      filter == BUFFER_FILTER_ESP  ||
+      filter == BUFFER_FILTER_ENL)
+  {
+    printf("warning: columnar transposition works on raw characters, \n"
+ "and so any unfiltered newlines or whitespace will be translated as well \n"
+ "You may want to use the filter command \n");
+  }
 
   rf_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
         get_buffer(buffer_out), minb, maxb);
