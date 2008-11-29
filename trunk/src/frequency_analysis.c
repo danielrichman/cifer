@@ -175,25 +175,34 @@ int frequency_analysis(char *text, int text_size, int jump)
 {
   int frequency_graph[26];
   int identity_frequency_graph[26];
-  int i, j, ch, temp_diff, best_diff, best_diff_shift;
+  int i, j, h, ch, temp_diff, best_diff, best_diff_shift;
 
   /* Prepare the variables */
   best_diff = -1;
   best_diff_shift = 0;
   j = 0;
+  h = 0;
 
   /* Zero the freq. graph and then scan the text */
   for (i = 0; i < 26; i++)  frequency_graph[i] = 0;
 
   /* J is used to temporarily store the total text/column size */
-  for (i = 0; i < text_size; i += jump)
+  /* H is used to count up to a jump */
+  i = 0;
+  while (i < text_size)
   {
     ch = CHARNUM(*(text + i));
+    i++;
 
     if (ch != -1)
     {
-      frequency_graph[ch] += 1;
-      j++;
+      if (modp(h, jump) == 0)
+      {
+        frequency_graph[ch] += 1;
+        j++;
+      }
+
+      h++;
     }
   }
 
