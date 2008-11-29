@@ -125,8 +125,18 @@ int action_system(int argc, char **argv)
 #define ACTION_FAIL CFSH_COMMAND_HARDFAIL
 int action_cd(int argc, char **argv)
 {
-  /* Just send to system ;) */
-  action_system(-1, NULL);
+  int result;
+
+  actionu_argchk(1)
+  result = chdir(*argv);
+
+  if (result != 0)
+  {
+    perror("chdir");
+    actionu_faili()
+  }
+
+  printf("changed directory successfully\n");
   return CFSH_OK;
 }
 #undef ACTION_USAGE

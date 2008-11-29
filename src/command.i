@@ -90,6 +90,7 @@
   cfsh_func("polybiusencode"              , action_polybius_encode)
   cfsh_func("polybius_decode"             , action_polybius_decode)
   cfsh_func("polybiusdecode"              , action_polybius_decode)
+  cfsh_func("polybius"                    , action_polybius_decode)
   cfsh_func("rfbf"                        , action_rfbf)
   cfsh_func("railfence"                   , action_rfbf)
   cfsh_func("rf"                          , action_rfbf)

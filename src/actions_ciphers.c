@@ -490,7 +490,7 @@ int actionu_ctrans_bruteforce(int argc, char **argv,
   if (!actionu_intparse_f(*(argv + 2), &minb, 0, NULL)) return -1;
   if (!actionu_intparse_f(*(argv + 2), &maxb, 0, NULL)) return -1;
 
-  if (maxb - minb < 0) return -1;
+  if (maxb - minb < 0 || minb < 2) return -1;
 
   filter = get_buffer_filter(buffer_in);
 
@@ -822,6 +822,8 @@ int action_rfbf(int argc, char **argv)
   actionu_intparse(*(argv + 2), minb)
   actionu_intparse(*(argv + 3), maxb)
 
+  if (minb < 1 || maxb - minb < 0) actionu_fail()
+
   rf_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
         get_buffer(buffer_out), minb, maxb);
   actionu_copysize(buffer_in, buffer_out);
@@ -845,6 +847,8 @@ int action_vigenere(int argc, char **argv)
 
   actionu_intparse(*(argv + 2), minb)
   actionu_intparse(*(argv + 3), maxb)
+
+  if (minb < 1 || maxb - minb < 0) actionu_fail()
 
   crack_vigenere(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                  get_buffer(buffer_out), minb, maxb);
