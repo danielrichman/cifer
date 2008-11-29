@@ -39,7 +39,7 @@ void columnar_transposition_bruteforce(char *intext, int intext_size,
   key_best = malloc_good(sizeof(int) * key_max);
 
   /* Clip the size of the temporary text to make it quicker */
-  temp_text_size = min(300, intext_size);
+  temp_text_size = min(600, intext_size);
 
   /* We'll use the outtext as temporary space as well, so lets shove a 
    * null in the right place to be sure */

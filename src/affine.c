@@ -166,7 +166,7 @@ void affine_encode(char *intext, int intext_size, char *outtext, int a, int b)
   for (i = 0; i < intext_size; i++)
   {
     ch = CHARNUM(*(intext + i));
-    if (ch != -1) *(outtext + i) = modp((ch * a) + b, 26);
+    if (ch != -1) *(outtext + i) = NUMCHAR(modp((ch * a) + b, 26));
     else          *(outtext + i) = *(intext + i);
   }
 }
