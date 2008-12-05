@@ -299,7 +299,7 @@ void cfsh_free_execinfo(cfsh_execinfo *execinfo)
                          {  *command = &f;  return CFSH_FUNC_OK; } 
 int cfsh_get_func(char *name, cfsh_command *command)
 {
-  #include "command.i"
+  #include "command.inc"
 
   /* Else... */
   return CFSH_FUNC_NOEXIST;
@@ -310,7 +310,7 @@ int cfsh_get_func(char *name, cfsh_command *command)
                          { return f ## _usage; }
 char *cfsh_get_usage(char *name)
 {
-  #include "command.i"
+  #include "command.inc"
   return action_default_usage;
 }
 #undef cfsh_func
@@ -319,7 +319,7 @@ char *cfsh_get_usage(char *name)
                          { return f ## _use; }
 char *cfsh_get_use(char *name)
 {
-  #include "command.i"
+  #include "command.inc"
   return action_default_use;
 }
 #undef cfsh_func
