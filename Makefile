@@ -44,7 +44,7 @@ rmdir = rm -rf
 mkdir = mkdir -p
 
 objects := $(patsubst %.c,%.o,$(wildcard src/*.c))
-headers := $(wildcard src/*.h src/*.i)
+headers := $(wildcard src/*.h src/*.inc)
 
 allfiles := $(shell ls)
 
