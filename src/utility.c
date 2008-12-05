@@ -166,7 +166,7 @@ void cf_wordwrap(char *text, int text_size, int *nl_array)
     if (a[i].sval comp best) { best = a[i].sval; best_key = i; } \
     return best_key; }
 
-#include "utility.i"
+#include "utility.inc"
 
 #undef GET_KEY_DEFINE
 #undef GET_DEFINE

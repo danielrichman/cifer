@@ -23,7 +23,7 @@
 #define GET_KEY_DEFINE(nm, ty, sval, svalty, comp) int nm ## _ ## ty ## _key  \
                                             (ty *a, int asize);
 
-#include "utility.i"
+#include "utility.inc"
 
 #undef GET_KEY_DEFINE
 #undef GET_DEFINE

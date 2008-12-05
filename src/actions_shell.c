@@ -75,7 +75,7 @@ int action_help(int argc, char **argv)
   aliases_print = 0;
   last_command = NULL;
 
-  #include "command.i"
+  #include "command.inc"
 
   if (aliases_print) printf("\n");
   printf("\n");
