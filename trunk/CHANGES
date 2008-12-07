@@ -1,9 +1,17 @@
+# 1.0.3 ##################################### Sun, 07 Dec 2008 12:51:15 +0000 #
+
+  * manpages/cifer.1 now uses correct syntax for hyphens vs minus signs
+  * The cifer binary is now stripped more thoroughly when installed
+
+###############################################################################
+
 # 1.0.2 ##################################### Fri, 05 Dec 2008 17:21:18 +0000 #
 
   * Removed debian/ directory as it was making life harder for downstream
     distros
 
 ###############################################################################
+
 # 1.0.1 ##################################### Sat, 29 Nov 2008 19:48:30 +0000 #
 
   * Release 1.0.0 had .svn folders :O !!! (forgot to export)
