@@ -34,8 +34,10 @@ man1dir = $(mandir)/man1
 
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL) -m 755
-INSTALL_PROGRAM_STRIP = $(INSTALL_PROGRAM) -s
 INSTALL_DATA = $(INSTALL) -m 644
+
+STRIP_FLAGS = --remove-section=.comment --remove-section=.note
+STRIP = strip $(STRIP_FLAGS)
 
 srcmandir = manpages/
 
@@ -92,9 +94,9 @@ install-man : install-dir-man
 	$(DESTDIR)$(man1dir)/cifer-dict.1
 
 install-bin : all install-dir-bin
-	$(INSTALL_PROGRAM_STRIP) cifer $(DESTDIR)$(bindir)/cifer
+	$(INSTALL_PROGRAM) cifer $(DESTDIR)$(bindir)/cifer
+	$(STRIP) $(DESTDIR)$(bindir)/cifer
 	$(INSTALL_PROGRAM) cifer-dict $(DESTDIR)$(bindir)/cifer-dict
-
 
 uninstall: uninstall-man uninstall-bin
 
