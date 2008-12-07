@@ -1,14 +1,15 @@
 .TH CIFER 1
 .SH NAME
-cifer \- multipurpose classical cryptanalysis and code-breaking tool
+cifer \- multipurpose classical cryptanalysis and code\(hybreaking tool
 .SH SYNOPSIS
-\fBcifer\fR [-finqs] [command]
+\fBcifer\fR [\-finqs] [command]
 .SH DESCRIPTION
 \fBCifer\fR provides many functions designed to aid in cracking classical
 ciphers; a group of ciphers used historically, but which
-have now fallen into disuse because of their suceptability to ciphertext-only
+have now fallen into disuse because of their suceptability to
+ciphertext\(hyonly
 attacks. In general, they were designed and implemented by hand, and operate
-on an alphabet of letters (such as [A-Z]).
+on an alphabet of letters (such as [A\(hyZ]).
 .PP
 \fBCifer\fR is implemented as an interactive shell, with support for scripting.
 All of its commands are documented via the \fBusage\fR command. For instance,
@@ -16,7 +17,7 @@ type \fBusage load_dict\fR for information on the \fBload_dict\fR command.
 .SS Buffers and Filters
 The shell uses the concept of a \fBbuffer\fR to store a string of text, which
 most comands read from as input, and write to as output. Unless run with the
-\fB-n\fR option, \fBcifer\fR will automatically create 10 buffers at startup.
+\fB\-n\fR option, \fBcifer\fR will automatically create 10 buffers at startup.
 Buffers are referred to in the form, \fBbuffer_#\fR, where \fB#\fR is
 substituted with the buffer's index number. For more information on buffers,
 see the \fBusage\fR for:
@@ -35,7 +36,7 @@ example making all characters uppercase, or removing all whitespace. For more
 information on filters, see the \fBusage\fR of \fBfilter\fR.
 .SS Dictionaries
 Some of \fBcifer\fR's functions require a specially formatted 'dictionary',
-which takes the basic form of a list of words. The utility \fBcifer-dict\fR(1)
+which takes the basic form of a list of words. The utility \fBcifer\-dict\fR(1)
 can be used to create these dictionaries. The \fBloaddict\fR command is used
 to load a dictionary for use.
 .SS Frequency Analysis
@@ -48,14 +49,15 @@ roughly the same for all samples of that written language. For instance, in any
 section of English language, the character 'E' appears far more often than 'X'.
 Likewise, the pair of letters 'TH' is very common, whilst 'XY' is very rare. In
 monoalphabetic substitution schemes, these patterns are preserved and it is
-possible to determine certain mapppings of letters from ciphertext->plaintext
+possible to determine certain mapppings of letters from
+ciphertext\(hy>plaintext
 from the frequencies alone. As more and more characters are converted, it
 becomes easy to guess the remaining ones to form words in the target language.
 .PP
 Perhaps the most tedious part of this method is the actual counting of the
 symbols themselves. Thus, \fBCifer\fR provides functions to count characters,
 digrams (pairs of characters), and trigrams (triplets of characters). It can
-also use frequency analyis to guess ciphertext->plaintext mappings for the
+also use frequency analyis to guess ciphertext\(hy>plaintext mappings for the
 English language. For more information, see the \fBusage\fR for:
 .BR frequency_guesses ,
 .BR identity_frequency_graph ,
@@ -88,7 +90,7 @@ For more information, see the \fBusage\fR for:
 The Vigenere cipher is a form of polyalphabetic substitution consisting of
 several Caesar ciphers in sequence with differing shift values, which vary
 according to a repeating keyword. \fBCifer\fR provides the function
-\fBvigenere_crack\fR, which employs a brute-force (for each possible keyword
+\fBvigenere_crack\fR, which employs a brute\(hyforce (for each possible keyword
 length) frequency analysis method in order to find the keyword, and crack the
 cipher.
 .SS Keyword Ciphers
@@ -157,10 +159,13 @@ The first three letters of each command are short for: 'column to column',
 \'column to row' and 'row to column'; these refer to different ways in
 which the ciphertext can be read off the table. In \fBc2c\fR, the table is
 written from
-left to right, re-ordered and read off left to right again. In \fBr2c\fR, the
-table is written from top to bottom, re-ordered and then read off from left to
+left to right, re\(hyordered and read off left to right again. In \fBr2c\fR,
+the
+table is written from top to bottom, re\(hyordered and then read off from left
+to
 right. Finally, in
-\fBc2r\fR the table is written left to right, re-ordered and read off from top
+\fBc2r\fR the table is written left to right, re\(hyordered and read off from
+top
 to bottom.
 .PP
 \'Encode' and 'decode' mode both take a keyword and work as one would expect.
@@ -204,6 +209,6 @@ terms of the GNU General Public License, Version 3 or any later version
 published by the Free Software Foundation.
 .PP
 On Debian systems, the complete text of the GNU General Public License can be
-found in \fI/usr/share/common-licenses/GPL\fR.
+found in \fI/usr/share/common\-licenses/GPL\fR.
 .SH "SEE ALSO"
-.BR cifer-dict (1)
+.BR cifer\-dict (1)
