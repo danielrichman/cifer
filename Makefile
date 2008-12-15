@@ -22,8 +22,7 @@ SHELL = /bin/sh
 version := $(shell cat VERSION)
 
 CC = gcc
-CFLAGS_EXTRA =
-CFLAGS = -Wall -pedantic -DVERSION="\"$(version)\"" $(CFLAGS_EXTRA)
+CFLAGS = -Wall -pedantic
 
 prefix = /usr/local
 exec_prefix = $(prefix)
@@ -35,9 +34,6 @@ man1dir = $(mandir)/man1
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL) -m 755
 INSTALL_DATA = $(INSTALL) -m 644
-
-STRIP_FLAGS = --remove-section=.comment --remove-section=.note
-STRIP = strip $(STRIP_FLAGS)
 
 srcmandir = manpages/
 
@@ -59,6 +55,7 @@ cifer : $(objects)
 
 
 $(objects) : $(headers)
+	$(CC) -DVERSION="\"$(version)\"" $(CFLAGS) -c -o $@ $(patsubst %.o,%.c,$@)
 
 
 .PHONY : all \
@@ -95,7 +92,6 @@ install-man : install-dir-man
 
 install-bin : all install-dir-bin
 	$(INSTALL_PROGRAM) cifer $(DESTDIR)$(bindir)/cifer
-	$(STRIP) $(DESTDIR)$(bindir)/cifer
 	$(INSTALL_PROGRAM) cifer-dict $(DESTDIR)$(bindir)/cifer-dict
 
 uninstall: uninstall-man uninstall-bin
