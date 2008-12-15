@@ -56,7 +56,7 @@ $ man manpages/cifer-dict.1
 
 Quick start:
 
-$ make CFLAGS_EXTRA="-O2" -B all
+$ make -B CFLAGS=-O2 all
 $ sudo make install
 
 For more detailed instructions on building, installing, cleaning and other

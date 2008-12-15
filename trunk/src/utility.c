@@ -25,8 +25,8 @@ void *malloc_good(size_t size)
   r = malloc(size);
   if (r == NULL)
   {
-    printf("\n\nmalloc_good: Unable to malloc(%i), auto-exiting\n\n",
-                                                                  size);
+    printf("\n\nmalloc_good: Unable to malloc(%lu), auto-exiting\n\n",
+                                                  (unsigned long) size);
     exit(1);
   }
 
@@ -40,8 +40,8 @@ void *realloc_good(void *ptr, size_t size)
   r = realloc(ptr, size);
   if (size != 0 && r == NULL)
   {
-    printf("\n\nrealloc_good: Unable to realloc(%i), auto-exiting\n\n",
-                                                                  size);
+    printf("\n\nrealloc_good: Unable to realloc(%lu), auto-exiting\n\n",
+                                                     (unsigned long) size);
     exit(1);
   }
 
