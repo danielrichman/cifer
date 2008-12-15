@@ -55,7 +55,8 @@ cifer : $(objects)
 
 
 $(objects) : $(headers)
-	$(CC) -DVERSION="\"$(version)\"" $(CFLAGS) -c -o $@ $(patsubst %.o,%.c,$@)
+	$(CC) -Wall -pedantic -DVERSION="\"$(version)\"" $(CFLAGS) -c -o $@ \
+	 $(patsubst %.o,%.c,$@)
 
 
 .PHONY : all \
