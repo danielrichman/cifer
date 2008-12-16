@@ -24,6 +24,8 @@ version := $(shell cat VERSION)
 CC = gcc
 CFLAGS = -Wall -pedantic
 
+DEFS = -DVERSION="\"$(version)\""
+
 prefix = /usr/local
 exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
@@ -55,8 +57,7 @@ cifer : $(objects)
 
 
 $(objects) : $(headers)
-	$(CC) -Wall -pedantic -DVERSION="\"$(version)\"" $(CFLAGS) -c -o $@ \
-	 $(patsubst %.o,%.c,$@)
+	$(CC) $(DEFS) $(CFLAGS) -c -o $@ $(patsubst %.o,%.c,$@)
 
 
 .PHONY : all \
