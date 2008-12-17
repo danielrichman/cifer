@@ -54,6 +54,11 @@ $ man manpages/cifer-dict.1
   INSTALLATION
 ===============================================================================
 
+You must have libreadline installed prior to building cifer. For example, on
+Debian systems:
+
+$ sudo apt-get install libreadline5
+
 Quick start:
 
 $ make -B CFLAGS=-O2 all
