@@ -268,22 +268,22 @@ int cfsh_line(char *input, int mode)
   switch (result)
   {
     case CFSH_PARSE_EBAD:
-      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\n%s\n", input);
+      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\ncifer> %s\n", input);
       printf("cfsh_parse: escape sequence misuse\n");
       if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_EMPTY:
-      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\n%s\n", input);
+      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\ncifer> %s\n", input);
       printf("cfsh_parse: no command specified\n");
       if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_PARSE_QUOTEOPEN:
-      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\n%s\n", input);
+      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\ncifer> %s\n", input);
       printf("cfsh_parse: quotes left open/unclosed.\n");
       if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       return CFSH_COMMAND_PARSEFAIL;
     case CFSH_FUNC_NOEXIST:
-      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\n%s\n", input);
+      if (mode == CFSH_READ_MODE_PARSECHECK) printf("\ncifer> %s\n", input);
       printf("cfsh_parse: no such command or function\n");
       if (mode != CFSH_READ_MODE_PARSECHECK) printf("\n");
       return CFSH_COMMAND_PARSEFAIL;
