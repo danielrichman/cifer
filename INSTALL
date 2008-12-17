@@ -2,6 +2,11 @@
   INSTALLATION
 ===============================================================================
 
+You must have libreadline installed on your system prior to building/using
+cifer. For example, on Debian systems:
+
+$ sudo apt-get install libreadline5
+
 Quick start:
 
 $ make -B CFLAGS=-O2 all
