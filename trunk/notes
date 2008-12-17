@@ -9,7 +9,7 @@ Ciphers we need to crack (cross them off):
 [X] Multiplicative           (Just use --affine)
 [X] Keyword                  OWNED
 [X] Bacon                    Smushed.
-[ ] Polybius Square          Taken to pieces.
+[X] Polybius Square          Taken to pieces.
 [X] Columnar Transposition   Speedy (!) - see below
 [X] Rail Fence               (DRebellion shotgun Sun, 28 Sep 2008 :P)
 [ ] Morse Code
@@ -51,8 +51,4 @@ Features that are needed
     aswell as delta_ic
 [ ] Support for alphabet deformation, different alphabets and also vowel 
     destruction; see ncc 08-3b
-[ ] Autotest feature, with lots and LOTS of ciphers and their ptexts
-    in an autotest directory, and a script that runs autopwn on them
-    all, then uses diff -q to see if they differ. This could be as a make
-    target, eg. make test to test the whole program. That would be the 
-    benchmark that says "yes, we've made an awesome program"
+
