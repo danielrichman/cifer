@@ -20,19 +20,22 @@
 #define STDINC_CIFER 1
 
 #include <stdio.h>
-
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <unistd.h>
+#include <time.h>
+
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <unistd.h>
 #include <sys/select.h>
-#include <time.h>
+
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #include "settings.h"
 #include "macros.h"

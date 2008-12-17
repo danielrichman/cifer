@@ -25,6 +25,7 @@ CC = gcc
 CFLAGS = -Wall -pedantic
 
 DEFS = -DVERSION="\"$(version)\""
+LINKLIBS = -lreadline
 
 prefix = /usr/local
 exec_prefix = $(prefix)
@@ -43,22 +44,19 @@ rm = rm -f
 rmdir = rm -rf
 mkdir = mkdir -p
 
+cfiles  := $(wildcard src/*.c)
 objects := $(patsubst %.c,%.o,$(wildcard src/*.c))
 headers := $(wildcard src/*.h src/*.inc)
 
 allfiles := $(shell ls)
 
-
 all : cifer
 
-
 cifer : $(objects)
-	$(CC) $(CFLAGS) -o $@ $(objects)
-
+	$(CC) $(CFLAGS) $(LINKLIBS) -o $@ $(objects)
 
 $(objects) : $(headers)
 	$(CC) $(DEFS) $(CFLAGS) -c -o $@ $(patsubst %.o,%.c,$@)
-
 
 .PHONY : all \
 	\
