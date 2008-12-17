@@ -20,6 +20,21 @@
 
 char *cfsh_commandline;
 
+char *rl_gets()
+{
+  /* Clean up an old line */
+  if (cfsh_commandline)
+  {
+    free(cfsh_commandline);
+    cfsh_commandline = NULL;
+  }
+
+  /* Get a line from the user. */
+  cfsh_commandline = readline("cifer> ");
+
+  return cfsh_commandline;
+}
+
 void cfsh_init()
 {
   /* Crucial startup routines. Basically initialises global variables. */
@@ -57,16 +72,20 @@ void cfsh_autoinit()
 int cfsh_read(FILE *read, int mode)
 {
   /* Enter the Loop, accepting stuff from read and passing to cfsh_line */
-  int result, looping, linesize, i, num, have_nl, szc;
+  int result, looping, linesize, i, num, have_nl, szc, rl_null_ended;
   char *line;
 
-  /* Start out at 512 chars */
-  line = malloc_good( 512 );
-  linesize = 512;
+  if (mode != CFSH_READ_MODE_INTERACTIVE)
+  {
+    /* Start out at 512 chars */
+    line = malloc_good( 512 );
+    linesize = 512;
+  }
 
   /* Gogogo! */
   looping = 1;
   num = 0;
+  rl_null_ended = 0;
   result = CFSH_OK;
 
   /* Shouldn't happen */
@@ -75,33 +94,48 @@ int cfsh_read(FILE *read, int mode)
     return CFSH_OK;
   }
 
-  while (looping && feof(read) == 0)
+  while (looping && feof(read) == 0 && rl_null_ended != 1)
   {
-    if (mode == CFSH_READ_MODE_INTERACTIVE) printf("cifer> ");
-
-    *line = 0;  /* Set the first byte so */
-    have_nl = 0;
-
-    for (i = 0; feof(read) == 0 && !have_nl; i++)
+    if (mode != CFSH_READ_MODE_INTERACTIVE)
     {
-      if (i >= linesize - 1)
+      *line = 0;  /* Set the first byte so */
+      have_nl = 0;
+
+      for (i = 0; feof(read) == 0 && !have_nl; i++)
       {
-        line = realloc_good( line, linesize + 512 );
-        linesize += 512;
+        if (i >= linesize - 1)
+        {
+          line = realloc_good( line, linesize + 512 );
+          linesize += 512;
+        }
+
+        *(line + i) = fgetc(read);
+
+        if (IS_NEWLINE(*(line + i)) || *(line + i) == -1)
+        {
+          *(line + i) = 0;
+          have_nl = 1;
+        }
       }
+    }
+    else
+    {
+      line = rl_gets();
 
-      *(line + i) = fgetc(read);
-
-      if (IS_NEWLINE(*(line + i)) || *(line + i) == -1)
+      /* If a EOF was fired in interactive mode, an extra \n is 
+       * needed for niceness */
+      if (line == NULL)
       {
-        *(line + i) = 0;
-        have_nl = 1;
+        rl_null_ended = 1;
+	printf("\n");
       }
     }
 
     /* If it is > than 0 length and its not a #comment... */
     /* To ensure we can test the first char, we do this */
-    szc = strlen(line);
+    if (line == NULL) szc = 0;
+    else              szc = strlen(line);
+
     if (strtlens(line, szc) != 0) if (*(line) != '#')
     {
       /* If its not from stdin, then echo it out */
@@ -109,14 +143,17 @@ int cfsh_read(FILE *read, int mode)
           mode != CFSH_READ_MODE_PARSECHECK)
         printf("cifer> %s\n", line);
 
-      /* If a EOF was fired in interactive mode, an extra \n is 
-       * needed for niceness */
-      if (mode == CFSH_READ_MODE_INTERACTIVE && feof(read) != 0) printf("\n");
+      /* If its from stdin, lets add it to the history */
+      if (mode == CFSH_READ_MODE_INTERACTIVE)
+        add_history(line);
 
-      /* Pop it into here, an untainted copy */
-      cfsh_commandline = realloc_good(cfsh_commandline, szc + 1);
-      memcpy(cfsh_commandline, line, szc);
-      *(cfsh_commandline + szc) = 0;
+      if (mode != CFSH_READ_MODE_INTERACTIVE)
+      {
+        /* Pop it into here, an untainted copy */
+        cfsh_commandline = realloc_good(cfsh_commandline, szc + 1);
+        memcpy(cfsh_commandline, line, szc);
+        *(cfsh_commandline + szc) = 0;
+      }
 
       /* Execute/parse and update loop status from mode */
       switch (mode)
@@ -169,7 +206,7 @@ int cfsh_read(FILE *read, int mode)
       feof(read) != 0)  printf("cfsh_read: end of file\n");
   if (!looping)         printf("cfsh_read: loop broken by cfsh_line\n");
 
-  free(line);
+  if (mode != CFSH_READ_MODE_INTERACTIVE)  free(line);
 
   /* For Parsecheck, the last result will either 
    * be the error or all are ok. Otherwise, this means that
