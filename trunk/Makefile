@@ -55,7 +55,7 @@ all : cifer
 cifer : $(objects)
 	$(CC) $(CFLAGS) $(LINKLIBS) -o $@ $(objects)
 
-$(objects) : $(headers)
+%.o : %.c $(headers)
 	$(CC) $(DEFS) $(CFLAGS) -c -o $@ $(patsubst %.o,%.c,$@)
 
 .PHONY : all \
