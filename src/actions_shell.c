@@ -39,13 +39,72 @@ int action_usage(int argc, char **argv)
 #undef ACTION_USAGE
 #undef ACTION_FAIL
 
+/* -- A very rudimentary `more' */
+/* Checks if we can start a line; blocks if we can't */
+void action_help_lnblk(int *lnc, int nln)
+{
+  char ch;
+  ch = 0;
+
+  if (*lnc == nln)
+  {
+    printf(" -- Press enter for more -- ");
+    while (ch != '\n')	ch = fgetc(stdin);
+
+    *lnc = min(4, nln);  /* Four lines are 'kept' */
+  }
+
+  (*lnc)++;
+}
+
+/* Echos a potentially multiline-string out. */
+void action_help_strpr(char *str, int *lnc, int nln)
+{
+  int i, j;
+  char *str2;
+  char *stru;
+
+  j = strlen(str);
+  str2 = malloc_good( j + 1 );
+
+  /* Str2 is a copy we can mess with */
+  memcpy(str2, str, j);
+  str2[j] = 0;
+
+  /* stru is a pointer to the start of the next line, ie. 
+   * the last line we printed + 1 */
+  stru = str2;
+
+  for (i = 0; i < j; i++)
+  {
+    if (str[i] == '\n')
+    {
+      action_help_lnblk(lnc, nln);
+
+      str2[i] = 0;
+      printf("%s\n", stru);
+      stru = str2 + i + 1;
+    }
+  }
+
+  if (stru != (str2 + j)) printf("%s", stru);
+  free(str2);
+}
+
+/* Just a printf("\n"); style thing */
+void action_help_nl(int *lnc, int nln)
+{
+  action_help_lnblk(lnc, nln);
+  printf("\n");
+}
+
 #define cfsh_func(n, f)                                                     \
    if (&f != last_command)                                                  \
    {                                                                        \
-     if (aliases_print) printf("\n");                                       \
-     printf( "\n" );                                                        \
-     printf( f ## _use );                                                   \
-     printf( f ## _usage );                                                 \
+     if (aliases_print)  printf("\n");                                      \
+     action_help_nl(&lnc, lines);                                           \
+     action_help_strpr( f ## _use,   &lnc, lines );                         \
+     action_help_strpr( f ## _usage, &lnc, lines );                         \
                                                                             \
      last_command = &f;                                                     \
      aliases_print = 0;                                                     \
@@ -54,6 +113,7 @@ int action_usage(int argc, char **argv)
    {                                                                        \
      if (!aliases_print)                                                    \
      {                                                                      \
+       action_help_lnblk(&lnc, lines);                                      \
        printf("aliases: %s", n);                                            \
        aliases_print = 1;                                                   \
      }                                                                      \
@@ -68,11 +128,21 @@ int action_usage(int argc, char **argv)
 int action_help(int argc, char **argv)
 {
   cfsh_command last_command;
-  int aliases_print;
+  int aliases_print, lines, lnc;
+  struct winsize win;
+
+  /* Figure out how many lines there are */
+  /* Subtract 2 to leave space for any straggling lines, eg aliases */
+  if (ioctl(fileno(stdout), TIOCGWINSZ, &win) != -1)
+  {
+    if (win.ws_row != 0)    lines = win.ws_row - 2;
+    else                    lines = 22;
+  }
 
   actionu_argless()
 
   aliases_print = 0;
+  lnc = 0;
   last_command = NULL;
 
   #include "command.inc"
