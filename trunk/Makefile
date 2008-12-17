@@ -45,7 +45,7 @@ rmdir = rm -rf
 mkdir = mkdir -p
 
 cfiles  := $(wildcard src/*.c)
-objects := $(patsubst %.c,%.o,$(wildcard src/*.c))
+objects := $(patsubst %.c,%.o,$(cfiles))
 headers := $(wildcard src/*.h src/*.inc)
 
 allfiles := $(shell ls)
@@ -55,8 +55,8 @@ all : cifer
 cifer : $(objects)
 	$(CC) $(CFLAGS) $(LINKLIBS) -o $@ $(objects)
 
-%.o : %.c $(headers)
-	$(CC) $(DEFS) $(CFLAGS) -c -o $@ $(patsubst %.o,%.c,$@)
+src/%.o : src/%.c $(headers)
+	$(CC) $(DEFS) -c $(CFLAGS) $< -o $@
 
 .PHONY : all \
 	\
