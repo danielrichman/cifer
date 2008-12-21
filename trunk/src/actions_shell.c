@@ -147,9 +147,10 @@ int action_help(int argc, char **argv)
 
   #include "command.inc"
 
-  if (aliases_print) printf("\n");
-  printf("\n");
-  printf("type usage <command name> for more information.\n");
+  if (aliases_print) action_help_nl(&lnc, lines);
+  action_help_nl(&lnc, lines);
+  action_help_strpr("type usage <command name> for more information.\n", 
+                                                               &lnc, lines);
 
   return CFSH_OK;
 }
