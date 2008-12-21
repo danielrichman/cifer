@@ -19,21 +19,22 @@
 #ifndef STDINC_CIFER
 #define STDINC_CIFER 1
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
+
+#include <errno.h>
 #include <string.h>
 #include <time.h>
-#include <errno.h>
-#include <unistd.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <sys/file.h>
-#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <sys/select.h>
-#include <sys/ioctl.h>
+#include <sys/types.h>
 
 #include <readline/readline.h>
 #include <readline/history.h>
