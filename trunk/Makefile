@@ -37,6 +37,7 @@ man1dir = $(mandir)/man1
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL) -m 755
 INSTALL_DATA = $(INSTALL) -m 644
+INSTALL_DIR =  $(INSTALL) -d
 
 srcmandir = manpages/
 
@@ -48,7 +49,7 @@ cfiles  := $(wildcard src/*.c)
 objects := $(patsubst %.c,%.o,$(cfiles))
 headers := $(wildcard src/*.h src/*.inc)
 
-allfiles := $(shell ls)
+allfiles := $(wildcard *)
 
 all : cifer
 
@@ -79,10 +80,10 @@ src/%.o : src/%.c $(headers)
 install : install-man install-bin
 
 install-dir-man :
-	[ -d $(DESTDIR)$(man1dir) ] || $(mkdir) $(DESTDIR)$(man1dir)
+	[ -d $(DESTDIR)$(man1dir) ] || $(INSTALL_DIR) $(DESTDIR)$(man1dir)
 
 install-dir-bin :
-	[ -d $(DESTDIR)$(bindir) ] || $(mkdir) $(DESTDIR)$(bindir)
+	[ -d $(DESTDIR)$(bindir) ] || $(INSTALL_DIR) $(DESTDIR)$(bindir)
 
 install-man : install-dir-man
 	$(INSTALL_DATA) $(srcmandir)/cifer.1 \
