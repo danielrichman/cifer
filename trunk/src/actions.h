@@ -25,12 +25,7 @@
  * start at [1]. */
 /* TODO: better _system tact */
 /* TODO: Proper Preparsing */
-/* TODO: actionu_bufferout_fn() in every action where the output could be
- * bodged; eg.
- * filter buffer_1 num
- * affine buffer_0 buffer_1
- * > buffer_1 has stuff in it but still the `num` filter flag */
-    
+
 #include "actions_macros.h"
 
 int actionu_intparse_f(char *str, int *value, int char_mode, void *failfree);

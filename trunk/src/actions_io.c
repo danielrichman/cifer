@@ -284,15 +284,11 @@ int action_spaces(int argc, char **argv)
   actionu_bufferfchk(buffer_in, BUFFER_FILTER_ESP)
   actionu_dictcheck()
 
-  in  = get_buffer(buffer_in);
-  out = get_buffer(buffer_out);
-  get_buffer_filter(buffer_out) = BUFFER_FILTER_ENL;
-
   sizecache = get_buffer_real_size(buffer_in);
   sizeadd = 0;
 
   space_array = malloc_good( sizeof(int) * sizecache );
-  score_text_dict_spaces(in, sizecache, space_array);
+  score_text_dict_spaces(get_buffer(buffer_in), sizecache, space_array);
 
   for (i = 0; i < sizecache; i++) if (*(space_array + i)) sizeadd++;
 
@@ -302,6 +298,10 @@ int action_spaces(int argc, char **argv)
                                            sizecache + sizeadd);
     resizebuffer(buffer_out, sizecache + sizeadd);
   }
+
+  in  = get_buffer(buffer_in);
+  out = get_buffer(buffer_out);
+  get_buffer_filter(buffer_out) = BUFFER_FILTER_ENL;
 
   j = 0;
   for (i = 0; i < sizecache; i++)
@@ -337,14 +337,11 @@ int action_wordwrap(int argc, char **argv)
   actionu_bufferfchk(buffer_in, BUFFER_FILTER_ENL)
   actionu_bufferchk(buffer_in, buffer_out)
 
-  in  = get_buffer(buffer_in);
-  get_buffer_filter(buffer_out) = BUFFER_FILTER_NONE;
-
   sizecache = get_buffer_real_size(buffer_in);
   sizeadd = 0;
 
   nl_array = malloc_good( sizeof(int) * sizecache );
-  cf_wordwrap(in, sizecache, nl_array);
+  cf_wordwrap(get_buffer(buffer_in), sizecache, nl_array);
 
   for (i = 0; i < sizecache; i++) if (*(nl_array + i)) sizeadd++;
 
@@ -355,9 +352,11 @@ int action_wordwrap(int argc, char **argv)
     resizebuffer(buffer_out, sizecache + sizeadd);
   }
 
-  j = 0;
+  in  = get_buffer(buffer_in);
   out = get_buffer(buffer_out);
+  actionu_bufferout_fn()
 
+  j = 0;
   for (i = 0; i < sizecache; i++)
   {
     *(out + j) = *(in + i);

@@ -85,7 +85,7 @@ void frequency_guesses(char *intext, int intext_size,
   /* Count */
   count_freq(intext, intext_size, frequency_graph);
 
-  /* Because its alpha chars only, we need a new total */
+  /* Because only alpha chars are counted, we need a new total */
   t = 0;
   for (i = 0; i < 26; i++) t += frequency_graph[i];
 

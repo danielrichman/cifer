@@ -31,6 +31,8 @@ int action_affine(int argc, char **argv)
   actionu_bufferschk(buffer_in, buffer_out);
 
   actionu_copysize(buffer_in, buffer_out);
+  actionu_bufferout_fn()
+
   crack_affine(get_buffer(buffer_in), get_buffer_real_size(buffer_in), 
                get_buffer(buffer_out));
   actionu_copysize(buffer_in, buffer_out);
@@ -69,6 +71,8 @@ int action_affinebf(int argc, char **argv)
   actionu_bufferschk(buffer_in, buffer_out);
 
   actionu_copysize(buffer_in, buffer_out);
+  actionu_bufferout_fn()
+
   affine_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
             get_buffer(buffer_out));
   actionu_copysize(buffer_in, buffer_out);
@@ -92,6 +96,7 @@ int action_affineencode(int argc, char **argv)
   actionu_intparse(*(argv + 2), a)
   actionu_intparse(*(argv + 3), b)
 
+  actionu_bufferout_fn()
   affine_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                 get_buffer(buffer_out), a, b);
   actionu_copysize(buffer_in, buffer_out);
@@ -120,6 +125,7 @@ int action_affinedecode(int argc, char **argv)
   actionu_intparse(*(argv + 2), a)
   actionu_intparse(*(argv + 3), b)
 
+  actionu_bufferout_fn()
   affine_decode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                 get_buffer(buffer_out), a, b);
   actionu_copysize(buffer_in, buffer_out);
@@ -151,6 +157,7 @@ int action_baconencode(int argc, char **argv)
     resizebuffer(buffer_out, get_buffer_real_size(buffer_in) * 5);
   }
 
+  actionu_bufferout_fn()
   bacon_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                get_buffer(buffer_out));
   return CFSH_OK;
@@ -175,6 +182,7 @@ int action_bacondecode(int argc, char **argv)
     resizebuffer(buffer_out, get_buffer_real_size(buffer_in));  
   }
 
+  actionu_bufferout_fn()
   bacon_decode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                get_buffer(buffer_out));
   return CFSH_OK;
@@ -261,6 +269,7 @@ int action_shift(int argc, char **argv)
     }
   }
 
+  actionu_bufferout_fn()
   if (direction)   caesar_cipher_enc(get_buffer(buffer_in), 
                                      get_buffer_real_size(buffer_in), 
                                      get_buffer(buffer_out), 
@@ -344,6 +353,7 @@ int action_monoalph(int argc, char **argv)
   for (i = 0; i < 26; i++) printf("%c", NUMCHAR(translation[i]));
   printf("\n\n");
 
+  actionu_bufferout_fn()
   monoalph_substitute(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                       get_buffer(buffer_out), translation);
   actionu_copysize(buffer_in, buffer_out);
@@ -449,6 +459,7 @@ int actionu_ctrans_default(int argc, char **argv,
 
   if (flip) columnar_transposition_flip_key(key, key_size);
 
+  actionu_bufferout_fn()
   routine(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
           get_buffer(buffer_out), key, key_size);
   actionu_copysize(buffer_in, buffer_out);
@@ -503,6 +514,7 @@ int actionu_ctrans_bruteforce(int argc, char **argv,
  "You may want to use the filter command \n");
   }
 
+  actionu_bufferout_fn()
   columnar_transposition_bruteforce(get_buffer(buffer_in),
                                     get_buffer_real_size(buffer_in),
                                     get_buffer(buffer_out),
@@ -638,6 +650,7 @@ int action_keyb(int argc, char **argv)
   actionu_bufferschk(buffer_in, buffer_out);
   actionu_dictcheck()
 
+  actionu_bufferout_fn()
   keyword_bruteforce(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                      get_buffer(buffer_out));
   actionu_copysize(buffer_in, buffer_out);
@@ -665,6 +678,8 @@ int action_keye(int argc, char **argv)
   key_size = strtlen(keyword);
 
   actionu_funcchk(keyword_check(keyword, key_size));
+
+  actionu_bufferout_fn()
   keyword_single(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                  get_buffer(buffer_out), keyword, key_size, 0);
   actionu_copysize(buffer_in, buffer_out);
@@ -692,6 +707,8 @@ int action_keyd(int argc, char **argv)
   key_size = strtlen(keyword);
 
   actionu_funcchk(keyword_check(keyword, key_size));
+
+  actionu_bufferout_fn()
   keyword_single(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                  get_buffer(buffer_out), keyword, key_size, 1);
   actionu_copysize(buffer_in, buffer_out);
@@ -769,6 +786,7 @@ int action_polybius_encode(int argc, char **argv)
     resizebuffer(buffer_out, get_buffer_real_size(buffer_in) * 2);
   }
 
+  get_buffer_filter(buffer_out) = BUFFER_FILTER_NUM;
   polybius_encode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                   get_buffer(buffer_out));
   return CFSH_OK;
@@ -800,6 +818,7 @@ int action_polybius_decode(int argc, char **argv)
     resizebuffer(buffer_out, (get_buffer_real_size(buffer_in) / 2));
   }
 
+  get_buffer_filter(buffer_out) = BUFFER_FILTER_ALPHA;
   polybius_decode(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                   get_buffer(buffer_out));
   return CFSH_OK;
@@ -835,6 +854,7 @@ int action_rfbf(int argc, char **argv)
  "You may want to use the filter command \n");
   }
 
+  actionu_bufferout_fn()
   rf_bf(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
         get_buffer(buffer_out), minb, maxb);
   actionu_copysize(buffer_in, buffer_out);
@@ -861,6 +881,7 @@ int action_vigenere(int argc, char **argv)
 
   if (minb < 1 || maxb - minb < 0) actionu_fail()
 
+  actionu_bufferout_fn()
   crack_vigenere(get_buffer(buffer_in), get_buffer_real_size(buffer_in),
                  get_buffer(buffer_out), minb, maxb);
   actionu_copysize(buffer_in, buffer_out);
