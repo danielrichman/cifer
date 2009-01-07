@@ -314,6 +314,7 @@ int cfsh_line(char *input, int mode)
   /* Only print if its significant */
   if (time2.tv_sec > 0)
   {
+    printf("\n");
     printf("cfsh_line: command spent %6li.%.6li seconds.\n", 
                               time2.tv_sec, time2.tv_usec);
     /* Use printf to provide 000s on the left of usec, to make it correct ;) */

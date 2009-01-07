@@ -121,8 +121,9 @@ void file2buffer(char *name, int buffer_id)
   
   flock(fileno(file), LOCK_SH);
 
-  i = 0;
-  while (feof(file) == 0) { i++; fgetc(file); }
+  /* Seek to the end & tell to find out how long the file is */
+  fseek(file, 0L, SEEK_END);
+  i = ftell(file) + 1;
   rewind(file);
 
   if (i > get_buffer_size(buffer_id))
