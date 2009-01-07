@@ -101,14 +101,14 @@ void file2buffer(char *name, int buffer_id)
   /* Grab file stats */
   if (stat(name, &filestats) == -1)
   {
-    perror("file2buffer:fstat");
+    printf("file2buffer: stat failed: %s\n", strerror(errno));
     return;
   }
 
   /* Check if it's a regular file */
   if (!S_ISREG(filestats.st_mode))
   {
-    printf("file2buffer: not a regular file; fail!\n");
+    printf("file2buffer: not a regular file; failed\n");
     return;
   }
 
@@ -127,7 +127,7 @@ void file2buffer(char *name, int buffer_id)
 
   if (i > get_buffer_size(buffer_id))
   {
-    printf("file2buffer: expanding buffer %i to accomodate infiles %i bytes.\n",
+    printf("file2buffer: expanding buffer %i to accomodate file's %i bytes.\n",
                     buffer_id, i);
     resizebuffer(buffer_id, i);
   }
