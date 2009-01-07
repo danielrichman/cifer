@@ -75,6 +75,13 @@ int cfsh_read(FILE *read, int mode)
   int result, looping, linesize, i, num, have_nl, szc, rl_null_ended;
   char *line;
 
+  /* To please -O2, we initialise it to NULL. It should never be
+   * used uninitialised afaik, however, the testing of `mode` which is
+   * done twice is treaded by -O2 as not-neccacarily the same, and so it
+   * flags up uninitialised use. With NULL its a nice clean segfault should
+   * anything go whacky */
+  line = NULL;
+
   if (mode != CFSH_READ_MODE_INTERACTIVE)
   {
     /* Start out at 512 chars */
@@ -136,7 +143,12 @@ int cfsh_read(FILE *read, int mode)
     if (line == NULL) szc = 0;
     else              szc = strlen(line);
 
-    if (strtlens(line, szc) != 0) if (*(line) != '#')
+    /* This relies on && not bothering with the next tests if
+     * a previous one is false, as is the default behaviour 
+     * This tests if the line is not null, has some chars in it,
+     * and isn't a #comment */
+    if (line != NULL && strtlens(line, szc) != 0 && 
+        *(line + strlefts(line, szc)) != '#')
     {
       /* If its not from stdin, then echo it out */
       if (mode != CFSH_READ_MODE_INTERACTIVE && 
@@ -206,7 +218,7 @@ int cfsh_read(FILE *read, int mode)
       feof(read) != 0)  printf("cfsh_read: end of file\n");
   if (!looping)         printf("cfsh_read: loop broken by cfsh_line\n");
 
-  if (mode != CFSH_READ_MODE_INTERACTIVE)  free(line);
+  if (mode != CFSH_READ_MODE_INTERACTIVE && line != NULL)  free(line);
 
   /* For Parsecheck, the last result will either 
    * be the error or all are ok. Otherwise, this means that

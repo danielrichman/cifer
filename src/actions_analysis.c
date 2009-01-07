@@ -55,7 +55,12 @@ int action_fg(int argc, char **argv)
     actionu_bufferparse(*(argv + 1), buffer_out)
     actionu_bufferchk(buffer_in, buffer_out)
     actionu_bufferschk(buffer_in, buffer_out);
+    actionu_bufferout_fn()
     outtext = get_buffer(buffer_out);
+  }
+  else
+  {
+    printf("Add an extra buffer argument to save the possible-decrypt");
   }
 
   frequency_guesses(get_buffer(buffer_in), get_buffer_real_size(buffer_in), 

@@ -128,12 +128,14 @@ int action_help(int argc, char **argv)
   int aliases_print, lines, lnc;
   struct winsize win;
 
+  /* By default we go for 22, 2 less than the default height (24) */
+  lines = 22;
+
   /* Figure out how many lines there are */
   /* Subtract 2 to leave space for any straggling lines, eg aliases */
   if (ioctl(fileno(stdout), TIOCGWINSZ, &win) != -1)
   {
     if (win.ws_row != 0)    lines = win.ws_row - 2;
-    else                    lines = 22;
   }
 
   actionu_argless()
