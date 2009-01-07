@@ -94,8 +94,23 @@ void file2buffer(char *name, int buffer_id)
   int i;
   char *buf;
   FILE *file;
+  struct stat filestats;
 
   clearbuffer(buffer_id);
+
+  /* Grab file stats */
+  if (stat(name, &filestats) == -1)
+  {
+    perror("file2buffer:fstat");
+    return;
+  }
+
+  /* Check if it's a regular file */
+  if (!S_ISREG(filestats.st_mode))
+  {
+    printf("file2buffer: not a regular file; fail!\n");
+    return;
+  }
 
   file = fopen(name, "r");
   if (file == NULL)
@@ -103,7 +118,7 @@ void file2buffer(char *name, int buffer_id)
     printf("file2buffer: fopen failed: %s\n", strerror(errno));
     return;
   }
-
+  
   flock(fileno(file), LOCK_SH);
 
   i = 0;
