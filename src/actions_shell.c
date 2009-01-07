@@ -43,13 +43,10 @@ int action_usage(int argc, char **argv)
 /* Checks if we can start a line; blocks if we can't */
 void action_help_lnblk(int *lnc, int nln)
 {
-  char ch;
-  ch = 0;
-
   if (*lnc == nln)
   {
     printf(" -- Press enter for more -- ");
-    while (ch != '\n')	ch = fgetc(stdin);
+    while (fgetc(stdin) != '\n');  /* note ; at end for do-nuffing loop */
 
     *lnc = min(4, nln);  /* Four lines are 'kept' */
   }
