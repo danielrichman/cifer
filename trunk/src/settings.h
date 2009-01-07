@@ -25,5 +25,5 @@
 #define AFFINE_WAIT            1     /* How long affine waits before \
                                       * doing utility routines */
 
-#define DEFAULT_BUFFER_SIZE    2048  /* 2KB */
+#define DEFAULT_BUFFER_SIZE    1
 

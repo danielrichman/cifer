@@ -50,6 +50,9 @@
 #define actionu_bufferchk(i, o)  actionu_funcchk(actionu_bufferchk_f((i), (o)))
 #define actionu_bufferfchk(b, f) actionu_funcchk(actionu_bufferfchk_f((b), (f)))
 
+#define actionu_buffer_fn(b)     get_buffer_filter(b) = BUFFER_FILTER_NONE;
+#define actionu_bufferout_fn()   actionu_buffer_fn(buffer_out)
+
 #define actionu_dictcheck()                                                  \
   if (dict == NULL)                                                          \
   {                                                                          \

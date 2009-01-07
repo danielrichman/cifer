@@ -16,6 +16,21 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* TODO: FIX!!
+ * action_wordwrap fails (libc bails) if settings.h:DEFAULT_BUFFER_SIZE is
+ * low which it should be;
+ * *** glibc detected *** ./cifer: double free or corruption (out): 0x08f11138 ***
+ * ======= Backtrace: =========
+ * /lib/tls/i686/cmov/libc.so.6[0xb7e133f4]
+ * /lib/tls/i686/cmov/libc.so.6(cfree+0x96)[0xb7e15456]
+ * /lib/libreadline.so.5(rl_set_prompt+0x31)[0xb7f102c1]
+ * /lib/libreadline.so.5(readline+0x29)[0xb7f10359]
+ * ./cifer[0x805fad6]
+ * ./cifer[0x805fcc3]
+ * ./cifer[0x805ed42]
+ * /lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe5)[0xb7dba685]
+ * ./cifer[0x8048d81] */
+
 #include "stdinc.h"
 
 #define ACTION_USAGE action_buffers_usage
@@ -103,11 +118,7 @@ int action_write(int argc, char **argv)
 {
   int mode, buffer_id;
 
-  if (argc != 2 && argc != 3)
-  {
-    printf(action_write_usage);
-    return CFSH_COMMAND_HARDFAIL;
-  }
+  if (argc != 2 && argc != 3) actionu_fail()
 
   if (argc == 3)
   {
@@ -149,7 +160,14 @@ int action_filter(int argc, char **argv)
   int mode, buffer_id;
   actionu_argchk(2)
   actionu_bufferparse(*(argv), buffer_id)
+
   mode = get_buffer_filter_fromtext(*(argv + 1));
+  if (mode == BUFFER_FILTER_NONE)
+  {
+    printf("filter: invalid filter name\n");
+    actionu_faili()
+  }
+
   filterbuffer(buffer_id, mode);
   return CFSH_OK;
 }

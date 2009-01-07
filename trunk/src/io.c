@@ -121,16 +121,11 @@ void file2buffer(char *name, int buffer_id)
   
   flock(fileno(file), LOCK_SH);
 
-  /* Seek to the end & tell to find out how long the file is */
-  fseek(file, 0L, SEEK_END);
-  i = ftell(file) + 1;
-  rewind(file);
-
-  if (i > get_buffer_size(buffer_id))
+  if (filestats.st_size > get_buffer_size(buffer_id))
   {
-    printf("file2buffer: expanding buffer %i to accomodate file's %i bytes.\n",
-                    buffer_id, i);
-    resizebuffer(buffer_id, i);
+    printf("file2buffer: expanding buffer %i to accomodate file's %li bytes.\n",
+                    buffer_id, filestats.st_size);
+    resizebuffer(buffer_id, filestats.st_size);
   }
 
   i = 0;
@@ -146,7 +141,7 @@ void file2buffer(char *name, int buffer_id)
   *(buf + i) = 0;
   setbuffernull(buffer_id);
 
-  printf("file2buffer: loaded %i bytes into buffer %i\n", i, buffer_id);
+  printf("file2buffer: loaded %i bytes into buffer %i\n", i - 1, buffer_id);
 
   flock(fileno(file), LOCK_UN);
   fclose(file);
@@ -219,7 +214,7 @@ void resizebuffer(int buffer_id, int newsize)
 {
   get_buffer(buffer_id) = realloc_good( get_buffer(buffer_id), newsize + 1 );
   get_buffer_size(buffer_id) = newsize;
-  get_buffer_filter(buffer_id) = 0;
+  get_buffer_filter(buffer_id) = BUFFER_FILTER_NONE;
 
   clearbuffer(buffer_id);
   setbuffernull(buffer_id);
