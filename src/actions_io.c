@@ -16,21 +16,6 @@
     along with Cifer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* TODO: FIX!!
- * action_wordwrap fails (libc bails) if settings.h:DEFAULT_BUFFER_SIZE is
- * low which it should be;
- * *** glibc detected *** ./cifer: double free or corruption (out): 0x08f11138 ***
- * ======= Backtrace: =========
- * /lib/tls/i686/cmov/libc.so.6[0xb7e133f4]
- * /lib/tls/i686/cmov/libc.so.6(cfree+0x96)[0xb7e15456]
- * /lib/libreadline.so.5(rl_set_prompt+0x31)[0xb7f102c1]
- * /lib/libreadline.so.5(readline+0x29)[0xb7f10359]
- * ./cifer[0x805fad6]
- * ./cifer[0x805fcc3]
- * ./cifer[0x805ed42]
- * /lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe5)[0xb7dba685]
- * ./cifer[0x8048d81] */
-
 #include "stdinc.h"
 
 #define ACTION_USAGE action_buffers_usage
@@ -353,7 +338,6 @@ int action_wordwrap(int argc, char **argv)
   actionu_bufferchk(buffer_in, buffer_out)
 
   in  = get_buffer(buffer_in);
-  out = get_buffer(buffer_out);
   get_buffer_filter(buffer_out) = BUFFER_FILTER_NONE;
 
   sizecache = get_buffer_real_size(buffer_in);
@@ -372,6 +356,8 @@ int action_wordwrap(int argc, char **argv)
   }
 
   j = 0;
+  out = get_buffer(buffer_out);
+
   for (i = 0; i < sizecache; i++)
   {
     *(out + j) = *(in + i);
