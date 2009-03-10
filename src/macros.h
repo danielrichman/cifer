@@ -29,7 +29,7 @@
 #define ALPHA_CH(ch)           (ALPHAL_CH(ch) || ALPHAH_CH(ch))
 #define ALPHANUMERIC_CH(ch)    (ALPHA_CH(ch)  || NUMBER_CH(ch))
 #define SPACE_CH(ch)           (ch == 32)
-#define XSPACE_CH(ch)          (ch < 32 || ch == 127)
+#define XSPACE_CH(ch)          (ch == 9 || ch == 10 || ch == 13 || ch == 127)
 #define QUOTE_CH(ch)           (ch == 39 || ch == 34)
 #define ESCAPE_CH(ch)          (ch == 92)
 

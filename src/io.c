@@ -91,7 +91,7 @@ void size_buffer_array(int n)
 
 void file2buffer(char *name, int buffer_id)
 {
-  int i;
+  int i, original_size;
   char *buf;
   FILE *file;
   struct stat filestats;
@@ -121,6 +121,9 @@ void file2buffer(char *name, int buffer_id)
   
   flock(fileno(file), LOCK_SH);
 
+  /* Save original size incase we need to bail out */
+  original_size = get_buffer_size(buffer_id);
+
   if (filestats.st_size > get_buffer_size(buffer_id))
   {
     printf("file2buffer: expanding buffer %i to accomodate file's %li bytes.\n",
@@ -134,7 +137,37 @@ void file2buffer(char *name, int buffer_id)
   while (feof(file) == 0)
   {
     *(buf + i) = fgetc(file);
-    if (*(buf + i) == -1)  *(buf + i) = 0;
+
+    /* Detect error, convert to a null, and finish */
+    if (*(buf + i) == -1)
+    {
+      *(buf + i) = 0;
+      break;
+    }
+    else if (!ASCII_CH(*(buf + i)) && !XSPACE_CH(*(buf + i)))
+    {
+      /* trap non ascii stuff, including a null */
+      printf("file2buffer: error - file is not ASCII, "
+                "unknown character %2x at byte %i\n", 
+                (unsigned char) *(buf + i), i);
+
+      /* bail out, I guess. */
+      printf("file2buffer: bailing out: emptying buffer\n");
+      clearbuffer(buffer_id);
+
+      /* return buffer to original size, if needed */
+      if (original_size != get_buffer_size(buffer_id))
+      {
+        printf("file2buffer: returning buffer %i to original size %i\n",
+                     buffer_id, original_size);
+        resizebuffer(buffer_id, original_size);
+      }
+
+      flock(fileno(file), LOCK_UN);
+      fclose(file);
+      return;
+    }
+
     i++;
   }
 
@@ -283,12 +316,15 @@ void copybuffer(int buffer_id_1, int buffer_id_2)
   if (get_buffer_size(buffer_id_2) < get_buffer_real_size(buffer_id_1))
   {
     printf("copybuffer: must resize buffer %i to %i bytes\n", 
-                            buffer_id_2, get_buffer_size(buffer_id_1));
-    resizebuffer(buffer_id_2, get_buffer_size(buffer_id_1));
+                            buffer_id_2, get_buffer_real_size(buffer_id_1));
+    resizebuffer(buffer_id_2, get_buffer_real_size(buffer_id_1));
   }
 
+  clearbuffer(buffer_id_2);
   memcpy(get_buffer(buffer_id_2), get_buffer(buffer_id_1),
-                            get_buffer_size(buffer_id_2));
+                            get_buffer_real_size(buffer_id_1));
+
+  *(get_buffer(buffer_id_2) + get_buffer_real_size(buffer_id_1)) = 0;
   setbuffernull(buffer_id_2);
 }
 

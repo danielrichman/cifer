@@ -42,7 +42,11 @@
                                                                              \
   if (t == -1)                                                               \
   {                                                                          \
-    printf(actionu_bufferparse_fail, (s), cfsh_num_buffers - 1);             \
+    if (cfsh_num_buffers == 0)                                               \
+      printf(actionu_bufferparse_zerofail, (s));                             \
+    else                                                                     \
+      printf(actionu_bufferparse_fail, (s), cfsh_num_buffers - 1);           \
+                                                                             \
     actionu_faili()                                                          \
   }                                                                          \
 }

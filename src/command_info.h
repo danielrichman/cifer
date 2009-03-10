@@ -18,6 +18,7 @@
 
 #define dict_not_loaded "dictionary not loaded: type `usage load_dict' for more info\n"
 #define actionu_bufferparse_fail "bad buffer name '%s', use 'buffer_#' (X, int 0 to %i)\n"
+#define actionu_bufferparse_zerofail "bad buffer name '%s', please create some buffers with 'buffers'\n"
 
 #define action_default_usage "usage: help (to list all commands) or usage <command name>\n";
 #define action_default_use "no such command\n";
