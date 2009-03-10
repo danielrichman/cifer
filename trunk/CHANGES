@@ -1,3 +1,11 @@
+# 1.2.0 ##################################### Tue, 10 Mar 2009 19:59:44 +0000 #
+
+  * Added more buffer-type checkes, and input file checks to ensure
+    smooth operation
+  * Fixed a bug which occured when trying to read in a special/block file
+
+###############################################################################
+
 # 1.1.0 ##################################### Wed, 17 Dec 2008 20:20:56 +0000 #
   
   * `More' style support added to the help action, multiple pages.
