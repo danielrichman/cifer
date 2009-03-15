@@ -126,7 +126,7 @@ void file2buffer(char *name, int buffer_id)
 
   if (filestats.st_size > get_buffer_size(buffer_id))
   {
-    printf("file2buffer: expanding buffer %i to accomodate file's %li bytes.\n",
+    printf("file2buffer: expanding buffer %i to accommodate file's %li bytes\n",
                     buffer_id, filestats.st_size);
     resizebuffer(buffer_id, filestats.st_size + 1);
   }
