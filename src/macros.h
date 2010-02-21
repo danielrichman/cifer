@@ -22,7 +22,7 @@
 #define modp(X, B)  ((X) % (B))
 #define modn(X, B)  ((X) % (B)) + (((X) % (B)) < 0 ? (B) : 0)
 
-#define ASCII_CH(ch)           (ch >= 32 && ch <= 128)
+#define ASCII_CH(ch)           (ch >= 32 && ch <= 126)
 #define ALPHAL_CH(ch)          (ch >= 97 && ch <= 122)
 #define ALPHAH_CH(ch)          (ch >= 65 && ch <= 90)
 #define NUMBER_CH(ch)          (ch >= 48 && ch <= 57)
